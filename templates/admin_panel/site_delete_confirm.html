@@ -1,0 +1,11 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Site Sil</h2>
+<p>Bu siteyi silmek istediğinizden emin misiniz: {{ site.site_adi }}?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Evet, Sil</button>
+  <a href="{% url 'site_list' %}">Vazgeç</a>
+</form>
+{% endblock %}

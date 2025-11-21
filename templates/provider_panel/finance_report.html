@@ -1,0 +1,99 @@
+{% extends "provider_panel/base.html" %}
+{% block title %}Finansal Rapor{% endblock %}
+{% block content %}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        Filtrele
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label for="start_date" class="form-label">Başlangıç Tarihi</label>
+                <input type="date" id="start_date" name="start_date" class="form-control" value="{{ request.GET.start_date }}">
+            </div>
+            <div class="col-md-4">
+                <label for="end_date" class="form-label">Bitiş Tarihi</label>
+                <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request.GET.end_date }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label d-block">&nbsp;</label>
+                <button type="submit" class="btn btn-primary">Uygula</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-secondary text-white">
+        Yatırımlar
+    </div>
+    <div class="card-body table-responsive">
+        {% if deposits %}
+        <table class="table table-sm table-bordered table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Kullanıcı</th>
+                    <th>Tutar</th>
+                    <th>Banka</th>
+                    <th>Durum</th>
+                    <th>Tarih</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in deposits %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ d.user_name }}</td>
+                    <td>{{ d.amount }}</td>
+                    <td>{{ d.bank_name }}</td>
+                    <td>{{ d.get_status_display }}</td>
+                    <td>{{ d.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Yatırım bulunamadı.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+        Çekimler
+    </div>
+    <div class="card-body table-responsive">
+        {% if withdrawals %}
+        <table class="table table-sm table-bordered table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Kullanıcı</th>
+                    <th>Tutar</th>
+                    <th>IBAN</th>
+                    <th>Durum</th>
+                    <th>Tarih</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for w in withdrawals %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ w.user_name }}</td>
+                    <td>{{ w.amount }}</td>
+                    <td>{{ w.iban }}</td>
+                    <td>{{ w.get_status_display }}</td>
+                    <td>{{ w.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Çekim bulunamadı.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

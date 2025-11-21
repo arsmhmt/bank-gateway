@@ -1,0 +1,59 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Finansal Raporlar (Filtreli)</h2>
+
+<form method="get" style="margin-bottom: 20px;">
+  <label>Tarih (Başlangıç): <input type="date" name="date_from" value="{{ filters.date_from }}"></label>
+  <label>Tarih (Bitiş): <input type="date" name="date_to" value="{{ filters.date_to }}"></label>
+  <label>Site: 
+    <select name="site">
+      <option value="">Tümü</option>
+      {% for s in sites %}
+      <option value="{{ s.id }}" {% if filters.site == s.id|stringformat:'s' %}selected{% endif %}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Teminci: 
+    <select name="provider">
+      <option value="">Tümü</option>
+      {% for p in providers %}
+      <option value="{{ p.id }}" {% if filters.provider == p.id|stringformat:'s' %}selected{% endif %}>
+        {{ p.first_name }} {{ p.last_name }}
+      </option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Kullanıcı Adı: <input type="text" name="user_name" value="{{ filters.user_name }}"></label>
+  <label>Yatırım ID: <input type="number" name="deposit_id" value="{{ filters.deposit_id }}"></label>
+  <label>Çekim ID: <input type="number" name="withdraw_id" value="{{ filters.withdraw_id }}"></label>
+  <button type="submit">Filtrele</button>
+</form>
+
+<h3>Site Bazlı</h3>
+<table border="1">
+<tr><th>Site</th><th>Yatırım</th><th>Çekim</th><th>Yatırım Kom.</th><th>Çekim Kom.</th><th>Toplam Kazanç</th></tr>
+{% for s in site_data %}
+<tr>
+  <td>{{ s.site.name }}</td><td>{{ s.deposits }} TL</td><td>{{ s.withdrawals }} TL</td>
+  <td>{{ s.earned_dep }} TL</td><td>{{ s.earned_wit }} TL</td><td>{{ s.total_earned }} TL</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Teminci Bazlı</h3>
+<table border="1">
+<tr><th>Teminci</th><th>Yatırım</th><th>Çekim</th><th>Kazanç</th><th>Ödenen</th><th>Bakiye</th></tr>
+{% for p in provider_data %}
+<tr>
+  <td>{{ p.provider.first_name }} {{ p.provider.last_name }}</td><td>{{ p.deposits }} TL</td><td>{{ p.withdrawals }} TL</td>
+  <td>{{ p.earned }} TL</td><td>{{ p.paid }} TL</td><td>{{ p.balance }} TL</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Net Kar-Zarar</h3>
+<p><strong>Toplam Client Komisyonu:</strong> {{ site_comm_total }} TL</p>
+<p><strong>Toplam Teminci Komisyonu:</strong> {{ provider_comm_total }} TL</p>
+<p><strong>Net Kar:</strong> {{ net_profit }} TL</p>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<h2>Tüm Siteler</h2>
+<a href="{% url 'add_client_site' %}">Yeni Site Ekle</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Adı</th>
+      <th>Domain</th>
+      <th>İlgili Kişi</th>
+      <th>Email</th>
+      <th>Komisyonlar</th>
+      <th>İşlem</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for site in sites %}
+    <tr>
+      <td>{{ site.name }}</td>
+      <td>{{ site.domain }}</td>
+      <td>{{ site.contact_person }}</td>
+      <td>{{ site.contact_email }}</td>
+      <td>Yatırım: {{ site.deposit_commission }}%<br>Çekim: {{ site.withdraw_commission }}%</td>
+      <td><a href="#">Düzenle</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "provider_panel/base.html" %}
+{% block title %}Bekleyen Yatırımlar{% endblock %}
+{% block content %}
+
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        Bekleyen Yatırımlar
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Kullanıcı</th>
+                    <th>Tutar</th>
+                    <th>Banka</th>
+                    <th>IBAN</th>
+                    <th>Tarih</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for deposit in deposits %}
+                    <tr>
+                        <td>{{ deposit.id }}</td>
+                        <td>{{ deposit.user_name }}</td>
+                        <td>{{ deposit.amount }} ₺</td>
+                        <td>{{ deposit.bank_name }}</td>
+                        <td>{{ deposit.iban }}</td>
+                        <td>{{ deposit.created_at|date:"d M Y H:i" }}</td>
+                        <td>
+                            <form action="{% url 'provider_panel:approve_deposit' deposit.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-success">Onayla</button>
+                            </form>
+                            <form action="{% url 'provider_panel:reject_deposit' deposit.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger">Reddet</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted">Bekleyen yatırım bulunmamaktadır.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

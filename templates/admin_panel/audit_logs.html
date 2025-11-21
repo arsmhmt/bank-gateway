@@ -1,0 +1,14 @@
+
+{% block content %}
+<h2>Admin İşlem Kayıtları</h2>
+<table>
+<tr><th>Tarih</th><th>Admin</th><th>İşlem</th></tr>
+{% for log in logs %}
+<tr>
+<td>{{ log.created_at }}</td>
+<td>{{ log.user.email }}</td>
+<td>{{ log.action }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

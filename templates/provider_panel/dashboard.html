@@ -1,0 +1,131 @@
+{% extends "provider_panel/base.html" %}
+{% block title %}Teminci Paneli{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Bugünkü Yatırımlar</h6>
+                <h4 class="card-text text-primary">{{ stats.today_deposits }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Bu Ay</h6>
+                <h4 class="card-text text-primary">{{ stats.month_deposits }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Toplam Yatırımlar</h6>
+                <h4 class="card-text text-primary">{{ stats.total_deposits }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Bekleyen Yatırımlar</h6>
+                <h4 class="card-text text-warning">{{ stats.pending_deposits }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-4">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-3">Son Yatırımlar</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Kullanıcı</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                                <th>Tarih</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for d in deposits %}
+                            <tr>
+                                <td>{{ d.id }}</td>
+                                <td>{{ d.user_name }}</td>
+                                <td>{{ d.amount }}</td>
+                                <td>{{ d.get_status_display }}</td>
+                                <td>{{ d.created_at }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5" class="text-center">Henüz yatırım yok</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                Son Çekimler
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr><th>ID</th><th>Kullanıcı</th><th>Tutar</th><th>Durum</th><th>Tarih</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for w in withdrawals %}
+                            <tr>
+                                <td>{{ w.id }}</td>
+                                <td>{{ w.user_name }}</td>
+                                <td>{{ w.amount }}</td>
+                                <td>{{ w.get_status_display }}</td>
+                                <td>{{ w.created_at|date:"d M H:i" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5">Kayıt yok</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            Aktif Banka Hesapları
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr><th>Banka</th><th>Hesap Sahibi</th><th>IBAN</th><th>Limit</th></tr>
+                </thead>
+                <tbody>
+                    {% for account in bank_accounts %}
+                        <tr>
+                            <td>{{ account.bank_name }}</td>
+                            <td>{{ account.account_holder }}</td>
+                            <td>{{ account.iban }}</td>
+                            <td>{{ account.limit }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4">Hesap yok</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Çekim Talepleri</h2>
+<table border="1">
+  <tr>
+    <th>Ad Soyad</th>
+    <th>IBAN</th>
+    <th>Tutar</th>
+    <th>Durum</th>
+    <th>Tarih</th>
+    <th>İşlem</th>
+  </tr>
+  {% for w in withdrawals %}
+  <tr>
+    <td>{{ w.name_surname }}</td>
+    <td>{{ w.iban }}</td>
+    <td>{{ w.amount }} TL</td>
+    <td>{{ w.status }}</td>
+    <td>{{ w.created_at }}</td>
+    <td>
+      {% if w.status == "Beklemede" %}
+      <a href="{% url 'approve_withdraw' w.pk %}">Onayla</a> |
+      <a href="{% url 'reject_withdraw' w.pk %}">Reddet</a>
+      {% else %}
+      İşlem Tamamlandı
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

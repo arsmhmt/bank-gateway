@@ -1,0 +1,10 @@
+/* Slim progress bar styles */
+.slim-progress-bar {
+    height: 4px;
+}
+
+.slim-progress-bar .progress-bar {
+    transition: width 0.3s ease;
+}
+
+/* Add any other custom dashboard styles below */

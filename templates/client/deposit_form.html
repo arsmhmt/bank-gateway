@@ -1,0 +1,21 @@
+
+{% extends 'base_client.html' %}
+{% block content %}
+<h2>Banka Seçimi</h2>
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="amount" value="{{ amount }}">
+  <input type="hidden" name="user_name" value="{{ user_name }}">
+  <label>Banka Seçin:</label>
+  <select name="bank_account_id">
+    {% for bank in bank_accounts %}
+      <option value="{{ bank.id }}">
+        {{ bank.bank_name }} - {{ bank.account_owner }} - {{ bank.iban }}
+      </option>
+    {% empty %}
+      <option disabled>Limit altında uygun banka bulunamadı</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Yatırıma Başla</button>
+</form>
+{% endblock %}

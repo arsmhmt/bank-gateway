@@ -1,0 +1,11 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<h4 class="mb-3">Teminci Sil</h4>
+<p><strong>{{ provider.name }}</strong> adlı teminciyi silmek istediğinize emin misiniz?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a href="{% url 'admin_panel:provider_list' %}" class="btn btn-secondary">Vazgeç</a>
+</form>
+{% endblock %}

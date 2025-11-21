@@ -1,0 +1,27 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<h2>Yeni Site Ekle</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <label>Site Adı</label>
+  <input type="text" name="name" required>
+
+  <label>Domain</label>
+  <input type="text" name="domain" required>
+
+  <label>İlgili Kişi</label>
+  <input type="text" name="contact_person" required>
+
+  <label>Email</label>
+  <input type="email" name="contact_email" required>
+
+  <label>Yatırım Komisyon (%)</label>
+  <input type="number" step="0.1" name="deposit_commission">
+
+  <label>Çekim Komisyon (%)</label>
+  <input type="number" step="0.1" name="withdraw_commission">
+
+  <button type="submit">Kaydet</button>
+</form>
+{% endblock %}

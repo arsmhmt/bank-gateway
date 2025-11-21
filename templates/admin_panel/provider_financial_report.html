@@ -1,0 +1,17 @@
+
+{% block content %}
+<h2>Teminci Finans Raporu</h2>
+<table>
+<tr><th>Teminci</th><th>Toplam Yatırım</th><th>Toplam Çekim</th><th>Toplam Komisyon</th><th>Bekleyen</th><th>Ödenen</th></tr>
+{% for provider in providers %}
+<tr>
+<td>{{ provider.name }}</td>
+<td>{{ provider.total_deposit|default:"0" }}</td>
+<td>{{ provider.total_withdraw|default:"0" }}</td>
+<td>{{ provider.total_commission|default:"0" }}</td>
+<td>{{ provider.pending_commission|default:"0" }}</td>
+<td>{{ provider.paid_commission|default:"0" }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

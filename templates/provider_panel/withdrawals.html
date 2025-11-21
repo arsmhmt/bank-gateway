@@ -1,0 +1,48 @@
+{% extends "provider_panel/base.html" %}
+{% block title %}Çekim Talepleri{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Çekim Talepleri</h2>
+
+  {% if withdrawals %}
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Kullanıcı</th>
+          <th>Banka</th>
+          <th>IBAN</th>
+          <th>Tutar</th>
+          <th>Durum</th>
+          <th>Tarih</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for w in withdrawals %}
+        <tr>
+          <td>{{ w.id }}</td>
+          <td>{{ w.user.email }}</td>
+          <td>{{ w.bank_account.bank_name }}</td>
+          <td>{{ w.bank_account.iban }}</td>
+          <td>{{ w.amount }} ₺</td>
+          <td>
+            {% if w.status == "pending" %}
+              <span class="badge bg-warning text-dark">Beklemede</span>
+              <a href="{% url 'approve_withdrawal' w.id %}" class="btn btn-sm btn-success me-1">Onayla</a>
+              <a href="{% url 'reject_withdrawal' w.id %}" class="btn btn-sm btn-danger">Reddet</a>
+            {% elif w.status == "approved" %}
+              <span class="badge bg-success">Onaylandı</span>
+            {% elif w.status == "rejected" %}
+              <span class="badge bg-danger">Reddedildi</span>
+            {% endif %}
+          </td>
+          <td>{{ w.created_at|date:"d.m.Y H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Henüz çekim talebi bulunmuyor.</p>
+  {% endif %}
+</div>
+{% endblock %}

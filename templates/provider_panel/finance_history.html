@@ -1,0 +1,27 @@
+
+{% extends 'provider_panel/base.html' %}
+{% block content %}
+<h2>Finansal İşlem Geçmişi</h2>
+<form method="get" style="margin-bottom: 20px;">
+  Başlangıç Tarihi: <input type="date" name="start_date" value="{{ filters.start }}">
+  Bitiş Tarihi: <input type="date" name="end_date" value="{{ filters.end }}">
+  Banka: <input type="text" name="bank_name" value="{{ filters.bank }}">
+  <button type="submit">Filtrele</button>
+</form>
+
+<table border="1">
+  <tr><th>Tarih</th><th>Tür</th><th>Kullanıcı</th><th>Tutar</th><th>Banka</th><th>Durum</th></tr>
+  {% for txn in transactions %}
+    <tr>
+      <td>{{ txn.created_at|date:"d.m.Y H:i" }}</td>
+      <td>{% if txn.type == "deposit" %}Yatırım{% else %}Çekim{% endif %}</td>
+      <td>{{ txn.full_name }}</td>
+      <td>{{ txn.amount }} TL</td>
+      <td>{{ txn.bank_name }}</td>
+      <td>{{ txn.status }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6">İşlem bulunamadı.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

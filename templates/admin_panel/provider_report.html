@@ -1,0 +1,30 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Teminci Finansal Raporları</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Teminci</th>
+            <th>Yatırım</th>
+            <th>Çekim</th>
+            <th>Kazanç</th>
+            <th>Ödenen</th>
+            <th>Bakiye</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in provider_data %}
+        <tr>
+            <td>{{ p.provider.first_name }} {{ p.provider.last_name }}</td>
+            <td>{{ p.deposits }} TL</td>
+            <td>{{ p.withdrawals }} TL</td>
+            <td>{{ p.earned }} TL</td>
+            <td>{{ p.paid }} TL</td>
+            <td>{{ p.balance }} TL</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">Kayıt yok.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

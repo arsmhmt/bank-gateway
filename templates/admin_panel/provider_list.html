@@ -1,0 +1,38 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Tüm Teminciler</h1>
+
+<table class="min-w-full bg-white border border-gray-200">
+  <thead class="bg-gray-100 text-left">
+    <tr>
+      <th class="py-2 px-3">Email</th>
+      <th class="py-2 px-3">Telefon</th>
+      <th class="py-2 px-3">Durum</th>
+      <th class="py-2 px-3">Yatırımlar</th>
+      <th class="py-2 px-3">Çekimler</th>
+      <th class="py-2 px-3">Toplam Komisyon</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in summary %}
+    <tr class="border-t">
+      <td class="py-2 px-3">{{ item.provider.email }}</td>
+      <td class="py-2 px-3">{{ item.provider.phone }}</td>
+      <td class="py-2 px-3">
+        {% if item.provider.is_blocked %}
+          <span class="text-red-600">Bloklu</span>
+        {% else %}
+          <span class="text-green-600">Aktif</span>
+        {% endif %}
+      </td>
+      <td class="py-2 px-3">{{ item.deposits }}</td>
+      <td class="py-2 px-3">{{ item.withdrawals }}</td>
+      <td class="py-2 px-3 font-medium">{{ item.commission|floatformat:2 }} ₺</td>
+      <td class="py-2 px-3">
+        <a href="{% url 'edit_provider' item.provider.id %}" class="text-blue-600 underline">Düzenle</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

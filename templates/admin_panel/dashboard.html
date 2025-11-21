@@ -1,0 +1,92 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+{% block title %}Yönetim Paneli{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">📊 Yönetim Paneli</h2>
+
+    <div class="row">
+        <!-- Total Deposits -->
+        <div class="col-md-3">
+            <div class="card text-bg-success mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Yatırım</h5>
+                    <p class="card-text fs-4">{{ total_deposits }} ₺</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Withdrawals -->
+        <div class="col-md-3">
+            <div class="card text-bg-danger mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Çekim</h5>
+                    <p class="card-text fs-4">{{ total_withdrawals }} ₺</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Commission -->
+        <div class="col-md-3">
+            <div class="card text-bg-info mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Komisyon</h5>
+                    <p class="card-text fs-4">{{ total_commission }} ₺</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Sites -->
+        <div class="col-md-3">
+            <div class="card text-bg-secondary mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Kayıtlı Siteler</h5>
+                    <p class="card-text fs-4">{{ site_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Deposits -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header">
+            Son Yatırımlar
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm table-hover table-striped m-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Site</th>
+                        <th>Tutar</th>
+                        <th>Durum</th>
+                        <th>Tarih</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deposit in recent_deposits %}
+                    <tr>
+                        <td>#{{ deposit.id }}</td>
+                        <td>{{ deposit.site.name }}</td>
+                        <td>{{ deposit.amount }} ₺</td>
+                        <td>
+                            {% if deposit.status == "pending" %}
+                                <span class="badge text-bg-warning">Bekliyor</span>
+                            {% elif deposit.status == "approved" %}
+                                <span class="badge text-bg-success">Onaylandı</span>
+                            {% else %}
+                                <span class="badge text-bg-danger">Reddedildi</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ deposit.created_at|date:"d.m.Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted">Kayıt yok</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

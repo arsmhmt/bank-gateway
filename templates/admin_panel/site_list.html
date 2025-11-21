@@ -1,0 +1,25 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Site Yönetimi</h2>
+<a href="{% url 'site_add' %}">+ Yeni Site</a>
+<table border="1">
+<tr>
+  <th>Site</th><th>İletişim</th><th>Yatırım Kom.</th><th>Çekim Kom.</th><th>API Key</th><th>İşlem</th>
+</tr>
+{% for s in sites %}
+<tr>
+  <td>{{ s.site_adi }}</td>
+  <td>{{ s.contact }}</td>
+  <td>{{ s.deposit_commission }}%</td>
+  <td>{{ s.withdraw_commission }}%</td>
+  <td>{{ s.api_key }}</td>
+  <td>
+    <a href="{% url 'site_edit' s.pk %}">Düzenle</a> |
+    <a href="{% url 'site_delete' s.pk %}">Sil</a> |
+    <a href="{% url 'reset_api_key' s.pk %}">API Sıfırla</a>
+  </td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

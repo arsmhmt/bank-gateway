@@ -1,0 +1,907 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme-color" content="#6366f1">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7CZLMMBED4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-7CZLMMBED4');
+  </script>
+  
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon-180x180.png' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+<link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+  
+  <!-- Additional SEO Meta Tags -->
+  <meta name="geo.region" content="US">
+  <meta name="geo.country" content="US">
+  <meta name="language" content="English">
+  <meta name="distribution" content="global">
+  <meta name="rating" content="general">
+  <meta name="revisit-after" content="1 days">
+  <meta name="expires" content="never">
+  <meta name="classification" content="Business">
+  <meta name="category" content="Cryptocurrency, DeFi, Payment Gateway, Blockchain Tools">
+  <meta name="coverage" content="Worldwide">
+  <meta name="target" content="traders, businesses, developers, crypto enthusiasts">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  
+  <!-- SEO Meta Tags -->
+  <title>PayCrypt - #1 Crypto Payment Gateway & Free DeFi Tools | 14 Professional Analysis Tools</title>
+  <meta name="description" content="🚀 Professional crypto payment gateway accepting 100+ cryptocurrencies. Free DeFi tools: Token analyzer, gas tracker, honeypot detector, MEV protection, airdrop hunter. Enterprise solutions for businesses worldwide.">
+  <meta name="keywords" content="crypto payment gateway, bitcoin payment processor, ethereum payment gateway, DeFi tools, token security analyzer, gas price tracker, honeypot detector, MEV protection, airdrop hunter, rug pull alerts, whale tracker, trading bots, blockchain payment solutions, cryptocurrency merchant services, crypto API integration, smart contract audit, liquidity lock checker">
+  <meta name="author" content="PayCrypt - Crypto Payment Solutions">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="https://paycrypt.online/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://paycrypt.online/">
+  <meta property="og:title" content="PayCrypt - #1 Crypto Payment Gateway & Free DeFi Tools">
+  <meta property="og:description" content="🚀 Professional crypto payment gateway accepting 100+ cryptocurrencies. Free DeFi analysis tools: Token analyzer, gas tracker, honeypot detector, MEV protection. Enterprise blockchain payment solutions.">
+  <meta property="og:image" content="https://bank.paycrypt.online{% static 'img/paycrypt_logo.png' %}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="PayCrypt">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://paycrypt.online/">
+  <meta name="twitter:title" content="PayCrypt - #1 Crypto Payment Gateway & Free DeFi Tools">
+  <meta name="twitter:description" content="🚀 Professional crypto payment gateway accepting 100+ cryptocurrencies. Free DeFi analysis tools for traders and businesses.">
+  <meta name="twitter:image" content="https://bank.paycrypt.online{% static 'img/paycrypt_logo.png' %}">
+  <meta name="twitter:creator" content="@paycryptonline">
+  <meta name="twitter:site" content="@paycryptonline">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "PayCrypt",
+    "alternateName": "PayCrypt Payment Gateway",
+    "url": "https://paycrypt.online/",
+    "logo": "https://paycrypt.online/static/img/paycrypt_logo.png",
+    "description": "Professional crypto payment gateway and DeFi tools platform for businesses and traders worldwide",
+    "foundingDate": "2024",
+    "serviceType": ["Cryptocurrency Payment Gateway", "DeFi Analysis Tools", "Trading Bots", "Blockchain Payment Solutions"],
+    "areaServed": "Worldwide",
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "telephone": "+1-555-PAYCRYPT",
+        "contactType": "customer service",
+        "email": "support@paycrypt.online",
+        "availableLanguage": "English"
+      }
+    ],
+    "sameAs": [
+      "https://t.me/paycryptonline",
+      "https://twitter.com/paycryptonline"
+    ],
+    "offers": [
+      {
+        "@type": "Service",
+        "name": "Crypto Payment Gateway",
+        "description": "Accept 100+ cryptocurrencies with instant settlements",
+        "provider": {
+          "@type": "Organization",
+          "name": "PayCrypt"
+        }
+      },
+      {
+        "@type": "Service", 
+        "name": "Free DeFi Analysis Tools",
+        "description": "14 professional DeFi tools including token analyzer, gas tracker, honeypot detector",
+        "provider": {
+          "@type": "Organization",
+          "name": "PayCrypt"
+        }
+      }
+    ]
+  }
+  </script>
+  
+  <!-- Additional SEO Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "PayCrypt",
+    "url": "https://paycrypt.online/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://paycrypt.online/tools/{search_term}",
+      "query-input": "required name=search_term"
+    }
+  }
+  </script>
+  
+  <!-- External Resources -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary-color: #0ea5e9;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --dark-bg: #0f172a;
+      --card-bg: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --border-color: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Header Styles */
+    .navbar {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 0;
+    }
+
+    .navbar-brand img {
+      height: 40px;
+      width: auto;
+    }
+
+    .navbar-nav .nav-link {
+      color: var(--text-secondary);
+      margin: 0 1rem;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: var(--primary-color);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      padding: 180px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%236366f1" stop-opacity="0.1"/><stop offset="100%" stop-color="%236366f1" stop-opacity="0"/></radialGradient></defs><circle cx="500" cy="500" r="500" fill="url(%23a)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+
+    .btn-primary-custom {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      border: none;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: white;
+    }
+
+    .btn-primary-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+      color: white;
+    }
+
+    .btn-outline-custom {
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      padding: 10px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      background: transparent;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-outline-custom:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Stats Section */
+    .stats-section {
+      padding: 60px 0;
+      background: var(--card-bg);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    /* Services Section */
+    .services-section {
+      padding: 100px 0;
+      background: var(--dark-bg);
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      margin-bottom: 4rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 15px;
+      padding: 2.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: var(--primary-color);
+    }
+
+    .service-icon {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .service-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .service-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .service-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .service-link:hover {
+      color: var(--secondary-color);
+    }
+
+    /* Tools Section */
+    .tools-section {
+      padding: 100px 0;
+      background: linear-gradient(135deg, var(--card-bg) 0%, var(--dark-bg) 100%);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary-color);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+    }
+
+    .tool-icon {
+      font-size: 2rem;
+      color: var(--success-color);
+      margin-bottom: 1rem;
+    }
+
+    .tool-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .tool-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 100px 0;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      text-align: center;
+    }
+
+    .cta-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .cta-description {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--card-bg);
+      padding: 60px 0 30px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-brand {
+      margin-bottom: 2rem;
+    }
+
+    .footer-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 2rem;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stat-item {
+        padding: 1rem;
+      }
+      
+      .service-card {
+        padding: 2rem;
+      }
+    }
+
+    /* Animation Classes */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+      }
+    }
+  </style>
+</head>
+  <body style="padding-top: 80px;">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+  <a class="navbar-brand" href="{% url 'homepage' %}">
+        <img src="{% static 'img/paycrypt_logo_d.png' %}" alt="PayCrypt - Crypto Payment Gateway">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#services">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/tools">Tools</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section py-5">
+    <div class="container text-center">
+      <h1 class="hero-title fade-in">Launch Private Crypto Bots & Gateway in 48 Hours</h1>
+      <p class="hero-subtitle fade-in fs-4">
+        Accept Bitcoin, USDT, and 100+ coins with your own branded payment system.<br>
+        Deploy private Telegram bots: snipers, wallet alerts, DEX tools—built for founders and devs.<br>
+        <span class="text-success fw-bold">Secure. Fast. No middlemen.</span>
+      </p>
+      <div class="hero-cta-buttons mt-4">
+        <a href="https://t.me/paycryptonline" target="_blank" class="btn btn-success btn-lg me-3">
+          <i class="fab fa-telegram me-2"></i>Order via Telegram
+        </a>
+        <a href="/tools" class="btn btn-outline-success btn-lg">
+          <i class="fas fa-toolbox me-2"></i>Try Free Tools
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="services-section">
+    <div class="container py-5">
+      <h2 class="section-title text-center fade-in">Custom Crypto Solutions for Builders</h2>
+      <p class="section-subtitle text-center fade-in">
+        Production-ready crypto tools: dashboards, Telegram bots, smart contract monitors. <br>
+        <span class="text-success">Private. Branded. Delivered in 48h.</span>
+      </p>
+      <div class="row">
+        <!-- Gateway -->
+        <div class="col-md-4 mb-4">
+          <div class="service-card fade-in border border-success">
+            <div class="service-icon"><i class="fab fa-bitcoin"></i></div>
+            <h3 class="service-title">Crypto Payment Gateway</h3>
+            <ul class="list-unstyled">
+              <li><i class="fas fa-check text-success"></i> 100+ coins accepted</li>
+              <li><i class="fas fa-check text-success"></i> Branded dashboard</li>
+              <li><i class="fas fa-check text-success"></i> API keys module</li>
+              <li><i class="fas fa-check text-success"></i> Flat or commission plans</li>
+            </ul>
+            <a href="https://t.me/paycryptonline" class="btn btn-success btn-sm">Request Setup</a>
+          </div>
+        </div>
+        <!-- Telegram Bots -->
+        <div class="col-md-4 mb-4">
+          <div class="service-card fade-in border border-warning">
+            <div class="service-icon"><i class="fas fa-robot"></i></div>
+            <h3 class="service-title">Telegram Trading Bots</h3>
+            <ul class="list-unstyled">
+              <li><i class="fas fa-check text-warning"></i> Snipers, alerts, wallet trackers</li>
+              <li><i class="fas fa-check text-warning"></i> Custom branded</li>
+              <li><i class="fas fa-check text-warning"></i> Easy Telegram setup</li>
+            </ul>
+            <a href="https://t.me/paycryptonline" class="btn btn-warning btn-sm">Order Bot</a>
+          </div>
+        </div>
+        <!-- Custom Automation -->
+        <div class="col-md-4 mb-4">
+          <div class="service-card fade-in border border-primary">
+            <div class="service-icon"><i class="fas fa-cogs"></i></div>
+            <h3 class="service-title">Custom Automation</h3>
+            <ul class="list-unstyled">
+              <li><i class="fas fa-check text-primary"></i> Contract scanners</li>
+              <li><i class="fas fa-check text-primary"></i> Rug monitors</li>
+              <li><i class="fas fa-check text-primary"></i> Webhook alerts</li>
+            </ul>
+            <a href="https://t.me/paycryptonline" class="btn btn-primary btn-sm">Get a Quote</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools Section -->
+  <section id="tools" class="tools-section">
+    <div class="container py-5">
+      <h2 class="section-title fade-in">Free DeFi Analysis Tools</h2>
+      <p class="section-subtitle fade-in">
+        🔥 16 powerful professional tools to analyze tokens, track gas prices, detect honeypots, audit contracts, and discover DeFi opportunities
+      </p>
+      <div class="tools-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <!-- Example Tool Card 1 -->
+  <div class="tool-card fade-in" onclick="window.open('/tools/rugcheck', '_blank')" title="Analyze Token Security - Free Tool">
+          <div class="tool-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="tool-title">Token Security Analyzer</div>
+          <div class="tool-description">🛡️ Comprehensive security analysis powered by GoPlus API - detect honeypots and scams</div>
+        </div>
+        <!-- Example Tool Card 2 -->
+  <div class="tool-card fade-in" onclick="window.open('/tools/gas_tracker', '_blank')" title="Track Gas Prices - Free Tool">
+          <div class="tool-icon">
+            <i class="fas fa-burn"></i>
+          </div>
+          <div class="tool-title">Gas Price Tracker</div>
+          <div class="tool-description">⛽ Real-time gas price monitoring for Ethereum, BSC, and more</div>
+        </div>
+        <!-- Example Tool Card 3 -->
+  <div class="tool-card fade-in" onclick="window.open('/tools/honeypot_check', '_blank')" title="Detect Honeypots - Free Tool">
+          <div class="tool-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="tool-title">Honeypot Detector</div>
+          <div class="tool-description">🚨 Instantly check if a token is a honeypot or scam</div>
+        </div>
+        <!-- Example Tool Card 4 -->
+  <div class="tool-card fade-in" onclick="window.open('/tools', '_blank')" title="MEV Protection - Free Tool">
+          <div class="tool-icon">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <div class="tool-title">MEV Protection</div>
+          <div class="tool-description">🛡️ Protect trades from MEV bots and sandwich attacks</div>
+        </div>
+        <!-- Example Tool Card 5 -->
+  <div class="tool-card fade-in" onclick="window.open('/tools/rug_alert', '_blank')" title="Rug Pull Alerts - Free Tool">
+          <div class="tool-icon">
+            <i class="fas fa-skull-crossbones"></i>
+          </div>
+          <div class="tool-title">Rug Pull Alerts</div>
+          <div class="tool-description">💀 Get instant alerts for suspicious token activity</div>
+        </div>
+        <!-- Example Tool Card 6 -->
+  <div class="tool-card fade-in" onclick="window.open('/tools/whale_tracker', '_blank')" title="Whale Tracker - Free Tool">
+          <div class="tool-icon">
+            <i class="fas fa-fish"></i>
+          </div>
+          <div class="tool-title">Whale Tracker</div>
+          <div class="tool-description">🐋 Track large wallet movements and whale trades</div>
+        </div>
+        <!-- Example Tool Card 7 -->
+  <div class="tool-card fade-in" onclick="window.open('/tools/airdrop_hunter', '_blank')" title="Airdrop Hunter - Free Tool">
+          <div class="tool-icon">
+            <i class="fas fa-gift"></i>
+          </div>
+          <div class="tool-title">Airdrop Hunter</div>
+          <div class="tool-description">🎁 Discover and track new airdrop opportunities</div>
+        </div>
+        <!-- Example Tool Card 8 -->
+  <div class="tool-card fade-in" onclick="window.open('/tools/audit_check', '_blank')" title="Contract Audit Checker - Free Tool">
+          <div class="tool-icon">
+            <i class="fas fa-file-contract"></i>
+          </div>
+          <div class="tool-title">Contract Audit Checker</div>
+          <div class="tool-description">🔍 Instantly audit smart contracts for vulnerabilities and risks</div>
+        </div>
+        <!-- Add more tool cards as needed to fill 4x4 grid -->
+      </div>
+      <div class="text-center mt-5">
+        <p class="text-muted">+ 8 more professional analysis tools available | All tools are 100% free to use</p>
+        <div class="mt-3">
+          <span class="badge bg-primary me-2">Token Analyzer</span>
+          <span class="badge bg-success me-2">Gas Tracker</span>
+          <span class="badge bg-warning me-2">Honeypot Detector</span>
+          <span class="badge bg-info me-2">MEV Protection</span>
+          <span class="badge bg-danger me-2">Rug Pull Alerts</span>
+          <span class="badge bg-secondary me-2">Whale Tracker</span>
+          <span class="badge bg-light text-dark">Airdrop Hunter</span>
+          <span class="badge bg-dark">Contract Audit</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ SECTION -->
+<section id="faq" class="faq-section py-5" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #f8fafc;">
+  <div class="container">
+    <h2 class="section-title text-center fade-in" style="color: #10b981;">Frequently Asked Questions</h2>
+    <div class="accordion" id="faqAccordion" style="background: var(--card-bg); border-radius: 12px;">
+      <div class="accordion-item" style="background: var(--card-bg); border: 1px solid var(--primary-color); border-radius: 8px; margin-bottom: 1rem;">
+        <h2 class="accordion-header" id="faq1">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" style="background: var(--primary-color); color: #fff; font-weight: 600;">
+            How fast is setup and delivery?
+          </button>
+        </h2>
+        <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background: var(--card-bg); color: #cbd5e1;">
+            Most products are delivered within 48 hours. Custom requests may take longer depending on complexity.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item" style="background: var(--card-bg); border: 1px solid var(--success-color); border-radius: 8px; margin-bottom: 1rem;">
+        <h2 class="accordion-header" id="faq2">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2" style="background: var(--success-color); color: #fff; font-weight: 600;">
+            What fees do you charge?
+          </button>
+        </h2>
+        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background: var(--card-bg); color: #cbd5e1;">
+            We offer flat and commission-based plans. Contact us for a custom quote based on your needs.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item" style="background: var(--card-bg); border: 1px solid var(--warning-color); border-radius: 8px; margin-bottom: 1rem;">
+        <h2 class="accordion-header" id="faq3">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3" style="background: var(--warning-color); color: #fff; font-weight: 600;">
+            Is my data and code private?
+          </button>
+        </h2>
+        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background: var(--card-bg); color: #cbd5e1;">
+            Yes. All solutions are delivered privately and securely. No code reuse, no leaks.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item" style="background: var(--card-bg); border: 1px solid var(--info-color, #0ea5e9); border-radius: 8px; margin-bottom: 1rem;">
+        <h2 class="accordion-header" id="faq4">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4" style="background: var(--info-color, #0ea5e9); color: #fff; font-weight: 600;">
+            Can I request custom features?
+          </button>
+        </h2>
+        <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background: var(--card-bg); color: #cbd5e1;">
+            Absolutely! We build custom bots, dashboards, and automations for any crypto use case.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- FOOTER SECTION -->
+  <footer class="footer mt-5">
+    <div class="container">
+      <div class="footer-brand mb-3">
+  <img src="{% static 'img/paycrypt_logo.png' %}" alt="PayCrypt Logo" height="40">
+      </div>
+      <div class="footer-description mb-3">
+        PayCrypt &mdash; Professional Crypto Payment Gateway & DeFi Tools for businesses, traders, and developers. Secure, fast, and private solutions delivered worldwide.
+      </div>
+      <div class="footer-links mb-3">
+        <a href="https://t.me/paycryptonline" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+        <a href="mailto:support@paycrypt.online"><i class="fas fa-envelope"></i> Email</a>
+        <a href="/tools"><i class="fas fa-toolbox"></i> Free Tools</a>
+      </div>
+      <div class="footer-bottom">
+        <p class="text-light mb-0">&copy; 2024 PayCrypt - Professional Crypto Payment Gateway & DeFi Tools. All rights reserved.</p>
+        <small class="text-light">Keywords: crypto payment gateway, DeFi tools, token analyzer, gas tracker, honeypot detector, MEV protection, trading bots</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Fade in animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Navbar background on scroll
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+      } else {
+        navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+      }
+    });
+
+    // Counter animation
+    function animateCounters() {
+      const counters = document.querySelectorAll('.stat-number');
+      counters.forEach(counter => {
+        const target = parseInt(counter.textContent);
+        const increment = target / 100;
+        let current = 0;
+        
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            counter.textContent = target + (counter.textContent.includes('%') ? '%' : '');
+            clearInterval(timer);
+          } else {
+            counter.textContent = Math.floor(current) + (counter.textContent.includes('%') ? '%' : '');
+          }
+        }, 20);
+      });
+    }
+
+    // Trigger counter animation when stats section is visible
+    const statsSection = document.querySelector('.stats-section');
+    const statsObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounters();
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    if (statsSection) {
+      statsObserver.observe(statsSection);
+    }
+
+    // Tool card click effects
+    document.querySelectorAll('.tool-card').forEach(card => {
+      card.addEventListener('click', function() {
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 150);
+      });
+    });
+  </script>
+</body>
+</html>

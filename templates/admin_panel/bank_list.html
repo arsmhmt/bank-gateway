@@ -1,0 +1,31 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Banka Hesapları</h2>
+<a href="{% url 'bank_create' %}">Yeni Hesap Ekle</a>
+<table border="1">
+  <tr>
+    <th>Teminci</th>
+    <th>Banka</th>
+    <th>Hesap Sahibi</th>
+    <th>IBAN</th>
+    <th>Limitor</th>
+    <th>Durum</th>
+    <th>İşlemler</th>
+  </tr>
+  {% for b in accounts %}
+  <tr>
+    <td>{{ b.provider.first_name }} {{ b.provider.last_name }}</td>
+    <td>{{ b.bank_name }}</td>
+    <td>{{ b.account_owner }}</td>
+    <td>{{ b.iban }}</td>
+    <td>{{ b.limitor }}</td>
+    <td>{% if b.is_active %}Aktif{% else %}Pasif{% endif %}</td>
+    <td>
+      <a href="{% url 'bank_edit' b.pk %}">Düzenle</a> |
+      <a href="{% url 'bank_delete' b.pk %}">Sil</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

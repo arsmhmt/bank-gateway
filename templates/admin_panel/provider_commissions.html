@@ -1,0 +1,45 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<h4 class="mb-4">Teminci Komisyonları</h4>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Teminci</th>
+            <th>Tür</th>
+            <th>İşlem ID</th>
+            <th>Tutar</th>
+            <th>Durum</th>
+            <th>Tarih</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in commissions %}
+        <tr>
+            <td>{{ c.provider.name }}</td>
+            <td>{{ c.transaction_type|title }}</td>
+            <td>{{ c.transaction_id }}</td>
+            <td>{{ c.amount }} ₺</td>
+            <td>
+                {% if c.is_paid %}
+                    <span class="badge bg-success">Ödendi</span>
+                {% else %}
+                    <span class="badge bg-warning">Bekliyor</span>
+                {% endif %}
+            </td>
+            <td>{{ c.created_at|date:"d.m.Y H:i" }}</td>
+            <td>
+                {% if not c.is_paid %}
+                <a href="{% url 'admin_panel:mark_commission_paid' c.id %}" class="btn btn-sm btn-primary">Öde</a>
+                {% else %}
+                <i class="text-muted">-</i>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">Kayıt yok.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

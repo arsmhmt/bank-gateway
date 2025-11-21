@@ -1,0 +1,15 @@
+
+{% block content %}
+<h2>Admin Listesi</h2>
+<table>
+<tr><th>Ad</th><th>Email</th><th>İşlem</th></tr>
+{% for admin in admins %}
+<tr>
+<td>{{ admin.first_name }} {{ admin.last_name }}</td>
+<td>{{ admin.email }}</td>
+<td><a href="{% url 'admin_panel:edit_admin' admin.id %}">Düzenle</a></td>
+</tr>
+{% endfor %}
+</table>
+<a href="{% url 'admin_panel:add_admin' %}">Yeni Admin Ekle</a>
+{% endblock %}

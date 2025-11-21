@@ -1,0 +1,44 @@
+{% extends "provider_panel/base.html" %}
+{% block title %}Aktif Banka Hesapları{% endblock %}
+{% block content %}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        Aktif Banka Hesapları
+    </div>
+    <div class="card-body table-responsive">
+        {% if accounts %}
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Banka</th>
+                    <th>Hesap Sahibi</th>
+                    <th>IBAN</th>
+                    <th>Limit</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for acc in accounts %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ acc.bank_name }}</td>
+                    <td>{{ acc.account_holder }}</td>
+                    <td>{{ acc.iban }}</td>
+                    <td>{{ acc.limit }}</td>
+                    <td>
+                        <a href="{% url 'provider_panel:edit_bank_account' pk=acc.id %}" class="btn btn-sm btn-warning">Düzenle</a>
+                        <a href="{% url 'provider_panel:bank_delete_confirm' pk=acc.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Silmek istediğinize emin misiniz?')">Sil</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Henüz banka hesabı eklenmemiş.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

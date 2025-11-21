@@ -1,0 +1,33 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Teminci Komisyon Raporu</h2>
+<table border="1">
+  <tr>
+    <th>Ad Soyad</th>
+    <th>Toplam Yatırım</th>
+    <th>Toplam Çekim</th>
+    <th>Toplam Komisyon</th>
+    <th>Ödenen</th>
+    <th>Bekleyen</th>
+    <th>Öde</th>
+  </tr>
+  {% for row in report %}
+  <tr>
+    <td>{{ row.teminci.first_name }} {{ row.teminci.last_name }}</td>
+    <td>{{ row.deposit_total }} TL</td>
+    <td>{{ row.withdraw_total }} TL</td>
+    <td>{{ row.total_commission }} TL</td>
+    <td>{{ row.paid_commission }} TL</td>
+    <td>{{ row.pending_commission }} TL</td>
+    <td>
+      <form method="post" action="{% url 'pay_commission' row.teminci.id %}">
+        {% csrf_token %}
+        <input type="number" name="amount" step="0.01" placeholder="Tutar" required>
+        <button type="submit">Öde</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

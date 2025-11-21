@@ -1,0 +1,40 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<h2>Bekleyen Çekimler</h2>
+
+<form method="get" class="mb-4">
+    <input type="text" name="payment_id" placeholder="Payment ID" value="{{ request.GET.payment_id }}">
+    <input type="text" name="name" placeholder="Ad Soyad" value="{{ request.GET.name }}">
+    <input type="text" name="site" placeholder="Site Adı" value="{{ request.GET.site }}">
+    <button type="submit">Filtrele</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tarih</th>
+            <th>Payment ID</th>
+            <th>Ad Soyad</th>
+            <th>Miktar</th>
+            <th>IBAN</th>
+            <th>Site</th>
+            <th>Durum</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for withdrawal in withdrawals %}
+        <tr>
+            <td>{{ withdrawal.created_at }}</td>
+            <td>{{ withdrawal.payment_id }}</td>
+            <td>{{ withdrawal.name }} {{ withdrawal.surname }}</td>
+            <td>{{ withdrawal.amount }} ₺</td>
+            <td>{{ withdrawal.iban }}</td>
+            <td>{{ withdrawal.client_site.name }}</td>
+            <td>{{ withdrawal.get_status_display }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">Bekleyen çekim bulunamadı.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

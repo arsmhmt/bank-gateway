@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head><meta charset="UTF-8"><title>Yatırım Formu</title></head>
+<body>
+  <h2>Yatırım Formu</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label>Ad Soyad:</label><br>
+    <input type="text" name="user_fullname" required><br><br>
+
+    <label>Yatırım Tutarı:</label><br>
+    <input type="number" name="amount" required><br><br>
+
+    <label>Banka Seç:</label><br>
+    <select name="bank_id">
+      {% for bank in banks %}
+        <option value="{{ bank.id }}">{{ bank.bank_name }} - {{ bank.iban }}</option>
+      {% endfor %}
+    </select><br><br>
+
+    <button type="submit">Yatırımı Başlat</button>
+  </form>
+</body>
+</html>

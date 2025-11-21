@@ -1,0 +1,13 @@
+
+{% block content %}
+<h2>Site Listesi</h2>
+<table><tr><th>ID</th><th>Adı</th><th>İletişim</th><th>Yatırım Kom.</th><th>Çekim Kom.</th><th></th></tr>
+{% for site in sites %}
+<tr>
+    <td>{{ site.id }}</td><td>{{ site.name }}</td><td>{{ site.contact }}</td>
+    <td>{{ site.deposit_commission }}%</td><td>{{ site.withdraw_commission }}%</td>
+    <td><a href="{% url 'admin_panel:edit_client_site' site.id %}">Düzenle</a></td>
+</tr>
+{% empty %}<tr><td colspan="6">Kayıtlı site yok.</td></tr>{% endfor %}
+</table>
+{% endblock %}

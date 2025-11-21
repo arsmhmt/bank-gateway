@@ -1,0 +1,20 @@
+
+{% block content %}
+<h2>Site API Anahtarları</h2>
+<table>
+<tr><th>Site Adı</th><th>Aktif API Key</th><th>İşlem</th></tr>
+{% for site in clients %}
+<tr>
+<td>{{ site.name }}</td>
+<td>
+  {% if site.apikey.key %}
+    {{ site.apikey.key }}
+  {% else %}
+    -
+  {% endif %}
+</td>
+<td><a href="{% url 'admin_panel:generate_api_key' site.id %}">Yenile / Oluştur</a></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

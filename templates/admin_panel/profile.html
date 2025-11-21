@@ -1,0 +1,14 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <h3 class="mb-4">Profil Bilgileriniz</h3>
+    <ul class="list-group mb-4">
+        <li class="list-group-item"><strong>Ad Soyad:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</li>
+        <li class="list-group-item"><strong>Email:</strong> {{ request.user.email }}</li>
+        <li class="list-group-item"><strong>Telefon:</strong> {{ request.user.phone }}</li>
+        <li class="list-group-item"><strong>Rol:</strong> {{ request.user.get_role_display }}</li>
+    </ul>
+    <a href="{% url 'admin_change_password' %}" class="btn btn-warning">Şifreyi Değiştir</a>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Teminciler</h2>
+<a href="{% url 'teminci_create' %}">Yeni Teminci Ekle</a>
+<table border="1">
+  <tr>
+    <th>Adı Soyadı</th>
+    <th>Email</th>
+    <th>Telefon</th>
+    <th>Yatırım Kom.</th>
+    <th>Çekim Kom.</th>
+    <th>Limitor</th>
+    <th>İşlemler</th>
+  </tr>
+  {% for t in teminciler %}
+  <tr>
+    <td>{{ t.first_name }} {{ t.last_name }}</td>
+    <td>{{ t.email }}</td>
+    <td>{{ t.phone }}</td>
+    <td>{{ t.deposit_commission }}%</td>
+    <td>{{ t.withdraw_commission }}%</td>
+    <td>{{ t.limitor }}</td>
+    <td>
+      <a href="{% url 'teminci_edit' t.pk %}">Düzenle</a> |
+      <a href="{% url 'teminci_delete' t.pk %}">Sil</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

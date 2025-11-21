@@ -1,0 +1,20 @@
+
+{% block content %}
+<h2>Teminci Listesi</h2>
+<table><tr>
+<th>ID</th><th>Ad Soyad</th><th>İletişim</th><th>Yat. Kom.</th><th>Çek. Kom.</th><th>Limitor</th><th>Bloklu mu?</th><th></th>
+</tr>
+{% for provider in providers %}
+<tr>
+<td>{{ provider.id }}</td>
+<td>{{ provider.first_name }} {{ provider.last_name }}</td>
+<td>{{ provider.contact }}</td>
+<td>{{ provider.deposit_commission }}%</td>
+<td>{{ provider.withdraw_commission }}%</td>
+<td>{{ provider.limitor }}</td>
+<td>{% if provider.is_blocked %}Evet{% else %}Hayır{% endif %}</td>
+<td><a href="{% url 'admin_panel:edit_provider' provider.id %}">Düzenle</a></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

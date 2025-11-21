@@ -1,0 +1,11 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Admin Sil</h2>
+<p>{{ admin.first_name }} {{ admin.last_name }} adlı admini silmek istiyor musunuz?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Evet, Sil</button>
+  <a href="{% url 'admin_list' %}">Vazgeç</a>
+</form>
+{% endblock %}

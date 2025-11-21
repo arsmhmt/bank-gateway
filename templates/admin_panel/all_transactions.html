@@ -1,0 +1,64 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Tüm İşlemler</h2>
+
+<form method="get" class="filters">
+  <label>Tarih Başlangıç: <input type="date" name="date_from" value="{{ filters.date_from }}"></label>
+  <label>Bitiş: <input type="date" name="date_to" value="{{ filters.date_to }}"></label>
+  <label>Tür:
+    <select name="tx_type">
+      <option value="">Tümü</option>
+      <option value="deposit" {% if filters.tx_type == 'deposit' %}selected{% endif %}>Yatırım</option>
+      <option value="withdraw" {% if filters.tx_type == 'withdraw' %}selected{% endif %}>Çekim</option>
+    </select>
+  </label>
+  <label>Durum:
+    <select name="status">
+      <option value="">Tümü</option>
+      <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>Bekliyor</option>
+      <option value="approved" {% if filters.status == 'approved' %}selected{% endif %}>Onaylandı</option>
+      <option value="rejected" {% if filters.status == 'rejected' %}selected{% endif %}>Reddedildi</option>
+    </select>
+  </label>
+  <label>Banka: <input type="text" name="bank" value="{{ filters.bank }}"></label>
+  <label>Site:
+    <select name="site">
+      <option value="">Tümü</option>
+      {% for s in sites %}
+      <option value="{{ s.id }}" {% if filters.site == s.id|stringformat:'s' %}selected{% endif %}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Teminci:
+    <select name="provider">
+      <option value="">Tümü</option>
+      {% for p in providers %}
+      <option value="{{ p.id }}" {% if filters.provider == p.id|stringformat:'s' %}selected{% endif %}>
+        {{ p.first_name }} {{ p.last_name }}
+      </option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit">Filtrele</button>
+</form>
+
+<table border="1">
+<tr>
+  <th>ID</th><th>Tür</th><th>Kullanıcı</th><th>Tutar</th><th>Banka</th><th>Site</th><th>Teminci</th><th>Durum</th><th>Tarih</th>
+</tr>
+{% for t in txs %}
+<tr>
+  <td>{{ t.id }}</td>
+  <td>{% if t.iban %}Çekim{% else %}Yatırım{% endif %}</td>
+  <td>{{ t.user_name }}</td>
+  <td>{{ t.amount }} TL</td>
+  <td>{{ t.bank_name }}</td>
+  <td>{{ t.site.name }}</td>
+  <td>{{ t.provider.first_name }} {{ t.provider.last_name }}</td>
+  <td>{{ t.status }}</td>
+  <td>{{ t.created_at|date:"d.m.Y H:i" }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

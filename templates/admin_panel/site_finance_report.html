@@ -1,0 +1,13 @@
+
+{% block content %}
+<h2>Site Finans Raporu</h2>
+<table>
+<tr><th>Site Adı</th><th>Detaylar</th></tr>
+{% for site in sites %}
+<tr>
+  <td>{{ site.name }}</td>
+  <td><a href="#">Detay</a></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

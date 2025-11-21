@@ -1,0 +1,23 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h4>Banka Hesabı Sil</h4>
+        </div>
+        <div class="card-body">
+            <p>Bu banka hesabını silmek istediğinizden emin misiniz?</p>
+            <ul>
+                <li><strong>Banka:</strong> {{ account.bank_name }}</li>
+                <li><strong>IBAN:</strong> {{ account.iban }}</li>
+                <li><strong>Hesap Sahibi:</strong> {{ account.account_holder }}</li>
+            </ul>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Evet, Sil</button>
+                <a href="{% url 'admin_panel:list_bank_accounts' %}" class="btn btn-secondary">Vazgeç</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

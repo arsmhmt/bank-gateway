@@ -1,0 +1,23 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<h2>Yeni Teminci Ekle</h2>
+<form method="post">
+  {% csrf_token %}
+  <label>Adı</label>
+  <input type="text" name="name" required>
+
+  <label>Email</label>
+  <input type="email" name="email" required>
+
+  <label>Telefon</label>
+  <input type="text" name="phone">
+
+  <label>Yatırım Komisyon (%)</label>
+  <input type="number" step="0.1" name="deposit_commission">
+
+  <label>Çekim Komisyon (%)</label>
+  <input type="number" step="0.1" name="withdraw_commission">
+
+  <button type="submit">Kaydet</button>
+</form>
+{% endblock %}

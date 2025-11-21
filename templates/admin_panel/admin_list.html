@@ -1,0 +1,20 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Admin Listesi</h2>
+<a href="{% url 'admin_add' %}">+ Yeni Admin</a>
+<table border="1">
+<tr><th>Ad Soyad</th><th>Email</th><th>Rol</th><th>İşlem</th></tr>
+{% for a in admins %}
+<tr>
+  <td>{{ a.first_name }} {{ a.last_name }}</td>
+  <td>{{ a.email }}</td>
+  <td>{{ a.role }}</td>
+  <td>
+    <a href="{% url 'admin_edit' a.pk %}">Düzenle</a> |
+    <a href="{% url 'admin_delete' a.pk %}">Sil</a>
+  </td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

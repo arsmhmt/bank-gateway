@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Paycrypt Giriş</title>
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin-style.css' %}">
+</head>
+<body>
+  <div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);">
+    <div class="login-container shadow-lg p-5 rounded bg-white" style="width: 100%; max-width: 400px;">
+      <div class="text-center mb-4">
+        <img src="{% static 'img/paycrypt_logo_d.png' %}" alt="Paycrypt Logo" style="height: 60px;">
+      </div>
+      <h2 class="text-center mb-3" style="font-weight: 700; color: #2c3e50;">Yönetim Paneli Girişi</h2>
+      {% if messages %}
+        <ul class="messages list-unstyled">
+          {% for message in messages %}
+            <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <input type="text" name="username" class="form-control form-control-lg" placeholder="Kullanıcı Adı" required style="border-radius: 10px;">
+        </div>
+        <div class="mb-3">
+          <input type="password" name="password" class="form-control form-control-lg" placeholder="Şifre" required style="border-radius: 10px;">
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2" style="border-radius: 10px; font-weight: 600;">Giriş Yap</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

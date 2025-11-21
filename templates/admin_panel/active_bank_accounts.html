@@ -1,0 +1,18 @@
+
+{% block content %}
+<h2>Aktif Banka Hesapları</h2>
+<table>
+<tr><th>Banka</th><th>Hesap Sahibi</th><th>IBAN</th><th>Limitör</th><th>Durum</th><th>İşlem</th></tr>
+{% for account in accounts %}
+<tr>
+<td>{{ account.bank_name }}</td>
+<td>{{ account.account_owner }}</td>
+<td>{{ account.iban }}</td>
+<td>{{ account.limitor }}</td>
+<td>{% if account.is_active %}Aktif{% else %}Pasif{% endif %}</td>
+<td><a href="{% url 'admin_panel:edit_bank_account' account.id %}">Düzenle</a></td>
+</tr>
+{% endfor %}
+</table>
+<a href="{% url 'admin_panel:add_bank_account' %}">Yeni Hesap Ekle</a>
+{% endblock %}

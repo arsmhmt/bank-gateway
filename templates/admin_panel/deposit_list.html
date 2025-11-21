@@ -1,0 +1,32 @@
+
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Yatırım Talepleri</h2>
+<table border="1">
+  <tr>
+    <th>Teminci</th>
+    <th>Banka</th>
+    <th>Tutar</th>
+    <th>Durum</th>
+    <th>Tarih</th>
+    <th>İşlem</th>
+  </tr>
+  {% for d in deposits %}
+  <tr>
+    <td>{{ d.provider }}</td>
+    <td>{{ d.bank_account.bank_name }}</td>
+    <td>{{ d.amount }} TL</td>
+    <td>{{ d.status }}</td>
+    <td>{{ d.created_at }}</td>
+    <td>
+      {% if d.status == "Beklemede" %}
+      <a href="{% url 'approve_deposit' d.pk %}">Onayla</a> |
+      <a href="{% url 'reject_deposit' d.pk %}">Reddet</a>
+      {% else %}
+      İşlem Tamamlandı
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

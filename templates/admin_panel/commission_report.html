@@ -1,0 +1,20 @@
+
+{% block content %}
+<h2>Komisyon Raporları</h2>
+
+<h3>Site Komisyonları</h3>
+<table>
+<tr><th>Site</th><th>Toplam Komisyon</th></tr>
+{% for s in site_commission %}
+<tr><td>{{ s.client_site__name }}</td><td>{{ s.total_site_commission }}</td></tr>
+{% endfor %}
+</table>
+
+<h3>Teminci Komisyonları</h3>
+<table>
+<tr><th>Teminci</th><th>Toplam Komisyon</th></tr>
+{% for p in provider_commission %}
+<tr><td>{{ p.bank_account__provider__name }}</td><td>{{ p.total_provider_commission }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'admin_panel/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h3>Bekleyen Yatırımlar</h3>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Kullanıcı</th>
+        <th>Banka</th>
+        <th>Tutar</th>
+        <th>Tarih</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for deposit in deposits %}
+      <tr>
+        <td>{{ deposit.id }}</td>
+        <td>{{ deposit.user.email }}</td>
+        <td>{{ deposit.bank_name }}</td>
+        <td>{{ deposit.amount }} ₺</td>
+        <td>{{ deposit.created_at|date:"Y-m-d H:i" }}</td>
+        <td>
+          <a href="{% url 'approve_deposit' deposit.id %}" class="btn btn-success btn-sm">Onayla</a>
+          <a href="{% url 'reject_deposit' deposit.id %}" class="btn btn-danger btn-sm">Reddet</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6">Bekleyen yatırım bulunmamaktadır.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

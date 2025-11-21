@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Paycrypt Giriş</title>
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/provider-style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(120deg, #e0e7ef 0%, #f8fafc 100%);
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .login-container {
+      box-shadow: 0 8px 32px 0 rgba(44,62,80,0.14);
+      border-radius: 22px;
+      background: #fff;
+      padding: 3rem 2.2rem 2.2rem 2.2rem;
+      transition: box-shadow 0.2s;
+      position: relative;
+    }
+    .login-container:before {
+      content: "";
+      position: absolute;
+      top: -32px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 80px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 4px 24px 0 rgba(44,62,80,0.10);
+      z-index: 0;
+    }
+    .login-logo {
+      height: 64px;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .login-title {
+      font-weight: 800;
+      color: #1a2533;
+      margin-bottom: 2rem;
+      letter-spacing: 1px;
+      font-size: 2rem;
+    }
+    .form-control-lg {
+      border-radius: 14px;
+      font-size: 1.12rem;
+      padding: 0.85rem 1.1rem;
+      border: 1px solid #e0e7ef;
+      box-shadow: none;
+      transition: border-color 0.2s;
+      background: #f8fafc;
+    }
+    .form-control-lg:focus {
+      border-color: #2980b9;
+      outline: none;
+      box-shadow: 0 0 0 2px #e0e7ef;
+      background: #fff;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #2c3e50 0%, #2980b9 100%);
+      border: none;
+      font-weight: 700;
+      font-size: 1.18rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px 0 rgba(44,62,80,0.10);
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      padding: 0.95em 0;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #2980b9 0%, #2c3e50 100%);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 24px 0 rgba(44,62,80,0.14);
+    }
+    .material-icons {
+      font-size: 1.5em;
+      vertical-align: middle;
+    }
+    .messages .alert {
+      font-size: 1.05rem;
+      border-radius: 10px;
+      margin-bottom: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .mb-3 {
+      margin-bottom: 1.3rem !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center" style="background: linear-gradient(120deg, #e0e7ef 0%, #f8fafc 100%);">
+    <div class="login-container w-100" style="max-width: 430px;">
+      <div class="text-center">
+        <img src="{% static 'img/paycrypt_logo_d.png' %}" alt="Paycrypt Logo" class="login-logo">
+      </div>
+      <h2 class="login-title text-center">Teminci Paneli Girişi</h2>
+      {% if messages %}
+        <ul class="messages list-unstyled">
+          {% for message in messages %}
+            <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <input type="text" name="username" class="form-control form-control-lg" placeholder="Kullanıcı Adı" required>
+        </div>
+        <div class="mb-3">
+          <input type="password" name="password" class="form-control form-control-lg" placeholder="Şifre" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">
+          <span class="material-icons">login</span>
+          <span>Giriş Yap</span>
+        </button>
+      </form>
+    </div>
+  </div>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</body>
+</html>
