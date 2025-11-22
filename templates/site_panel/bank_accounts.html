@@ -1,0 +1,127 @@
+{% extends "site_panel/base.html" %}
+
+{% block site_content %}
+<div class="container-fluid px-0 px-md-1">
+  <div class="panel-header">
+    <h1>{{ branch.name }} - Aktif Banka Hesapları</h1>
+    <p>Bu panel üzerinden yatırım için kullanılabilir banka hesaplarını görüntüleyebilirsiniz.</p>
+  </div>
+
+  <div class="card table-card mb-3">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Banka</th>
+            <th>Hesap Sahibi</th>
+            <th>IBAN</th>
+            <th>Limit</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for acc in accounts %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ acc.bank_name }}</td>
+            <td>{{ acc.account_holder }}</td>
+            <td><code>{{ acc.iban }}</code></td>
+            <td>
+              {% if acc.account_limit %}
+                {{ acc.account_limit|floatformat:2 }} TRY
+              {% else %}
+                <span class="text-muted">Sınırsız</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="text-center">Bu site için tanımlı aktif banka hesabı bulunmamaktadır.</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="navigation-links">
+    <a href="{% url 'site_panel:dashboard' %}" class="btn btn-secondary">← Panele Dön</a>
+  </div>
+</div>
+
+<style>
+.panel-header {
+  margin-bottom: 2rem;
+}
+
+.panel-header h1 {
+  font-size: 2rem;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.panel-header p {
+  color: #666;
+}
+
+.table-card {
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.data-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.data-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: #999;
+}
+
+.navigation-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-secondary {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #6c757d;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+</style>
+{% endblock %}

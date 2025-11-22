@@ -1,0 +1,238 @@
+{% extends "site_panel/base.html" %}
+
+{% block site_content %}
+<div class="container-fluid px-0 px-md-1">
+  <div class="panel-header">
+    <h1>{{ branch.name }} - Finansal Raporlar</h1>
+    <p>Seçili tarih aralığındaki yatırım ve çekim hareketlerini ve komisyon özetini görüntüleyebilirsiniz.</p>
+  </div>
+
+  <form method="get" class="filter-bar mb-4">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-8">
+        <div class="btn-group" role="group">
+          {% for key,label in range_options %}
+          <button type="submit"
+                  name="range"
+                  value="{{ key }}"
+                  class="btn btn-sm {% if stats.range_key == key %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            {{ label }}
+          </button>
+          {% endfor %}
+        </div>
+        <div class="text-muted small mt-1">Seçili aralık: {{ stats.range_label }}</div>
+      </div>
+      <div class="col-md-4">
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label" for="start_date">Başlangıç</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ stats.filter_start }}">
+          </div>
+          <div class="col-6">
+            <label class="form-label" for="end_date">Bitiş</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ stats.filter_end }}">
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="stats-grid">
+    <div class="card stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <h3>Toplam Yatırım</h3>
+        <p class="stat-value">{{ stats.total_deposits_amount|floatformat:2 }} TRY</p>
+        <small>{{ stats.total_deposits_count }} işlem</small>
+      </div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-icon">💸</div>
+      <div class="stat-content">
+        <h3>Toplam Çekim</h3>
+        <p class="stat-value">{{ stats.total_withdrawals_amount|floatformat:2 }} TRY</p>
+        <small>{{ stats.total_withdrawals_count }} işlem</small>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📈</div>
+      <div class="stat-content">
+        <h3>Komisyon</h3>
+        <p class="stat-value">{{ stats.commission_total|floatformat:2 }} TRY</p>
+        <small>Yatırım: {{ stats.deposit_rate|floatformat:2 }}% • Çekim: {{ stats.withdraw_rate|floatformat:2 }}%</small>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📉</div>
+      <div class="stat-content">
+        <h3>Bakiye</h3>
+        <p class="stat-value">{{ stats.balance_amount|floatformat:2 }} TRY</p>
+        <small>Toplam yatırım - çekim - komisyon</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="tables-container">
+    <div class="card table-card">
+      <div class="table-header">
+        <h2>Günlük Yatırım Özeti</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>İşlem Sayısı</th>
+              <th>Toplam Tutar</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for row in deposits_by_day %}
+            <tr>
+              <td>{{ row.day|date:"d.m.Y" }}</td>
+              <td>{{ row.count }}</td>
+              <td>{{ row.total_amount|floatformat:2 }} TRY</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="3" class="text-center">Bu aralıkta yatırım işlemi yok.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card table-card">
+      <div class="table-header">
+        <h2>Günlük Çekim Özeti</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>İşlem Sayısı</th>
+              <th>Toplam Tutar</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for row in withdrawals_by_day %}
+            <tr>
+              <td>{{ row.day|date:"d.m.Y" }}</td>
+              <td>{{ row.count }}</td>
+              <td>{{ row.total_amount|floatformat:2 }} TRY</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="3" class="text-center">Bu aralıkta çekim işlemi yok.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.panel-header {
+  margin-bottom: 2rem;
+}
+
+.panel-header h1 {
+  font-size: 2rem;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.panel-header p {
+  color: #666;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+}
+
+.stat-content h3 {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.stat-content small {
+  color: #999;
+}
+
+.tables-container {
+  display: grid;
+  gap: 2rem;
+}
+
+.table-card {
+  padding: 1.5rem;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.table-header h2 {
+  font-size: 1.25rem;
+  color: #1a1a1a;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.data-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.data-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.text-center {
+  text-align: center;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "site_panel/base.html" %}
+
+{% block site_content %}
+<div class="container-fluid px-0 px-md-1">
+  <div class="panel-header">
+    <h1>{{ branch.name }} - Yatırımlar</h1>
+    <p>Tüm yatırım işlemlerinizi buradan görüntüleyebilirsiniz.</p>
+  </div>
+
+  <div class="card table-card mb-3">
+    <form method="get" class="row g-3 mb-3">
+      <div class="col-md-3">
+        <label class="form-label" for="start_date">Başlangıç Tarihi</label>
+        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.start_date }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="end_date">Bitiş Tarihi</label>
+        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ filters.end_date }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="status">Durum</label>
+        <select id="status" name="status" class="form-select">
+          <option value="">Tümü</option>
+          {% for value,label in status_choices %}
+          <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrele</button>
+      </div>
+    </form>
+
+    <div class="card table-card">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Zaman</th>
+            <th>Kullanıcı</th>
+            <th>Tutar</th>
+            <th>Banka Hesabı</th>
+            <th>Durum</th>
+            <th>İşlem Zamanı</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for d in deposits %}
+          <tr>
+            <td>#{{ d.id }}</td>
+            <td>{{ d.created_at|date:"d.m.Y H:i:s" }}</td>
+            <td>{{ d.user_name }}</td>
+            <td><strong>{{ d.amount|floatformat:2 }} TRY</strong></td>
+            <td>{{ d.bank_account.bank_name }}<br><small>{{ d.bank_account.iban }}</small></td>
+            <td>
+              <span class="status-badge status-{{ d.status }}">
+                {{ d.get_status_display }}
+              </span>
+            </td>
+            <td>
+              {% if d.processed_at %}
+                {{ d.processed_at|date:"d.m.Y H:i:s" }}
+              {% else %}
+                <span class="text-muted">-</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8" class="text-center">Henüz yatırım kaydı yok.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="navigation-links">
+    <a href="{% url 'site_panel:dashboard' %}" class="btn btn-secondary">← Panele Dön</a>
+  </div>
+</div>
+
+<style>
+.panel-header {
+  margin-bottom: 2rem;
+}
+
+.panel-header h1 {
+  font-size: 2rem;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+.panel-header p {
+  color: #666;
+}
+
+.table-card {
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.navigation-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-secondary {
+  border-radius: 8px;
+}
+</style>
+{% endblock %}
