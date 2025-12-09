@@ -125,6 +125,44 @@
     </div>
   </div>
 
+  <!-- Gateway Ayarları -->
+  <div class="card lp-card mt-4">
+    <div class="card-body">
+      <h5 class="card-title mb-2">Gateway Ayarları</h5>
+      <p class="lp-card-subtitle mb-3">Bu site için kullanıma açılacak ödeme gatewaylerini seçin.</p>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-check">
+            <input type="checkbox" class="form-check-input" name="gateway_bank" checked>
+            <span class="form-check-label">
+              Banka Havale
+              <small class="d-block text-muted">Standart havale/EFT ile yatırım & çekim.</small>
+            </span>
+          </label>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-check">
+            <input type="checkbox" class="form-check-input" name="gateway_crypto" checked>
+            <span class="form-check-label">
+              Kripto Ödeme
+              <small class="d-block text-muted">USDT / TRC20 ve diğer coinler.</small>
+            </span>
+          </label>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-check">
+            <input type="checkbox" class="form-check-input" name="gateway_card">
+            <span class="form-check-label">
+              Kredi Kartı
+              <small class="d-block text-muted">Sanal POS ile ödeme.</small>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="d-flex justify-content-end mt-4">
     <button type="submit" class="btn btn-primary">
       <i class="bi bi-check-circle me-1"></i> Kaydet
@@ -133,3 +171,4 @@
 </form>
 </div>
 {% endblock %}
+

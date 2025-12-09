@@ -109,64 +109,54 @@
     </div>
   </div>
 
-  <div class="row g-3 mb-5">
-    <div class="col-lg-4">
-      <div class="gateway-chip shadow-sm bg-white">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <div class="fw-semibold">Banka Havale</div>
-            <small>Aktif şube: {{ gateway_overview.BANK.enabled_branches|default:"0" }}</small>
-          </div>
-          <span class="badge bg-primary">BANK</span>
-        </div>
-        <div>
-          <div><strong>Bugünkü Yatırım:</strong> ₺ {{ gateway_overview.BANK.today_in|default:"0.00" }}</div>
-          <div><strong>Bugünkü Çekim:</strong> ₺ {{ gateway_overview.BANK.today_out|default:"0.00" }}</div>
-          <div><strong>Bekleyen:</strong> {{ gateway_overview.BANK.pending_count|default:"0" }}</div>
-        </div>
-        <div class="mt-2">
-          <a href="{% url 'admin_panel:gateways_matrix' %}" class="btn btn-sm btn-outline-primary">Site Bazlı Durum</a>
-        </div>
+  <div class="lp-dashboard-grid">
+    <div class="lp-card">
+      <div class="lp-card-header">
+        <span>Banka Havale</span>
+        <span class="lp-pill lp-pill-on">Aktif Şube: {{ gateway_overview.BANK.enabled_branches|default:"0" }}</span>
+      </div>
+      <div class="lp-card-subtitle">Bugünkü yatırım & çekim toplamları</div>
+      <div class="mt-2 text-sm">
+        Bugünkü Yatırım: ₺ {{ gateway_overview.BANK.today_in|default:"0.00" }}<br>
+        Bugünkü Çekim: ₺ {{ gateway_overview.BANK.today_out|default:"0.00" }}<br>
+        Bekleyen İşlem: {{ gateway_overview.BANK.pending_count|default:"0" }}
+      </div>
+      <div class="mt-3 text-end">
+        <a href="{% url 'admin_panel:gateways_matrix' %}" class="btn btn-sm btn-outline-primary">Site Bazlı Durum</a>
       </div>
     </div>
 
-    <div class="col-lg-4">
-      <div class="gateway-chip shadow-sm bg-white">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <div class="fw-semibold">Kripto Ödeme</div>
-            <small>Aktif şube: {{ gateway_overview.CRYPTO.enabled_branches|default:"0" }}</small>
-          </div>
-          <span class="badge bg-success">CRYPTO</span>
-        </div>
-        <div>
-          <div><strong>Bugünkü Hacim:</strong> {{ gateway_overview.CRYPTO.today_in|default:"0.00" }} USDT</div>
-          <div><strong>Bekleyen:</strong> {{ gateway_overview.CRYPTO.pending_count|default:"0" }}</div>
-          <div><strong>TRC20 Dinleyici:</strong> {{ gateway_overview.CRYPTO.listener_status|default:"Pasif" }}</div>
-        </div>
-        <div class="mt-2">
-          <a href="{% url 'admin_panel:crypto_overview' %}" class="btn btn-sm btn-outline-success">Kripto Genel Bakış</a>
-        </div>
+    <div class="lp-card">
+      <div class="lp-card-header">
+        <span>Kripto Ödeme</span>
+        <span class="lp-pill {% if gateway_overview.CRYPTO.listener_status and "ACTIVE" in gateway_overview.CRYPTO.listener_status %}lp-pill-on{% else %}lp-pill-off{% endif %}">
+          {% if gateway_overview.CRYPTO.listener_status and "ACTIVE" in gateway_overview.CRYPTO.listener_status %}TRC20 AKTİF{% else %}TRC20 PASİF{% endif %}
+        </span>
+      </div>
+      <div class="lp-card-subtitle">USDT / TRC20 ve diğer coinler</div>
+      <div class="mt-2 text-sm">
+        Bugünkü Hacim: {{ gateway_overview.CRYPTO.today_in|default:"0.00" }} USDT<br>
+        Bekleyen İşlem: {{ gateway_overview.CRYPTO.pending_count|default:"0" }}<br>
+        Aktif Şube: {{ gateway_overview.CRYPTO.enabled_branches|default:"0" }}
+      </div>
+      <div class="mt-3 text-end">
+        <a href="{% url 'admin_panel:crypto_overview' %}" class="btn btn-sm btn-outline-success">Kripto Genel Bakış</a>
       </div>
     </div>
 
-    <div class="col-lg-4">
-      <div class="gateway-chip shadow-sm bg-white">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <div class="fw-semibold">Kredi Kartı</div>
-            <small>Aktif şube: {{ gateway_overview.CARD.enabled_branches|default:"0" }}</small>
-          </div>
-          <span class="badge bg-warning text-dark">CARD</span>
-        </div>
-        <div>
-          <div><strong>Bugünkü Hacim:</strong> ₺ {{ gateway_overview.CARD.today_in|default:"0.00" }}</div>
-          <div><strong>Bekleyen:</strong> {{ gateway_overview.CARD.pending_count|default:"0" }}</div>
-          <div><strong>PSP:</strong> {{ gateway_overview.CARD.psp_status|default:"Bilinmiyor" }}</div>
-        </div>
-        <div class="mt-2">
-          <a href="{% url 'admin_panel:gateways_matrix' %}?gateway=CARD" class="btn btn-sm btn-outline-warning">Site Bazlı Durum</a>
-        </div>
+    <div class="lp-card">
+      <div class="lp-card-header">
+        <span>Kredi Kartı</span>
+        <span class="lp-pill lp-pill-off">{% if gateway_overview.CARD.psp_status %}{{ gateway_overview.CARD.psp_status }}{% else %}PSP Tanımlı Değil{% endif %}</span>
+      </div>
+      <div class="lp-card-subtitle">Sanal POS işlemleri</div>
+      <div class="mt-2 text-sm">
+        Bugünkü Hacim: ₺ {{ gateway_overview.CARD.today_in|default:"0.00" }}<br>
+        Bekleyen İşlem: {{ gateway_overview.CARD.pending_count|default:"0" }}<br>
+        Aktif Şube: {{ gateway_overview.CARD.enabled_branches|default:"0" }}
+      </div>
+      <div class="mt-3 text-end">
+        <a href="{% url 'admin_panel:gateways_matrix' %}?gateway=CARD" class="btn btn-sm btn-outline-warning">Site Bazlı Durum</a>
       </div>
     </div>
   </div>

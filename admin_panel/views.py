@@ -771,6 +771,28 @@ def add_client_site(request):
                     contact_email=contact_email,
                     deposit_commission_rate=float(deposit_commission or 0),
                     withdraw_commission_rate=float(withdraw_commission or 0),
+                    branch=branch,
+                )
+
+                # 4) Create SiteGatewayConfig rows according to submitted checkboxes
+                bank_enabled = bool(request.POST.get("gateway_bank"))
+                crypto_enabled = bool(request.POST.get("gateway_crypto"))
+                card_enabled = bool(request.POST.get("gateway_card"))
+
+                SiteGatewayConfig.objects.update_or_create(
+                    branch=branch,
+                    gateway=GatewayType.BANK,
+                    defaults={"is_enabled": bank_enabled},
+                )
+                SiteGatewayConfig.objects.update_or_create(
+                    branch=branch,
+                    gateway=GatewayType.CRYPTO,
+                    defaults={"is_enabled": crypto_enabled},
+                )
+                SiteGatewayConfig.objects.update_or_create(
+                    branch=branch,
+                    gateway=GatewayType.CARD,
+                    defaults={"is_enabled": card_enabled},
                 )
 
             messages.success(

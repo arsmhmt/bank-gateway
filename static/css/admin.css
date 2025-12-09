@@ -292,6 +292,75 @@
     --topbar-color: #ffffff;
 }
 
+/* lp- UI helpers for dashboard/cards/tables */
+.lp-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.lp-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 1px solid var(--border-color);
+}
+
+.lp-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.lp-card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.lp-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.lp-pill-on  { background: rgba(22,163,74,0.12); color: #4ade80; }
+.lp-pill-off { background: #374151;   color: var(--text-muted); }
+
+.lp-table-wrapper {
+    margin-top: 16px;
+    overflow-x: auto;
+}
+
+.lp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.lp-table th,
+.lp-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.lp-table th {
+    font-weight: 600;
+    background: var(--card-bg);
+    text-align: left;
+}
+
+.lp-table tr:hover td {
+    background: rgba(0,0,0,0.02);
+}
+
+
 [data-theme="dark"] {
     --bg-color: #18191b;
     --text-color: #f3f3f3;
