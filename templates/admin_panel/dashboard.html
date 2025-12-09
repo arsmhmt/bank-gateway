@@ -196,6 +196,7 @@
               <tbody>
                 {% for row in sites_gateway_matrix %}
                   <tr>
+                    {% if row.branch %}
                     <td>{{ row.branch.name }}</td>
                     <td>{% if row.bank %}<span class="badge bg-success">Açık</span>{% else %}<span class="badge bg-secondary">Kapalı</span>{% endif %}</td>
                     <td>{% if row.crypto %}<span class="badge bg-success">Açık</span>{% else %}<span class="badge bg-secondary">Kapalı</span>{% endif %}</td>
@@ -203,6 +204,13 @@
                     <td class="text-end">
                       <a href="{% url 'admin_panel:gateway_branch_detail' row.branch.id %}" class="btn btn-sm btn-outline-primary">Yönet</a>
                     </td>
+                    {% else %}
+                    <td>-</td>
+                    <td><span class="badge bg-secondary">-</span></td>
+                    <td><span class="badge bg-secondary">-</span></td>
+                    <td><span class="badge bg-secondary">-</span></td>
+                    <td class="text-end">-</td>
+                    {% endif %}
                   </tr>
                 {% empty %}
                   <tr>

@@ -31,14 +31,21 @@
             {% for row in branch_rows %}
             <tr>
               <td>
+                {% if row.branch %}
                 <strong>{{ row.branch.name }}</strong>
                 <div class="text-muted small">{{ row.branch.domain|default:"-" }}</div>
+                {% else %}
+                <strong>-</strong>
+                <div class="text-muted small">-</div>
+                {% endif %}
               </td>
               {% for gateway in row.gateways %}
                 <td class="text-center">
                   <form method="post" class="d-inline">
                     {% csrf_token %}
+                    {% if row.branch %}
                     <input type="hidden" name="branch_id" value="{{ row.branch.id }}">
+                    {% endif %}
                     <input type="hidden" name="gateway" value="{{ gateway.code }}">
                     {% if gateway.config and gateway.config.is_enabled %}
                       <button type="submit" class="badge bg-success border-0">AKTİF</button>

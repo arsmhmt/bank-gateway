@@ -26,10 +26,14 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     <h5 class="mb-1">{{ row.site.name }}</h5>
+                                    {% if row.branch %}
                                     <div class="text-muted small">
                                         {{ row.branch.domain|default:"Domain tanımlı değil" }}
-                                        · Kullanıcı: {{ row.branch.user.username|default:"-" }}
+                                        · Kullanıcı: {{ row.branch.user.username }}
                                     </div>
+                                    {% else %}
+                                    <div class="text-muted small">Domain tanımlı değil · Kullanıcı: -</div>
+                                    {% endif %}
                                 </div>
                                 <div class="text-end">
                                     <div class="badge bg-light text-dark mb-1">
