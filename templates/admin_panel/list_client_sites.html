@@ -1,30 +1,111 @@
+{% load gateway_tags %}
 {% extends "admin_panel/base.html" %}
 {% block content %}
-<h2>Tüm Siteler</h2>
-<a href="{% url 'add_client_site' %}">Yeni Site Ekle</a>
+<div class="page-wrapper">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <h2 class="page-title mb-0">Tüm Siteler</h2>
+            <p class="text-muted small mb-0">Gateway durumlarını ve public URL'leri buradan yönetin.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'admin_panel:transactions_list' %}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-diagram-3 me-1"></i> İşlem Akışı
+            </a>
+            <a href="{% url 'admin_panel:add_client_site' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle me-1"></i> Yeni Site Ekle
+            </a>
+        </div>
+    </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Adı</th>
-      <th>Domain</th>
-      <th>İlgili Kişi</th>
-      <th>Email</th>
-      <th>Komisyonlar</th>
-      <th>İşlem</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for site in sites %}
-    <tr>
-      <td>{{ site.name }}</td>
-      <td>{{ site.domain }}</td>
-      <td>{{ site.contact_person }}</td>
-      <td>{{ site.contact_email }}</td>
-      <td>Yatırım: {{ site.deposit_commission }}%<br>Çekim: {{ site.withdraw_commission }}%</td>
-      <td><a href="#">Düzenle</a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    {% if site_rows %}
+        <div class="row g-3">
+            {% for row in site_rows %}
+                <div class="col-12 col-xl-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="mb-1">{{ row.site.name }}</h5>
+                                    <div class="text-muted small">
+                                        {{ row.branch.domain|default:"Domain tanımlı değil" }}
+                                        · Kullanıcı: {{ row.branch.user.username|default:"-" }}
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="badge bg-light text-dark mb-1">
+                                        Yatırım: {{ row.site.deposit_commission_rate }}% · Çekim: {{ row.site.withdraw_commission_rate }}%
+                                    </div>
+                                    <div class="btn-group">
+                                        {% if row.branch %}
+                                        <a href="{% url 'admin_panel:site_detay' row.branch.id %}"
+                                           class="btn btn-outline-info btn-sm">
+                                            Detay
+                                        </a>
+                                        {% endif %}
+                                        <a href="{% url 'admin_panel:edit_client_site' row.site.id %}"
+                                           class="btn btn-outline-secondary btn-sm">
+                                            Düzenle
+                                        </a>
+                                        <a href="{% url 'admin_panel:site_gateway_list' row.site.id %}"
+                                           class="btn btn-outline-primary btn-sm">
+                                            Gateways
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="gateway-pills d-flex flex-wrap gap-2 mb-3">
+                                {% for config in row.gateway_configs %}
+                                    <div class="bank-pill">
+                                        <div>
+                                            <div class="fw-semibold">{{ config.get_gateway_display }}</div>
+                                            <div class="bank-meta">
+                                                {% if row.public_urls|dict_get:config.gateway %}
+                                                    <code>{{ row.public_urls|dict_get:config.gateway|dict_get:"deposit" }}</code>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {% if config.is_enabled %}
+                                                <span class="badge text-bg-success">Aktif</span>
+                                            {% else %}
+                                                <span class="badge text-bg-secondary">Pasif</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="text-muted small">Gateway konfigürasyonu bulunamadı.</div>
+                                {% endfor %}
+                            </div>
+
+                            {% if row.public_urls %}
+                                <div class="row g-2">
+                                    {% for gateway, data in row.public_urls.items %}
+                                        <div class="col-12 col-md-6">
+                                            <div class="p-2 border rounded bg-light">
+                                                <div class="small fw-semibold mb-1">{{ data.label }}</div>
+                                                <div class="small text-truncate" title="{{ data.deposit }}">
+                                                    <span class="text-muted">Deposit:</span> {{ data.deposit }}
+                                                </div>
+                                                <div class="small text-truncate" title="{{ data.withdraw }}">
+                                                    <span class="text-muted">Withdraw:</span> {{ data.withdraw }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center text-muted py-5">
+                Henüz kayıtlı site bulunmuyor.
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -1,0 +1,137 @@
+{% extends "admin_panel/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-0">Kripto Cüzdan Yapılandırmaları</h1>
+      <p class="text-muted mb-0">Manuel ve Ledger modlarındaki tüm cüzdan kayıtlarını yönetin.</p>
+    </div>
+    <a href="{% url 'admin_panel:crypto_wallet_add' %}" class="btn btn-primary">
+      <i class="bi bi-plus-lg me-2"></i>Yeni Cüzdan
+    </a>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">Site / Branch</label>
+          <select name="branch" class="form-select">
+            <option value="">Hepsi</option>
+            {% for b in branches %}
+              <option value="{{ b.id }}" {% if filters.branch == b.id|stringformat:"s" %}selected{% endif %}>
+                {{ b.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Mod</label>
+          <select name="mode" class="form-select">
+            <option value="">Hepsi</option>
+            {% for value,label in wallet_modes %}
+              <option value="{{ value }}" {% if filters.mode == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Coin</label>
+          <select name="coin" class="form-select">
+            <option value="">Hepsi</option>
+            {% for value,label in coin_choices %}
+              <option value="{{ value }}" {% if filters.coin == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Network</label>
+          <select name="network" class="form-select">
+            <option value="">Hepsi</option>
+            {% for value,label in network_choices %}
+              <option value="{{ value }}" {% if filters.network == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Durum</label>
+          <select name="active" class="form-select">
+            <option value="">Aktif / Pasif</option>
+            <option value="1" {% if filters.active == "1" %}selected{% endif %}>Aktif</option>
+            <option value="0" {% if filters.active == "0" %}selected{% endif %}>Pasif</option>
+          </select>
+        </div>
+        <div class="col-md-1">
+          <button type="submit" class="btn btn-outline-primary w-100">Filtrele</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body p-0">
+      <table class="table table-striped mb-0 align-middle">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="px-4">Site</th>
+            <th scope="col">Mod</th>
+            <th scope="col">Coin</th>
+            <th scope="col">Network</th>
+            <th scope="col">Adres / Ledger</th>
+            <th scope="col">Durum</th>
+            <th scope="col" class="text-end pe-4">İşlemler</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for wallet in wallets %}
+            <tr>
+              <td class="px-4">
+                <div class="fw-semibold">{{ wallet.branch.name }}</div>
+                <div class="text-muted small">{{ wallet.branch.public_code }}</div>
+              </td>
+              <td>
+                <span class="badge {% if wallet.mode == 'LEDGER' %}bg-danger-subtle text-danger{% else %}bg-primary-subtle text-primary{% endif %}">
+                  {{ wallet.get_mode_display }}
+                </span>
+              </td>
+              <td>{{ wallet.coin }}</td>
+              <td>{{ wallet.network }}</td>
+              <td>
+                {% if wallet.mode == 'MANUAL' %}
+                  <div class="small text-truncate" style="max-width: 280px;" title="{{ wallet.address }}">
+                    {{ wallet.address|default:"-" }}
+                  </div>
+                  {% if wallet.memo_tag %}
+                    <div class="text-muted small">Memo: {{ wallet.memo_tag }}</div>
+                  {% endif %}
+                {% else %}
+                  <div class="small">xpub: {{ wallet.ledger_xpub|default:"-" }}</div>
+                  <div class="text-muted small">Son index: {{ wallet.derivation_index }}</div>
+                {% endif %}
+              </td>
+              <td>
+                {% if wallet.is_active %}
+                  <span class="badge bg-success-subtle text-success">Aktif</span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary">Pasif</span>
+                {% endif %}
+              </td>
+              <td class="text-end pe-4">
+                <a href="{% url 'admin_panel:crypto_wallet_edit' wallet.pk %}" class="btn btn-sm btn-outline-primary">
+                  Düzenle
+                </a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7" class="text-center py-5 text-muted">
+                Henüz kayıtlı kripto cüzdanı bulunmuyor.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

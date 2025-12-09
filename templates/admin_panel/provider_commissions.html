@@ -1,6 +1,10 @@
 {% extends "admin_panel/base.html" %}
 {% block content %}
-<h4 class="mb-4">Teminci Komisyonları</h4>
+<h4 class="mb-3">Teminci Komisyonları</h4>
+
+<form method="get" class="mb-3">
+    {% include "admin_panel/partials/date_filter_bar.html" %}
+</form>
 
 <table class="table table-bordered">
     <thead>

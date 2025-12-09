@@ -1,0 +1,133 @@
+{% extends "admin_panel/base.html" %}
+{% load gateway_tags %}
+{% load crypto_extras %}
+{% block content %}
+<div class="page-wrapper">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <h2 class="page-title mb-0">İşlem Akışı</h2>
+            <p class="text-muted small mb-0">Bank, kart ve kripto işlemlerini tek tablodan takip edin.</p>
+        </div>
+        <a href="{% url 'admin_panel:admin_dashboard' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Dashboard
+        </a>
+    </div>
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-12 col-md-3">
+            <label class="form-label small text-muted mb-1">Gateway</label>
+            <select name="gateway" class="form-select">
+                <option value="">Hepsi</option>
+                {% for code,label in gateway_choices %}
+                    <option value="{{ code }}" {% if filters.gateway == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <label class="form-label small text-muted mb-1">Site</label>
+            <select name="branch" class="form-select">
+                <option value="">Hepsi</option>
+                {% for branch in branches %}
+                    <option value="{{ branch.id }}" {% if filters.branch == branch.id|stringformat:"s" %}selected{% endif %}>
+                        {{ branch.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <label class="form-label small text-muted mb-1">Durum</label>
+            <select name="status" class="form-select">
+                <option value="">Hepsi</option>
+                {% for code,label in status_choices %}
+                    <option value="{{ code }}" {% if filters.status == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <label class="form-label small text-muted mb-1">Coin</label>
+            <select name="coin" class="form-select">
+                <option value="">Hepsi</option>
+                {% for value,label in coin_choices %}
+                    <option value="{{ value }}" {% if filters.coin == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <label a class="form-label small text-muted mb-1">Ağ</label>
+            <select name="network" class="form-select">
+                <option value="">Hepsi</option>
+                {% for value,label in network_choices %}
+                    <option value="{{ value }}" {% if filters.network == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-3 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-primary w-100">Filtrele</button>
+        </div>
+    </form>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarih</th>
+                            <th>Site</th>
+                            <th>Gateway</th>
+                            <th>Yön</th>
+                            <th>Tutar</th>
+                            <th>Kullanıcı</th>
+                            <th>Kripto Bilgisi</th>
+                            <th>Durum</th>
+                            <th>Ref</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in transactions %}
+                            <tr>
+                                <td>#{{ tx.id }}</td>
+                                <td>{{ tx.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>{{ tx.branch.name|default:"-" }}</td>
+                                <td>{{ tx.get_gateway_display }}</td>
+                                <td>{{ tx.get_direction_display }}</td>
+                                <td>{{ tx.amount|floatformat:2 }} {{ tx.currency }}</td>
+                                <td>{{ tx.user_name }}</td>
+                                <td>
+                                    {% if tx.gateway == "CRYPTO" and tx.crypto_payment %}
+                                        <div class="small">
+                                            <div>{{ tx.crypto_payment.coin }} / {{ tx.crypto_payment.network }}</div>
+                                            {% if tx.crypto_payment.tx_hash %}
+                                                {% with explorer_url=tx.crypto_payment|crypto_explorer_url %}
+                                                    {% if explorer_url %}
+                                                        <a href="{{ explorer_url }}" target="_blank">{{ tx.crypto_payment.tx_hash|truncatechars:16 }}</a>
+                                                    {% else %}
+                                                        <span class="text-muted">{{ tx.crypto_payment.tx_hash|truncatechars:16 }}</span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                                <span class="text-muted">Tx yok</span>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge text-bg-secondary text-capitalize">{{ tx.status }}</span>
+                                </td>
+                                <td>{{ tx.ref_code }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">Filtreye uygun işlem bulunamadı.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

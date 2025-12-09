@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Admin Panel - Paycrypt{% endblock %}</title>
+        <title>{% block title %}Lider Pay Teminci Paneli{% endblock %}</title>
 
         <!-- Favicon -->
         <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
@@ -61,11 +61,27 @@
                 --admin-secondary: var(--brand-secondary);
                 --admin-surface: #f8fafc;
                 --admin-surface-dark: #0f172a;
+
+                /* Cyber / neon accents */
+                --cyber-primary: #38bdf8;
+                --cyber-accent: #a855f7;
+                --cyber-glow-soft: rgba(56, 189, 248, 0.35);
+                --cyber-glow-strong: rgba(59, 130, 246, 0.75);
+                --cyber-surface-dark: #020617;
             }
 
             /* Global font */
             body {
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-size: 1.2rem; /* ~20% larger base font size */
+            }
+
+            body[data-theme="dark"] {
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08), transparent 55%),
+                    radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.16), transparent 55%),
+                    var(--cyber-surface-dark);
+                color: #e5e7eb;
             }
 
             /* Sidebar logo styling */
@@ -73,6 +89,10 @@
                 max-height: 50px !important;
                 transition: all 0.3s ease;
                 filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+                background: #ffffff;
+                border-radius: 999px;
+                padding: 4px 10px;
+                box-shadow: 0 4px 12px rgba(15, 23, 42, 0.35);
             }
 
             .sidebar-logo:hover {
@@ -81,9 +101,12 @@
             }
 
             /* Responsive logo sizing */
-            @media (max-width: 768px) {
-                .sidebar-logo {
-                    max-height: 50px !important;
+            @media (max-width: 767.98px) {
+                .bank-pill {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 0.75rem;
+                    padding: 2px 8px;
                 }
             }
 
@@ -168,20 +191,73 @@
 
             /* Admin content area styling */
             #layoutSidenav_content {
-                background: var(--admin-surface);
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(148, 163, 184, 0.13), transparent 55%),
+                    radial-gradient(circle at 100% 100%, rgba(148, 163, 184, 0.08), transparent 55%),
+                    var(--admin-surface);
+            }
+
+            body[data-theme="dark"] #layoutSidenav_content {
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.09), transparent 55%),
+                    radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.18), transparent 55%),
+                    var(--cyber-surface-dark);
             }
 
             /* Update cards for admin */
             .card {
-                border: none;
-                border-radius: 12px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-                transition: all 0.2s ease;
+                border-radius: 14px;
+                border: 1px solid rgba(148, 163, 184, 0.4);
+                background-color: rgba(255, 255, 255, 0.98);
+                box-shadow:
+                    0 14px 30px rgba(15, 23, 42, 0.10),
+                    0 0 0 1px rgba(148, 163, 184, 0.20);
+                transition: all 0.18s ease-out;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                opacity: 0;
+                background:
+                    linear-gradient(120deg,
+                        rgba(56, 189, 248, 0.18),
+                        rgba(168, 85, 247, 0.12),
+                        transparent 55%);
+                mix-blend-mode: screen;
+                transition: opacity 0.2s ease-out;
             }
 
             .card:hover {
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-                transform: translateY(-1px);
+                box-shadow:
+                    0 18px 40px rgba(15, 23, 42, 0.16),
+                    0 0 0 1px rgba(59, 130, 246, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .card:hover::before {
+                opacity: 1;
+            }
+
+            body[data-theme="dark"] .card {
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95)),
+                    radial-gradient(circle at 100% 100%, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.98));
+                border-color: rgba(56, 189, 248, 0.42);
+                box-shadow:
+                    0 0 0 1px rgba(15, 23, 42, 0.9),
+                    0 0 26px var(--cyber-glow-soft);
+            }
+
+            body[data-theme="dark"] .card:hover {
+                box-shadow:
+                    0 0 0 1px rgba(15, 23, 42, 0.9),
+                    0 0 38px var(--cyber-glow-strong);
+                transform: translateY(-2px);
             }
 
             /* Update buttons for admin */
@@ -189,11 +265,61 @@
                 background: var(--brand-gradient);
                 border: none;
                 font-weight: 500;
+                box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08);
             }
 
             .btn-primary:hover {
                 background: var(--brand-gradient-dark);
                 transform: translateY(-1px);
+                box-shadow:
+                    0 10px 24px rgba(15, 23, 42, 0.35),
+                    0 0 14px var(--cyber-glow-soft);
+            }
+
+            .btn-outline-primary {
+                border-color: var(--cyber-primary);
+                color: var(--cyber-primary);
+            }
+
+            .btn-outline-primary:hover {
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.25), transparent 60%),
+                    rgba(15, 23, 42, 0.98);
+                color: #e5e7eb;
+                box-shadow: 0 0 16px var(--cyber-glow-soft);
+            }
+
+            .form-control,
+            .form-select {
+                border-radius: 10px;
+                border-color: rgba(148, 163, 184, 0.6);
+                background-color: rgba(255, 255, 255, 0.96);
+                transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+            }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cyber-primary);
+                box-shadow:
+                    0 0 0 1px var(--cyber-primary),
+                    0 0 18px var(--cyber-glow-soft);
+                background-color: #ffffff;
+            }
+
+            body[data-theme="dark"] .form-control,
+            body[data-theme="dark"] .form-select {
+                background-color: rgba(15, 23, 42, 0.9);
+                border-color: rgba(148, 163, 184, 0.55);
+                color: #e5e7eb;
+            }
+
+            body[data-theme="dark"] .form-control:focus,
+            body[data-theme="dark"] .form-select:focus {
+                background-color: rgba(15, 23, 42, 0.98);
+                border-color: var(--cyber-primary);
+                box-shadow:
+                    0 0 0 1px rgba(15, 23, 42, 1),
+                    0 0 24px var(--cyber-glow-strong);
             }
 
             /* Sidebar badge overflow/visibility fix */
@@ -222,12 +348,154 @@
             body.sb-sidenav-toggled .nav-link .badge[title] {
                 cursor: pointer;
             }
+
+            /* Provider panel specific mobile sidebar fixes */
+            @media (max-width: 991.98px) {
+                /* Disable global dark overlay for Teminci panel so content remains interactive */
+                body.provider-panel-body.sb-sidenav-toggled::before {
+                    display: none !important;
+                }
+
+                /* Let the fixed container (#layoutSidenav_nav) handle positioning; make inner nav relative */
+                body.provider-panel-body .sb-sidenav {
+                    position: relative;
+                    top: 0;
+                    height: 100%;
+                    width: 260px;
+                    min-width: 260px;
+                    max-width: 80vw;
+                }
+
+                /* On mobile, keep Teminci sidebar full-width when toggled (don't shrink to 60px icons-only mode) */
+                body.provider-panel-body.sb-sidenav-toggled .sb-sidenav {
+                    width: 260px;
+                    min-width: 260px;
+                    max-width: 80vw;
+                }
+
+                /* Small top padding inside drawer so menu doesn't start flush */
+                body.provider-panel-body .sb-sidenav-menu .nav {
+                    padding-top: 0.75rem;
+                }
+
+                /* On Teminci mobile drawer, keep menu headings and branding text visible */
+                body.provider-panel-body.sb-sidenav-toggled .sb-sidenav-menu-heading {
+                    opacity: 1 !important;
+                }
+
+                body.provider-panel-body.sb-sidenav-toggled .nav-link {
+                    text-align: left;
+                    padding-left: 1.25rem;
+                    padding-right: 1.25rem;
+                }
+
+                /* Force any nav-link child spans/divs (text wrappers / branding) to stay visible */
+                body.provider-panel-body.sb-sidenav-toggled .sb-sidenav .nav-link > span,
+                body.provider-panel-body.sb-sidenav-toggled .sb-sidenav .nav-link > div {
+                    display: inline-flex !important;
+                }
+
+                /* Slide-in drawer behavior just for provider panel */
+                body.provider-panel-body #layoutSidenav_nav {
+                    width: 260px !important;
+                    max-width: 80vw !important;
+                    top: var(--topbar-height);
+                    height: calc(100vh - var(--topbar-height));
+                    transform: translateX(-100%);
+                }
+
+                body.provider-panel-body.sb-sidenav-toggled #layoutSidenav_nav {
+                    transform: translateX(0);
+                }
+            }
+
+            /***** Provider mobile optimisations *****/
+            @media (max-width: 991.98px) {
+                body {
+                    font-size: 1rem;
+                }
+
+                .card {
+                    margin-bottom: 1rem;
+                }
+
+                .card .card-body,
+                .card .card-header {
+                    padding: 1rem 1.25rem;
+                }
+
+                .site-page-stack {
+                    gap: 1.25rem;
+                }
+
+                .site-page-header-card .card-body {
+                    padding: 1.25rem 1.5rem;
+                }
+
+                .table {
+                    font-size: 0.95rem;
+                }
+
+                .table th,
+                .table td {
+                    padding: 0.6rem 0.5rem;
+                }
+
+                .btn,
+                .form-control,
+                .form-select {
+                    font-size: 0.95rem;
+                }
+            }
+
+            @media (max-width: 575.98px) {
+                .sb-topnav .navbar-brand {
+                    font-size: 0.8rem;
+                }
+
+                .site-page-stack h2,
+                .site-page-stack .h4 {
+                    font-size: 1.1rem;
+                }
+
+                .badge {
+                    font-size: 0.85rem;
+                }
+
+                .table-responsive {
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                .table {
+                    font-size: 0.85rem;
+                }
+
+                .table th,
+                .table td {
+                    padding: 0.45rem 0.4rem;
+                    white-space: nowrap;
+                }
+
+                .form-label {
+                    font-size: 0.78rem;
+                }
+
+                .form-control,
+                .form-select {
+                    min-height: 2.4rem;
+                }
+
+                .card .btn {
+                    width: 100%;
+                }
+            }
         </style>
         {% block styles %}{% endblock %}
         {% block head_extra %}{% endblock %}
     </head>
 
-    <body class="sb-nav-fixed">
+    <body class="sb-nav-fixed provider-panel-body">
         <!-- Toast Container -->
         <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
             <!-- Toasts will be inserted here by JavaScript -->
@@ -273,7 +541,7 @@
                                     <div class="collapse" id="bankAccountMenu">
                                         <ul class="nav flex-column ms-3">
                                             <li class="nav-item mb-1"><a href="{% url 'provider_panel:add_bank_account' %}" class="nav-link text-white"><i class="bi bi-bank me-2"></i>Banka Hesabı Ekle</a></li>
-                                            <li class="nav-item mb-1"><a href="{% url 'provider_panel:list_bank_accounts' %}" class="nav-link text-white"><i class="bi bi-list me-2"></i>Aktif Hesaplar</a></li>
+                                            <li class="nav-item mb-1"><a href="{% url 'provider_panel:bank_list' %}" class="nav-link text-white"><i class="bi bi-list me-2"></i>Aktif Hesaplar</a></li>
                                         </ul>
                                     </div>
                                 </li>
@@ -285,10 +553,8 @@
                                     <div class="collapse" id="bankMenu">
                                         <ul class="nav flex-column ms-3">
                                             <li class="nav-item mb-1"><a href="{% url 'provider_panel:bank_list' %}" class="nav-link text-white"><i class="bi bi-building me-2"></i>Tüm Bankalar</a></li>
-                                            <li class="nav-item mb-1"><a href="{% url 'provider_panel:edit_bank_account' pk=1 %}" class="nav-link text-white"><i class="bi bi-pencil-square me-2"></i>Banka Hesabı Düzenle</a></li>
-                                            <li class="nav-item mb-1"><a href="{% url 'provider_panel:bank_delete_confirm' pk=1 %}" class="nav-link text-white"><i class="bi bi-trash me-2"></i>Banka Hesabı Sil</a></li>
                                             <li class="nav-item mb-1"><a href="{% url 'provider_panel:bank_form' %}" class="nav-link text-white"><i class="bi bi-file-earmark-plus me-2"></i>Banka Formu</a></li>
-                                            <li class="nav-item mb-1"><a href="{% url 'provider_panel:bank_accounts' %}" class="nav-link text-white"><i class="bi bi-collection me-2"></i>Banka Hesapları</a></li>
+                                            <li class="nav-item mb-1"><a href="{% url 'provider_panel:list_bank_accounts' %}" class="nav-link text-white"><i class="bi bi-collection me-2"></i>Banka Hesapları</a></li>
                                         </ul>
                                     </div>
                                 </li>
@@ -299,7 +565,7 @@
                                     </a>
                                     <div class="collapse" id="financeMenu">
                                         <ul class="nav flex-column ms-3">
-                                            <li class="nav-item mb-1"><a href="{% url 'provider_panel:finance_history' %}" class="nav-link text-white"><i class="bi bi-cash-stack me-2"></i>Komisyon</a></li>
+                                            <li class="nav-item mb-1"><a href="{% url 'provider_panel:provider_commissions' %}" class="nav-link text-white"><i class="bi bi-cash-stack me-2"></i>Komisyon</a></li>
                                             <li class="nav-item mb-1"><a href="{% url 'provider_panel:finance_report' %}" class="nav-link text-white"><i class="bi bi-pie-chart me-2"></i>Finansal Rapor</a></li>
                                             <li class="nav-item mb-1"><a href="{% url 'provider_panel:finance_history' %}" class="nav-link text-white"><i class="bi bi-clock-history me-2"></i>Finans Geçmişi</a></li>
                                         </ul>
@@ -340,7 +606,7 @@
                     <div class="sidebar-brand d-flex align-items-center justify-content-center py-3">
                         <a class="sb-sidenav-menu-heading text-center m-0 p-0"
                             href="{% url 'provider_panel:provider_dashboard' %}">
-                            <img src="{% static 'img/paycrypt_logo_d.png' %}" alt="PayCrypt Logo"
+                            <img src="{% static 'img/lider-logo.png' %}" alt="Lider Pay Logo"
                                 class="img-fluid sidebar-logo" style="max-height: 50px; width: auto;">
                         </a>
                     </div>
@@ -359,32 +625,29 @@
                             </form>
                         </li>
                         <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
+                        <li class="nav-item dropdown no-arrow mx-1 position-relative">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="bi bi-bell"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge bg-danger badge-counter">3+</span>
+                                <span class="badge bg-danger badge-counter" id="providerNotificationCount" hidden>0</span>
                             </a>
-                            <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Alerts Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="bi bi-file-earmark-text text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">Today</div>
-                                        <span class="font-weight-bold">New notifications available!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All
-                                    Alerts</a>
+                                aria-labelledby="alertsDropdown" style="min-width: 320px;">
+                                <div class="dropdown-header">
+                                    Bildirimler
+                                </div>
+                                <div id="providerNotificationList" class="notification-empty text-center py-3">
+                                    Bekleyen işlem yok.
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="px-3 pb-3 d-grid gap-2">
+                                    <a class="btn btn-sm btn-outline-primary" href="{% url 'provider_panel:pending_deposits' %}">
+                                        Bekleyen Yatırımlar
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'provider_panel:pending_withdrawals' %}">
+                                        Bekleyen Çekimler
+                                    </a>
+                                </div>
                             </div>
                         </li>
                         <div class="topbar-divider d-none d-sm-block"></div>
@@ -449,7 +712,7 @@
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; PayCrypt 2025</span>
+                            <span>Copyright &copy; Lider Pay {% now "Y" %}</span>
                         </div>
                     </div>
                 </footer>
@@ -537,9 +800,123 @@
                 });
             }
 
-            // Initialize theme toggle when DOM is loaded
+            function initProviderNotifications() {
+                const notifEndpoint = "{% url 'provider_panel:notifications_feed' %}";
+                const notifListEl = document.getElementById('providerNotificationList');
+                const notifCountEl = document.getElementById('providerNotificationCount');
+                const notifBell = document.getElementById('alertsDropdown');
+
+                if (!notifEndpoint || !notifListEl || !notifCountEl) {
+                    return;
+                }
+
+                const state = {
+                    lastDepositId: null,
+                    lastWithdrawalId: null,
+                    initialized: false,
+                    pollIntervalMs: 15000,
+                    timerId: null,
+                };
+
+                function formatTimestamp(value) {
+                    if (!value) return '';
+                    const date = new Date(value);
+                    return date.toLocaleString('tr-TR', { hour12: false });
+                }
+
+                function renderNotifications(data) {
+                    const deposits = data.deposits || [];
+                    const withdrawals = data.withdrawals || [];
+                    const totalCount = deposits.length + withdrawals.length;
+
+                    if (totalCount === 0) {
+                        notifListEl.innerHTML = '<div class="notification-empty text-center py-3">Bekleyen işlem yok.</div>';
+                        notifCountEl.hidden = true;
+                    } else {
+                        notifCountEl.hidden = false;
+                        notifCountEl.textContent = totalCount;
+                        const items = [];
+                        if (deposits.length) {
+                            items.push('<div class="px-3 py-2 text-uppercase small text-muted">Yatırım</div>');
+                            deposits.forEach(item => {
+                                items.push(`
+                                    <div class="dropdown-item d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <div class="fw-semibold">#${item.id} · ${item.user_name || '-'} </div>
+                                            <div>₺ ${Number(item.amount).toLocaleString('tr-TR')}</div>
+                                        </div>
+                                        <small class="text-muted">${formatTimestamp(item.created_at)}</small>
+                                    </div>
+                                `);
+                            });
+                        }
+                        if (withdrawals.length) {
+                            items.push('<div class="px-3 py-2 text-uppercase small text-muted">Çekim</div>');
+                            withdrawals.forEach(item => {
+                                items.push(`
+                                    <div class="dropdown-item d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <div class="fw-semibold">#${item.id} · ${item.user_name || '-'} </div>
+                                            <div>₺ ${Number(item.amount).toLocaleString('tr-TR')}</div>
+                                        </div>
+                                        <small class="text-muted">${formatTimestamp(item.created_at)}</small>
+                                    </div>
+                                `);
+                            });
+                        }
+                        notifListEl.innerHTML = items.join('');
+                    }
+
+                    const latestDepositId = deposits[0]?.id || null;
+                    const latestWithdrawalId = withdrawals[0]?.id || null;
+                    const hasNewDeposit = state.initialized && latestDepositId && latestDepositId !== state.lastDepositId;
+                    const hasNewWithdrawal = state.initialized && latestWithdrawalId && latestWithdrawalId !== state.lastWithdrawalId;
+
+                    if ((hasNewDeposit || hasNewWithdrawal) && notifBell) {
+                        notifBell.classList.add('notification-pulse');
+                        setTimeout(() => notifBell.classList.remove('notification-pulse'), 600);
+                        showToast('Yeni bekleyen işlem var', 'info');
+                    }
+
+                    state.lastDepositId = latestDepositId;
+                    state.lastWithdrawalId = latestWithdrawalId;
+                    if (!state.initialized) {
+                        state.initialized = true;
+                    }
+                }
+
+                function scheduleNextPoll(intervalMs) {
+                    if (state.timerId) {
+                        clearTimeout(state.timerId);
+                    }
+                    state.timerId = setTimeout(fetchNotifications, intervalMs);
+                }
+
+                async function fetchNotifications() {
+                    try {
+                        const response = await fetch(notifEndpoint, {
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        });
+                        if (!response.ok) throw new Error('İstek başarısız');
+                        const data = await response.json();
+                        renderNotifications(data);
+                        const intervalSeconds = Number(data.poll_interval) || 15;
+                        const normalizedSeconds = Math.min(Math.max(intervalSeconds, 5), 60);
+                        state.pollIntervalMs = normalizedSeconds * 1000;
+                        scheduleNextPoll(state.pollIntervalMs);
+                    } catch (error) {
+                        console.warn('Teminci bildirimleri alınamadı', error);
+                        scheduleNextPoll(Math.max(state.pollIntervalMs, 30000));
+                    }
+                }
+
+                fetchNotifications();
+            }
+
+            // Initialize scripts when DOM is loaded
             document.addEventListener('DOMContentLoaded', function () {
                 initThemeToggle();
+                initProviderNotifications();
             });
 
             window.showToast = showToast;

@@ -1,0 +1,165 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}Gateway Yapılandırması · {{ branch.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+      <h2 class="h4 mb-1">Gateway Yapılandırması – {{ branch.name }}</h2>
+      <p class="text-muted mb-0">Banka, Kredi Kartı ve Kripto gateway durumları ve ayarları.</p>
+    </div>
+    <a href="{% url 'admin_panel:gateways_matrix' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-arrow-left me-1"></i>Kontrol Matrisine Dön
+    </a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    {% for card in gateway_cards %}
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <p class="text-uppercase fw-semibold small text-muted mb-0">{{ card.label }}</p>
+              <h4 class="mb-0">
+                {% if card.code == "BANK" %}🏦{% elif card.code == "CARD" %}💳{% else %}🪙{% endif %}
+              </h4>
+            </div>
+            <span class="badge {% if card.config and card.config.is_enabled %}bg-success{% else %}bg-secondary{% endif %}">
+              {% if card.config and card.config.is_enabled %}AKTİF{% else %}PASİF{% endif %}
+            </span>
+          </div>
+          <form method="post" class="mt-auto">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="toggle_gateway">
+            <input type="hidden" name="gateway" value="{{ card.code }}">
+            <input type="hidden" name="is_enabled" value="{% if card.config and card.config.is_enabled %}0{% else %}1{% endif %}">
+            <button type="submit" class="btn btn-sm {% if card.config and card.config.is_enabled %}btn-outline-danger{% else %}btn-outline-primary{% endif %}">
+              {% if card.config and card.config.is_enabled %}
+                Gateway'i Pasif Yap
+              {% else %}
+                Gateway'i Aktif Et
+              {% endif %}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+      <div>
+        <h5 class="mb-0">Kart PSP Ayarları</h5>
+        <small class="text-muted">Bu bayi için tanımlı PSP bilgileri (okuma/yazma)</small>
+      </div>
+      {% if card_psp_config and card_psp_config.is_active %}
+        <span class="badge {% if card_psp_config.mode == "LIVE" %}bg-success{% else %}bg-warning text-dark{% endif %}">
+          {% if card_psp_config.mode == "LIVE" %}LIVE MODE{% else %}TEST MODE{% endif %}
+        </span>
+      {% else %}
+        <span class="badge bg-secondary">GATEWAY DISABLED</span>
+      {% endif %}
+    </div>
+    <div class="card-body">
+      <form method="post" class="row g-3">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_card_psp">
+        <div class="col-md-4">
+          <label class="form-label">PSP Sağlayıcı</label>
+          {{ card_psp_form.provider_name }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Merchant ID</label>
+          {{ card_psp_form.merchant_id }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Terminal ID</label>
+          {{ card_psp_form.terminal_id }}
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">API Key / Secret</label>
+          {{ card_psp_form.api_key }}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Mod</label>
+          {{ card_psp_form.mode }}
+        </div>
+        <div class="col-md-3 d-flex align-items-center">
+          <div class="form-check form-switch">
+            {{ card_psp_form.is_active }}
+            <label class="form-check-label ms-2">Aktif</label>
+          </div>
+        </div>
+        <div class="col-md-6 text-end">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i> Kaydet
+          </button>
+        </div>
+      </form>
+      {% if card_psp_form.errors %}
+      <div class="alert alert-danger mt-3">
+        Lütfen hataları düzeltin: {{ card_psp_form.errors }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+      <div>
+        <h5 class="mb-0">Kripto Cüzdan Konfigürasyonları</h5>
+        <small class="text-muted">Bu şubeye tanımlı MANUAL / LEDGER cüzdanlar</small>
+      </div>
+      <a href="{% url 'admin_panel:crypto_wallets' %}?branch={{ branch.id }}" class="btn btn-sm btn-outline-primary">
+        Cüzdanları Yönet
+      </a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr class="text-uppercase small text-muted">
+            <th>Mod</th>
+            <th>Coin / Network</th>
+            <th>Adres / xPub</th>
+            <th class="text-center">Durum</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for wallet in crypto_wallets %}
+          <tr>
+            <td>
+              <span class="badge {% if wallet.mode == "LEDGER" %}bg-dark{% else %}bg-secondary{% endif %}">
+                {{ wallet.get_mode_display }}
+              </span>
+            </td>
+            <td><strong>{{ wallet.coin }}</strong> / {{ wallet.network }}</td>
+            <td class="text-truncate" style="max-width: 260px;">
+              {% if wallet.mode == "LEDGER" and wallet.ledger_xpub %}
+                <code>{{ wallet.ledger_xpub|slice:":6" }}…{{ wallet.ledger_xpub|slice:"-6:" }}</code>
+              {% else %}
+                <code>{{ wallet.address|default:"—" }}</code>
+              {% endif %}
+            </td>
+            <td class="text-center">
+              <span class="badge {% if wallet.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                {% if wallet.is_active %}AKTİF{% else %}PASİF{% endif %}
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center text-muted py-4">
+              Bu şube için tanımlı kripto cüzdanı bulunmuyor.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

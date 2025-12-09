@@ -1,0 +1,762 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Lider Pay Site Paneli{% endblock %}</title>
+  <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin-layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin-dashboard-pro.css' %}">
+  <style>
+    :root {
+      --brand-primary: #0d2f81;
+      --brand-secondary: #e0263c;
+      --brand-primary-dark: #081f57;
+      --brand-secondary-dark: #b11c31;
+      --brand-gradient: linear-gradient(135deg, #0d2f81 0%, #e0263c 100%);
+      --brand-gradient-dark: linear-gradient(135deg, #081f57 0%, #b11c31 100%);
+      --site-surface: #f8fafc;
+
+      --cyber-primary: #38bdf8;
+      --cyber-accent: #a855f7;
+      --cyber-glow-soft: rgba(56, 189, 248, 0.35);
+      --cyber-glow-strong: rgba(59, 130, 246, 0.75);
+      --cyber-surface-dark: #020617;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 1.2rem;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(148, 163, 184, 0.13), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(148, 163, 184, 0.08), transparent 55%),
+        var(--site-surface);
+    }
+
+    body[data-theme="dark"] {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.16), transparent 55%),
+        var(--cyber-surface-dark);
+      color: #e5e7eb;
+    }
+
+    #layoutSidenav {
+      display: flex;
+    }
+
+    .sb-sidenav {
+      background: var(--brand-gradient);
+      color: #fff;
+      width: 230px;
+      min-width: 230px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sb-sidenav .sidebar-brand {
+      padding: 1.25rem 1rem 1rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .sb-sidenav .sidebar-brand img {
+      height: 40px;
+      width: auto;
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.35);
+    }
+
+    .sb-sidenav .sidebar-brand h6 {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .sb-sidenav-menu {
+      flex: 1;
+      padding-top: 0;
+      padding-bottom: 0.5rem;
+    }
+
+    .sb-sidenav .nav-link {
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 500;
+      border-radius: 0.5rem;
+    }
+
+    .sb-sidenav .nav-link:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .sb-sidenav .nav-link.active {
+      background: var(--brand-gradient-dark);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .sb-topnav {
+      background: #111827;
+      color: #fff;
+      min-height: 64px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+    }
+
+    .notification-bell {
+      font-size: 1.2rem;
+    }
+
+    .notification-bell .notification-count {
+      position: absolute;
+      top: 0.15rem;
+      right: 0.2rem;
+      font-size: 0.65rem;
+      border-radius: 999px;
+      padding: 0.1rem 0.35rem;
+    }
+
+    .notification-dropdown {
+      min-width: 320px;
+      max-width: 360px;
+      max-height: 360px;
+      overflow-y: auto;
+      border-radius: 1rem;
+    }
+
+    .notification-item {
+      padding: 0.65rem 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-item .timestamp {
+      color: #94a3b8;
+      font-size: 0.75rem;
+    }
+
+    .notification-empty {
+      padding: 1rem 0;
+      text-align: center;
+      color: #94a3b8;
+    }
+
+    .notification-pulse .notification-bell i {
+      animation: notif-ring 0.6s ease;
+    }
+
+    @keyframes notif-ring {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(15deg); }
+      50% { transform: rotate(-12deg); }
+      75% { transform: rotate(8deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .sb-sidenav-footer {
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Remove inherited top padding gap from site panel sidebar */
+    #layoutSidenav_nav .sb-sidenav,
+    #layoutSidenav_nav .sb-sidenav-menu {
+      padding-top: 0 !important;
+      margin-top: 0 !important;
+    }
+
+    .sb-topnav .navbar-brand {
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sb-topnav .navbar-brand img {
+      height: 26px;
+      width: auto;
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 3px 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.35);
+    }
+
+    .card {
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background-color: rgba(255, 255, 255, 0.98);
+      box-shadow:
+        0 14px 30px rgba(15, 23, 42, 0.10),
+        0 0 0 1px rgba(148, 163, 184, 0.20);
+      transition: all 0.18s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        linear-gradient(120deg,
+          rgba(56, 189, 248, 0.18),
+          rgba(168, 85, 247, 0.12),
+          transparent 55%);
+      mix-blend-mode: screen;
+      transition: opacity 0.2s ease-out;
+    }
+
+    .card:hover {
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.16),
+        0 0 0 1px rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .btn-primary {
+      background: var(--brand-gradient);
+      border: none;
+      font-weight: 500;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-gradient-dark);
+      transform: translateY(-1px);
+      box-shadow:
+        0 10px 24px rgba(15, 23, 42, 0.35),
+        0 0 14px var(--cyber-glow-soft);
+    }
+
+    .btn-outline-primary {
+      border-color: var(--cyber-primary);
+      color: var(--cyber-primary);
+    }
+
+    .btn-outline-primary:hover {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.25), transparent 60%),
+        rgba(15, 23, 42, 0.98);
+      color: #e5e7eb;
+      box-shadow: 0 0 16px var(--cyber-glow-soft);
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 10px;
+      border-color: rgba(148, 163, 184, 0.6);
+      background-color: rgba(255, 255, 255, 0.96);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--cyber-primary);
+      box-shadow:
+        0 0 0 1px var(--cyber-primary),
+        0 0 18px var(--cyber-glow-soft);
+      background-color: #ffffff;
+    }
+
+    .site-panel-content,
+    .site-panel-content.container-fluid {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    /* Ensure sidebar starts at very top without empty spacer */
+    body.sb-nav-fixed #layoutSidenav_nav {
+      top: 0;
+      height: 100vh;
+    }
+
+    body.sb-nav-fixed #layoutSidenav_content {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    @media (max-width: 991.98px) {
+      .site-panel-content,
+      .site-panel-content.container-fluid {
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+      }
+
+      body.sb-nav-fixed #layoutSidenav_nav {
+        top: 0;
+        height: 100vh;
+      }
+
+      body.sb-nav-fixed #layoutSidenav_content {
+        margin-left: 0;
+      }
+    }
+
+    .site-page-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .site-page-header-card {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.18), transparent 55%),
+        var(--brand-gradient-dark);
+      color: #fff;
+      border: none;
+      box-shadow:
+        0 20px 45px rgba(15, 23, 42, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .site-page-header-card .card-body {
+      padding: 1.75rem 2rem;
+    }
+
+    @media (max-width: 575.98px) {
+      .site-page-header-card .card-body {
+        padding: 1.5rem;
+      }
+    }
+
+    .page-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: block;
+    }
+
+    .stat-tile {
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .stat-tile .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(78, 115, 223, 0.12);
+      color: var(--brand-primary);
+      font-size: 1.35rem;
+    }
+
+    .stat-tile .stat-label {
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-tile .stat-value {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.15rem;
+    }
+
+    .status-pill {
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .table-empty-state {
+      padding: 2rem 1.5rem;
+    }
+
+    /* Bank Pills */
+    .bank-pill {
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.2s ease-in-out;
+        background: #fff;
+    }
+
+    .bank-pill:hover {
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 1px rgba(78, 115, 223, 0.25);
+        transform: translateY(-1px);
+    }
+
+    .bank-pill .bank-meta {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin: 0.25rem 0;
+    }
+
+    .bank-pill code {
+        font-size: 0.75rem;
+        color: #495057;
+        background: rgba(108, 117, 125, 0.1);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767.98px) {
+        .bank-pill {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .bank-pill .bank-meta {
+            font-size: 0.8125rem;
+        }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="sb-nav-fixed">
+  <div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+      <nav class="sb-sidenav sb-sidenav-dark">
+        <div class="sb-sidenav-menu px-3">
+          <div class="text-uppercase small mb-2 opacity-75">Site Paneli</div>
+          <div class="mb-3">
+            <strong>{{ branch.name }}</strong>
+            <div class="small text-white-50">{{ branch.domain|default:"Domain tanımlı değil" }}</div>
+          </div>
+
+          <div class="text-uppercase small text-white-50 mt-3 mb-2">Genel</div>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+             href="{% url 'site_panel:dashboard' %}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'reports' %}active{% endif %}"
+             href="{% url 'site_panel:reports' %}">
+            <i class="bi bi-graph-up"></i> Finansal Raporlar
+          </a>
+
+          {% if gateway_bank_enabled %}
+          <div class="text-uppercase small text-white-50 mt-4 mb-2">Banka Havale</div>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'deposits' %}active{% endif %}"
+             href="{% url 'site_panel:deposits' %}">
+            <i class="bi bi-arrow-down-circle"></i> Banka Yatırımları
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'withdrawals' %}active{% endif %}"
+             href="{% url 'site_panel:withdrawals' %}">
+            <i class="bi bi-arrow-up-circle"></i> Banka Çekimleri
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'bank_accounts' %}active{% endif %}"
+             href="{% url 'site_panel:bank_accounts' %}">
+            <i class="bi bi-bank"></i> Aktif Bankalar
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'create_link' %}active{% endif %}"
+             href="{% url 'site_panel:create_link' %}">
+            <i class="bi bi-link-45deg"></i> Yatırım Linkleri
+          </a>
+          {% endif %}
+
+          {% if gateway_crypto_enabled %}
+          <div class="text-uppercase small text-white-50 mt-4 mb-2">Kripto</div>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name in ('kripto_cuzdanlar','kripto_odeme','crypto_wallets') %}active{% endif %}"
+             href="{% url 'site_panel:kripto_cuzdanlar' %}">
+            <i class="bi bi-currency-bitcoin"></i> Kripto Cüzdanları
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'deposits' and request.GET.gateway == 'CRYPTO' %}active{% endif %}"
+             href="{% url 'site_panel:deposits' %}?gateway=CRYPTO">
+            <i class="bi bi-diagram-3"></i> Kripto İşlemleri
+          </a>
+          {% endif %}
+
+          {% endif %}
+
+          {% if gateway_bank_enabled or gateway_crypto_enabled %}
+          <div class="text-uppercase small text-white-50 mt-4 mb-2">Entegrasyon</div>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'api_yonetimi' %}active{% endif %}"
+             href="{% url 'site_panel:api_yonetimi' %}">
+            <i class="bi bi-plug"></i> API Yönetimi
+            <div class="small text-white-50 ms-2">Entegrasyon için API anahtarınızı ve örnek istekleri buradan görebilirsiniz.</div>
+          </a>
+          {% endif %}
+
+          {% if gateway_card_enabled %}
+          <div class="text-uppercase small text-white-50 mt-4 mb-2">Kredi Kartı</div>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name in ('kart_ayarlari','kredi_karti','card_settings') %}active{% endif %}"
+             href="{% url 'site_panel:kart_ayarlari' %}">
+            <i class="bi bi-credit-card-2-front"></i> Kart PSP Ayarları
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'deposits' and request.GET.gateway == 'CARD' %}active{% endif %}"
+             href="{% url 'site_panel:deposits' %}?gateway=CARD">
+            <i class="bi bi-receipt"></i> Kart İşlemleri
+          </a>
+          {% endif %}
+        </div>
+       
+      </nav>
+    </div>
+
+    <div id="layoutSidenav_content">
+      <nav class="sb-topnav navbar navbar-expand">
+        <button class="btn btn-link btn-sm text-white" id="sidebarToggle" type="button">
+          <i class="fas fa-bars"></i>
+        </button>
+        <span class="navbar-brand ps-3 text-white">
+          <img src="{% static 'img/lider-logo.png' %}" alt="Lider Pay" style="height:32px;" class="me-2">
+          Lider Pay Site Paneli
+        </span>
+        <ul class="navbar-nav ms-auto me-3 align-items-center">
+          <li class="nav-item dropdown position-relative me-3">
+            <a class="nav-link notification-bell text-white" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-bell"></i>
+              <span class="badge bg-danger notification-count" id="notificationCount" hidden>0</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end notification-dropdown shadow" aria-labelledby="notificationsDropdown">
+              <div class="px-3 py-2 border-bottom">
+                <strong>Yeni İşlemler</strong>
+                <div class="text-muted small">Bekleyen yatırım & çekim bildirimleri</div>
+              </div>
+              <div id="notificationList">
+                <div class="notification-empty">Henüz yeni bildirim yok.</div>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle me-1"></i>{{ request.user.username }}
+            </a>
+            <div class="dropdown-menu dropdown-menu-end">
+              <span class="dropdown-item-text small text-muted">{{ branch.name }}</span>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item text-danger" href="{% url 'site_panel:site_logout' %}">
+                <i class="bi bi-box-arrow-right me-2"></i>Çıkış Yap
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      
+
+      <main>
+        <div class="site-panel-content container-fluid pt-2 pb-4">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          {% block site_content %}{% endblock %}
+
+          {% if gateway_public_urls %}
+            <div class="card mt-4">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0">Aktif Gateway URL'leri</h6>
+                  <span class="text-muted small">Sadece aktif gateway'ler listelenir</span>
+                </div>
+                <div class="row g-3">
+                  {% for gateway, data in gateway_public_urls.items %}
+                    {% if gateway_flags|get:gateway %}
+                      <div class="col-12 col-md-4">
+                        <div class="p-3 border rounded h-100">
+                          <div class="fw-semibold mb-2">{{ data.label }}</div>
+                          <div class="small text-truncate" title="{{ data.deposit }}">
+                            <span class="text-muted">Deposit</span> · {{ data.deposit }}
+                          </div>
+                          <div class="small text-truncate" title="{{ data.withdraw }}">
+                            <span class="text-muted">Withdraw</span> · {{ data.withdraw }}
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </main>
+
+      <footer class="py-3 bg-white text-center small text-muted">
+        &copy; Lider Pay {% now "Y" %}
+      </footer>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/admin-layout.js' %}"></script>
+  <script>
+    document.getElementById('sidebarToggle')?.addEventListener('click', function () {
+      document.body.classList.toggle('sb-sidenav-toggled');
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const notifEndpoint = "{% url 'site_panel:notifications_feed' %}";
+      const notifListEl = document.getElementById('notificationList');
+      const notifCountEl = document.getElementById('notificationCount');
+      const notifBell = document.querySelector('.notification-bell');
+
+      const state = {
+        lastDepositId: null,
+        lastWithdrawalId: null,
+        initialized: false,
+        pollIntervalMs: 15000,
+        timerId: null,
+      };
+
+      function formatTimestamp(isoString) {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        return date.toLocaleString('tr-TR', { hour12: false });
+      }
+
+      function playNotificationSound() {
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          const ctx = new AudioCtx();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = 880;
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          gain.gain.setValueAtTime(0.001, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.4);
+        } catch (error) {
+          console.warn('Bildirim sesi çalınamadı', error);
+        }
+      }
+
+      function renderNotifications(data) {
+        const deposits = data.deposits || [];
+        const withdrawals = data.withdrawals || [];
+        const totalCount = deposits.length + withdrawals.length;
+
+        if (totalCount === 0) {
+          notifListEl.innerHTML = '<div class="notification-empty">Bekleyen işlem yok.</div>'; 
+          notifCountEl.hidden = true;
+        } else {
+          notifCountEl.hidden = false;
+          notifCountEl.textContent = totalCount;
+          const items = [];
+          if (deposits.length) {
+            items.push('<div class="px-3 py-2 text-uppercase small text-muted">Yatırım</div>');
+            deposits.forEach(item => {
+              items.push(`
+                <div class="notification-item">
+                  <div>
+                    <div class="fw-semibold">Yatırım · #${item.id}</div>
+                    <div>${item.user_name} · ₺ ${Number(item.amount).toLocaleString('tr-TR')}</div>
+                  </div>
+                  <div class="timestamp">${formatTimestamp(item.created_at)}</div>
+                </div>`);
+            });
+          }
+          if (withdrawals.length) {
+            items.push('<div class="px-3 py-2 text-uppercase small text-muted">Çekim</div>');
+            withdrawals.forEach(item => {
+              items.push(`
+                <div class="notification-item">
+                  <div>
+                    <div class="fw-semibold">Çekim · #${item.id}</div>
+                    <div>${item.user_name} · ₺ ${Number(item.amount).toLocaleString('tr-TR')}</div>
+                  </div>
+                  <div class="timestamp">${formatTimestamp(item.created_at)}</div>
+                </div>`);
+            });
+          }
+          notifListEl.innerHTML = items.join('');
+        }
+
+        const latestDepositId = deposits[0]?.id || null;
+        const latestWithdrawalId = withdrawals[0]?.id || null;
+
+        const hasNewDeposit = state.initialized && latestDepositId && latestDepositId !== state.lastDepositId;
+        const hasNewWithdrawal = state.initialized && latestWithdrawalId && latestWithdrawalId !== state.lastWithdrawalId;
+
+        if ((hasNewDeposit || hasNewWithdrawal) && data.sound_enabled) {
+          notifBell.classList.add('notification-pulse');
+          setTimeout(() => notifBell.classList.remove('notification-pulse'), 600);
+          playNotificationSound();
+        }
+
+        state.lastDepositId = latestDepositId;
+        state.lastWithdrawalId = latestWithdrawalId;
+        if (!state.initialized) {
+          state.initialized = true;
+        }
+      }
+
+      function scheduleNextPoll(intervalMs) {
+        if (state.timerId) {
+          clearTimeout(state.timerId);
+        }
+        state.timerId = setTimeout(fetchNotifications, intervalMs);
+      }
+
+      async function fetchNotifications() {
+        try {
+          const response = await fetch(notifEndpoint, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          });
+          if (!response.ok) throw new Error('İstek başarısız');
+          const data = await response.json();
+          renderNotifications(data);
+          const intervalSeconds = Number(data.poll_interval) || 15;
+          const normalizedSeconds = Math.min(Math.max(intervalSeconds, 5), 60);
+          const intervalMs = normalizedSeconds * 1000;
+          if (intervalMs !== state.pollIntervalMs) {
+            state.pollIntervalMs = intervalMs;
+          }
+          scheduleNextPoll(state.pollIntervalMs);
+        } catch (error) {
+          console.warn('Bildirimler alınamadı', error);
+          scheduleNextPoll(Math.max(state.pollIntervalMs, 30000));
+        }
+      }
+
+      scheduleNextPoll(0);
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

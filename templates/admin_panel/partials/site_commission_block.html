@@ -1,0 +1,43 @@
+<div class="card shadow-sm border-0">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr class="small text-uppercase text-muted">
+            <th>Site</th>
+            <th class="text-end">Yatırım Komisyonu</th>
+            <th class="text-end">Çekim Komisyonu</th>
+            <th class="text-end">Toplam Site Komisyonu</th>
+            <th class="text-end">Teminci (3%)</th>
+            <th class="text-end">Sistem (0.2%)</th>
+            <th class="text-end">Lider Pay</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in site_summaries %}
+          <tr>
+            <td>{{ s.site_name }}</td>
+            <td class="text-end">₺ {{ s.deposit_commission_total|floatformat:2 }}</td>
+            <td class="text-end">₺ {{ s.withdraw_commission_total|floatformat:2 }}</td>
+            <td class="text-end fw-semibold">₺ {{ s.site_commission_total|floatformat:2 }}</td>
+            <td class="text-end">₺ {{ s.teminci_commission_total|floatformat:2 }}</td>
+            <td class="text-end">₺ {{ s.system_commission_total|floatformat:2 }}</td>
+            <td class="text-end">₺ {{ s.liderpay_commission_total|floatformat:2 }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">Bu tarih aralığı için komisyon kaydı bulunamadı.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer bg-light d-flex flex-wrap justify-content-end gap-3 small">
+    <div><strong>Toplam Site Komisyonu:</strong> ₺ {{ total_site_commission|floatformat:2 }}</div>
+    <div><strong>Toplam Teminci Komisyonu:</strong> ₺ {{ total_teminci_commission|floatformat:2 }}</div>
+    <div><strong>Toplam Sistem Komisyonu:</strong> ₺ {{ total_system_commission|floatformat:2 }}</div>
+    <div><strong>Toplam Lider Pay:</strong> ₺ {{ total_liderpay_commission|floatformat:2 }}</div>
+  </div>
+</div>

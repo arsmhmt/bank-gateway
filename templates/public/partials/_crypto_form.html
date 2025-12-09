@@ -1,0 +1,159 @@
+{% if crypto_payment %}
+  <div class="success-card">
+    <p class="text-uppercase text-secondary mb-1">Adres oluşturuldu</p>
+    <h2 class="h4 fw-semibold mb-3">Transferi tamamlayın</h2>
+    <div class="row g-4 align-items-start">
+      <div class="col-md-5">
+        <div id="crypto-qr"
+             class="border rounded p-3 bg-light-subtle"
+             data-address="{{ crypto_payment.address }}"></div>
+      </div>
+      <div class="col-md-7">
+        <div class="success-grid">
+          <div class="success-tile">
+            <label>Coin</label>
+            <p>{{ crypto_payment.coin }}</p>
+          </div>
+          <div class="success-tile">
+            <label>Ağ</label>
+            <p>{{ crypto_payment.network }}</p>
+          </div>
+          <div class="success-tile">
+            <label>Adres</label>
+            <button type="button" onclick="copyValue('{{ crypto_payment.address }}')">Kopyala</button>
+            <p>{{ crypto_payment.address }}</p>
+          </div>
+          <div class="success-tile">
+            <label>Tutar</label>
+            <button type="button" onclick="copyValue('{{ crypto_payment.amount }}')">Kopyala</button>
+            <p>{{ crypto_payment.amount|floatformat:6 }} {{ crypto_payment.coin }}</p>
+          </div>
+        </div>
+
+        <div class="lp-steps mt-4">
+          <strong class="d-block mb-2 text-uppercase text-secondary">İşleyiş</strong>
+          <ol>
+            <li>Gönderim sonrası TX hash'i operatörünüze iletin.</li>
+            <li>On-chain onayları tamamlandığında bakiye yansıtılır.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+{% else %}
+  {% if deposit_address %}
+    <div class="row">
+      <div class="col-md-5 d-flex flex-column align-items-center mb-4 mb-md-0">
+        <div id="crypto-qr"
+             class="border rounded p-3 bg-light-subtle w-100"
+             style="min-height: 210px;"
+             data-address="{{ deposit_address }}">
+        </div>
+
+        <div class="mt-3 w-100">
+          <label class="form-label small mb-1">Cüzdan Adresi</label>
+          <div class="input-group input-group-sm">
+            <input type="text" class="form-control" value="{{ deposit_address }}" readonly>
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    onclick="if (navigator.clipboard) navigator.clipboard.writeText('{{ deposit_address }}');">
+              Kopyala
+            </button>
+          </div>
+          {% if memo_tag %}
+            <div class="alert alert-warning mt-2 py-1 px-2 small">
+              <strong>Memo / Tag:</strong> {{ memo_tag }} — transferde bu bilgiyi eklemeyi unutmayın.
+            </div>
+          {% endif %}
+          <div class="form-text small text-muted mt-1">
+            Yanlış adrese gönderilen kripto geri alınamaz. Kopyaladıktan sonra adresi mutlaka doğrulayın.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-7">
+        <h5 class="mb-2">{{ coin }} / {{ network }} ile kripto yatırımı</h5>
+
+        {% if crypto_mode == 'MANUAL' %}
+          <ol class="small mb-3">
+            <li>Cüzdanınızda veya borsanızda (Binance, Gate.io vb.) <strong>{{ network }}</strong> ağını seçin.</li>
+            <li>Alıcı adresine yukarıdaki adresi girin.</li>
+            <li>İlgili miktarda <strong>{{ coin }}</strong> gönderin ve işlemi onaylayın.</li>
+            <li>Transfer ağ tarafından onaylandığında site yetkilisi yatırımı doğrular.</li>
+          </ol>
+        {% elif crypto_mode == 'LEDGER' %}
+          <ol class="small mb-3">
+            <li>Bu adres, operatörün Ledger ile korunan soğuk cüzdanına bağlıdır.</li>
+            <li><strong>{{ network }}</strong> ağında <strong>{{ coin }}</strong> gönderirken yukarıdaki adresi kullanın.</li>
+            <li>Transfer onaylandıktan sonra bakiye panele yansıtılır.</li>
+          </ol>
+        {% else %}
+          <div class="alert alert-warning small">
+            Kripto cüzdan modu yapılandırılmamış görünüyor. Lütfen site yöneticinizle iletişime geçin.
+          </div>
+        {% endif %}
+
+        {% if rate %}
+          <div class="alert alert-info py-2 small">
+            1 {{ coin }} ≈ {{ rate|floatformat:2 }} {{ fiat_currency }}
+            {% if fiat_value %}
+              <br>
+              Tahmini işlem tutarı: ≈ {{ fiat_value|floatformat:2 }} {{ fiat_currency }}
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="alert alert-secondary py-2 small">
+            Kur bilgisi şu an gerçek zamanlı gösterilmiyor. Lütfen borsa fiyatlarını kontrol edin.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% elif crypto_mode == 'LEDGER' %}
+    <div class="alert alert-info">
+      Bu gateway Ledger destekli. Benzersiz adres oluşturmak için aşağıdaki formu doldurun.
+    </div>
+  {% else %}
+    <div class="alert alert-warning">
+      Aktif kripto adresi bulunamadı. Lütfen başka bir coin/ağ seçin veya site yöneticinizle görüşün.
+    </div>
+  {% endif %}
+
+  <div class="lp-section-title mt-4">Kripto Yatırım Talebi</div>
+  <p class="lp-section-subtitle">
+    Oyuncu bilgilerini ve coin/ağ seçimini girerek transferinizi bildirin. Sistem işlemi kayıt altına alır.
+  </p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="row g-4">
+      <div class="col-md-6 lp-field">
+        <label>Oyuncu ID</label>
+        {{ form.player_id }}
+        {{ form.player_id.errors }}
+      </div>
+      <div class="col-md-3 lp-field">
+        <label>Coin</label>
+        {{ form.coin }}
+        {{ form.coin.errors }}
+      </div>
+      <div class="col-md-3 lp-field">
+        <label>Ağ</label>
+        {{ form.network }}
+        {{ form.network.errors }}
+      </div>
+      <div class="col-md-6 lp-field">
+        <label>Tutar</label>
+        {{ form.amount }}
+        {{ form.amount.errors }}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn-lp">Kripto Adresi Oluştur</button>
+    </div>
+  </form>
+{% endif %}

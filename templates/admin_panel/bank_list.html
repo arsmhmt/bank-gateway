@@ -1,31 +1,74 @@
 
-{% extends 'base_admin.html' %}
+{% extends 'admin_panel/base_admin.html' %}
+
 {% block content %}
-<h2>Banka Hesapları</h2>
-<a href="{% url 'bank_create' %}">Yeni Hesap Ekle</a>
-<table border="1">
-  <tr>
-    <th>Teminci</th>
-    <th>Banka</th>
-    <th>Hesap Sahibi</th>
-    <th>IBAN</th>
-    <th>Limitor</th>
-    <th>Durum</th>
-    <th>İşlemler</th>
-  </tr>
-  {% for b in accounts %}
-  <tr>
-    <td>{{ b.provider.first_name }} {{ b.provider.last_name }}</td>
-    <td>{{ b.bank_name }}</td>
-    <td>{{ b.account_owner }}</td>
-    <td>{{ b.iban }}</td>
-    <td>{{ b.limitor }}</td>
-    <td>{% if b.is_active %}Aktif{% else %}Pasif{% endif %}</td>
-    <td>
-      <a href="{% url 'bank_edit' b.pk %}">Düzenle</a> |
-      <a href="{% url 'bank_delete' b.pk %}">Sil</a>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h4 mb-0">Banka Hesapları</h2>
+      <a href="{% url 'admin_panel:add_bank_account' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Yeni Hesap Ekle
+      </a>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body table-responsive">
+        <table class="table table-striped align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Teminci</th>
+              <th>Banka</th>
+              <th>Hesap Sahibi</th>
+              <th>IBAN</th>
+              <th>Limit</th>
+              <th>Durum</th>
+              <th class="text-end">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for b in accounts %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ b.provider.first_name }} {{ b.provider.last_name }}</td>
+              <td>{{ b.bank_name }}</td>
+              <td>{{ b.account_holder|default:b.account_owner }}</td>
+              <td><code>{{ b.iban }}</code></td>
+              <td>
+                {% if b.account_limit %}
+                  {{ b.account_limit|default:b.limitor }}
+                {% else %}
+                  <span class="text-muted">Sınırsız</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if b.is_active %}
+                  <span class="badge bg-success">Aktif</span>
+                {% else %}
+                  <span class="badge bg-secondary">Pasif</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <a href="{% url 'admin_panel:edit_bank_account' account_id=b.pk %}" class="btn btn-sm btn-outline-warning me-1">Düzenle</a>
+                <form method="post" action="{% url 'admin_panel:toggle_bank_account_active' account_id=b.pk %}" style="display:inline">
+                  {% csrf_token %}
+                  <button class="btn btn-sm btn-outline-secondary me-1" type="submit">
+                    {% if b.is_active %}Pasif Yap{% else %}Aktif Yap{% endif %}
+                  </button>
+                </form>
+                <a href="{% url 'admin_panel:delete_bank_account' account_id=b.pk %}" class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('Bu hesabı silmek istediğinize emin misiniz?');">Sil</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="8" class="text-center text-muted">Henüz banka hesabı tanımlı değil.</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

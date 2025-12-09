@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway Devre Dışı · Lider Pay</title>
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: radial-gradient(circle at 15% 15%, rgba(59,130,246,0.35), transparent 45%),
+             radial-gradient(circle at 85% 20%, rgba(248,113,113,0.35), transparent 45%),
+             #020617;
+      --panel: rgba(15, 23, 42, 0.85);
+      --border: rgba(148, 163, 184, 0.28);
+      --text: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+    }
+    .card {
+      max-width: 560px;
+      width: 100%;
+      padding: 2.25rem;
+      background: var(--panel);
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(2, 6, 23, 0.6);
+    }
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.6rem, 4vw, 2.1rem);
+    }
+    p {
+      margin: 0.75rem 0 1.5rem;
+      line-height: 1.65;
+      color: rgba(248, 250, 252, 0.85);
+    }
+    .tag {
+      display: inline-flex;
+      gap: 0.45rem;
+      align-items: center;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+    }
+    .actions {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .actions a {
+      border-radius: 14px;
+      padding: 0.75rem 1.4rem;
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+    .actions a:hover {
+      background: rgba(148, 163, 184, 0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="tag">{{ branch.name }}</div>
+    <h1>{{ gateway_label }} gateway devre dışı</h1>
+    <p>
+      Bu ödeme kanalı bu site için henüz açılmadı veya geçici olarak kapalı. Yönetici panelinizden
+      {{ gateway_label }} gateway erişimi talep edebilir ya da aktif kanallar üzerinden işlem yapabilirsiniz.
+    </p>
+    <div class="actions">
+      <a href="{{ branch.get_deposit_url }}">Bank Yatırım</a>
+      <a href="https://t.me/liderpay_support" target="_blank" rel="noopener">Destek</a>
+    </div>
+  </div>
+</body>
+</html>

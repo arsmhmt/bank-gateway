@@ -1,0 +1,67 @@
+{% load gateway_tags %}
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="page-wrapper">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <h2 class="page-title mb-0">{{ site.name }} · Gateway Yönetimi</h2>
+            <p class="text-muted small mb-0">Her gateway'i açıp kapatın ve public URL'leri görüntüleyin.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'admin_panel:siteler_list' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Siteler
+            </a>
+            <a href="{% url 'admin_panel:transactions_list' %}?branch={{ branch.id }}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-diagram-3"></i> Bu Site İşlemleri
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        {% for config in gateway_configs %}
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="text-muted small text-uppercase">Gateway</div>
+                                <h5 class="mb-0">{{ config.get_gateway_display }}</h5>
+                            </div>
+                            <span class="badge {% if config.is_enabled %}text-bg-success{% else %}text-bg-secondary{% endif %}">
+                                {% if config.is_enabled %}Aktif{% else %}Pasif{% endif %}
+                            </span>
+                        </div>
+                        <div class="mb-3 small text-muted">
+                            {% with urls=public_urls|dict_get:config.gateway %}
+                                {% if urls %}
+                                    <div class="text-truncate" title="{{ urls.deposit }}">
+                                        <strong>Deposit:</strong> {{ urls.deposit }}
+                                    </div>
+                                    <div class="text-truncate" title="{{ urls.withdraw }}">
+                                        <strong>Withdraw:</strong> {{ urls.withdraw }}
+                                    </div>
+                                {% else %}
+                                    Public kod tanımlı değil.
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                        <div class="mt-auto">
+                            <a href="{% url 'admin_panel:site_gateway_edit' site.id config.gateway %}" class="btn btn-outline-primary btn-sm w-100">
+                                Ayarları Düzenle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center text-muted py-4">
+                        Gateway kaydı bulunamadı.
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

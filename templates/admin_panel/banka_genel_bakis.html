@@ -1,0 +1,108 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}Banka Havale – Genel Bakış{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-4">
+        <div>
+            <small class="text-uppercase text-muted fw-semibold">Gateway Evi</small>
+            <h1 class="h4 mb-0">Banka Havale Genel Bakış</h1>
+        </div>
+        <a href="{% url 'admin_panel:admin_pending_deposits' %}" class="btn btn-sm btn-outline-primary">
+            Bekleyen İşlemlere Git
+        </a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase small mb-1">Bekleyen Yatırımlar</p>
+                    <h3 class="mb-0">{{ pending_deposits }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase small mb-1">Bekleyen Çekimler</p>
+                    <h3 class="mb-0">{{ pending_withdrawals }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase small mb-1">Aktif Banka Hesabı</p>
+                    <h3 class="mb-0">{{ active_accounts }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase small mb-1">Aktif Teminci</p>
+                    <h3 class="mb-0">{{ active_providers }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Bugünkü Hacim</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Toplam Yatırım</p>
+                    <h4>{{ today_in|default:"0" }}</h4>
+                    <p class="text-muted small mb-1 mt-3">Toplam Çekim</p>
+                    <h4>{{ today_out|default:"0" }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Son Banka İşlemleri</h5>
+                    <a href="{% url 'admin_panel:transactions_list' %}?gateway=BANK" class="btn btn-sm btn-outline-primary">
+                        Tümünü Gör
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Site</th>
+                                <th>Yön</th>
+                                <th>Tutar</th>
+                                <th>Zaman</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tx in recent_transactions %}
+                            <tr>
+                                <td>{{ tx.branch.name }}</td>
+                                <td>
+                                    <span class="badge {% if tx.direction == 'IN' %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ tx.get_direction_display }}
+                                    </span>
+                                </td>
+                                <td>{{ tx.amount }} {{ tx.currency }}</td>
+                                <td>{{ tx.created_at|date:"d.m H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-3">Son işlem bulunamadı.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

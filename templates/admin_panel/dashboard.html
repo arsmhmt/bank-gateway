@@ -1,92 +1,241 @@
 {% extends "admin_panel/base.html" %}
 {% load static %}
-{% block title %}Yönetim Paneli{% endblock %}
+{% block title %}Finans Yönetim Paneli{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+  .admin-dashboard .card {
+    border-radius: 1rem;
+  }
+
+  .admin-hero {
+    background: linear-gradient(120deg, rgba(13, 47, 129, 0.18), rgba(224, 38, 60, 0.15));
+    border: 1px solid rgba(13, 47, 129, 0.2);
+    border-radius: 1.25rem;
+  }
+
+  .gateway-chip {
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    border-radius: 1rem;
+    padding: 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .gateway-chip small {
+    color: #6b7280;
+  }
+
+  .pending-table td,
+  .pending-table th {
+    vertical-align: middle;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h2 class="mb-4">📊 Yönetim Paneli</h2>
+<div class="container-fluid py-4 admin-dashboard">
 
-    <div class="row">
-        <!-- Total Deposits -->
-        <div class="col-md-3">
-            <div class="card text-bg-success mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Toplam Yatırım</h5>
-                    <p class="card-text fs-4">{{ total_deposits }} ₺</p>
-                </div>
-            </div>
-        </div>
+  <form method="get" class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      {% include "admin_panel/partials/date_filter_bar.html" %}
+    </div>
+  </form>
 
-        <!-- Total Withdrawals -->
-        <div class="col-md-3">
-            <div class="card text-bg-danger mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Toplam Çekim</h5>
-                    <p class="card-text fs-4">{{ total_withdrawals }} ₺</p>
-                </div>
-            </div>
+  <div class="card admin-hero shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
+        <div>
+          <small class="text-uppercase text-muted fw-semibold">Yönetim Paneli</small>
+          <h2 class="h4 mb-1">Lider Pay · Gateway Kontrol Merkezi</h2>
+          <p class="text-muted mb-0">
+            Banka Havale, Kripto Ödeme ve Kredi Kartı gatewaylerinin bugünkü performansı ve şube dağılımı.
+          </p>
         </div>
+        <span class="badge rounded-pill text-bg-primary px-3 py-2">OWNER DASHBOARD</span>
+      </div>
+    </div>
+  </div>
 
-        <!-- Total Commission -->
-        <div class="col-md-3">
-            <div class="card text-bg-info mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Toplam Komisyon</h5>
-                    <p class="card-text fs-4">{{ total_commission }} ₺</p>
-                </div>
-            </div>
+  <div class="row g-3 mb-4 lp-dashboard-grid">
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0 text-white lp-card" style="background: var(--brand-gradient);">
+        <div class="card-body">
+          <p class="text-uppercase small fw-semibold opacity-75 mb-1">Bugünkü Toplam Yatırım</p>
+          <h3 class="mb-0">₺ {{ today_stats.total_in|default:"0.00" }}</h3>
+          <small class="opacity-75">Banka + Kripto + Kart</small>
         </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0 lp-card">
+        <div class="card-body">
+          <p class="text-uppercase small fw-semibold text-muted mb-1">Bugünkü Toplam Çekim</p>
+          <h3 class="mb-0">₺ {{ today_stats.total_out|default:"0.00" }}</h3>
+          <small class="text-muted">Tüm gatewayler</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0 lp-card">
+        <div class="card-body">
+          <p class="text-uppercase small fw-semibold text-muted mb-1">Bugünkü Komisyon</p>
+          <h3 class="mb-0">₺ {{ today_stats.total_commission|default:"0.00" }}</h3>
+          <small class="text-muted">Site + teminci toplamı</small>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Total Sites -->
-        <div class="col-md-3">
-            <div class="card text-bg-secondary mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Kayıtlı Siteler</h5>
-                    <p class="card-text fs-4">{{ site_count }}</p>
-                </div>
-            </div>
+  <div class="row g-3 mb-5">
+    <div class="col-lg-4">
+      <div class="gateway-chip shadow-sm bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">Banka Havale</div>
+            <small>Aktif şube: {{ gateway_overview.BANK.enabled_branches|default:"0" }}</small>
+          </div>
+          <span class="badge bg-primary">BANK</span>
         </div>
+        <div>
+          <div><strong>Bugünkü Yatırım:</strong> ₺ {{ gateway_overview.BANK.today_in|default:"0.00" }}</div>
+          <div><strong>Bugünkü Çekim:</strong> ₺ {{ gateway_overview.BANK.today_out|default:"0.00" }}</div>
+          <div><strong>Bekleyen:</strong> {{ gateway_overview.BANK.pending_count|default:"0" }}</div>
+        </div>
+        <div class="mt-2">
+          <a href="{% url 'admin_panel:gateways_matrix' %}" class="btn btn-sm btn-outline-primary">Site Bazlı Durum</a>
+        </div>
+      </div>
     </div>
 
-    <!-- Recent Deposits -->
-    <div class="card shadow-sm mt-4">
-        <div class="card-header">
-            Son Yatırımlar
+    <div class="col-lg-4">
+      <div class="gateway-chip shadow-sm bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">Kripto Ödeme</div>
+            <small>Aktif şube: {{ gateway_overview.CRYPTO.enabled_branches|default:"0" }}</small>
+          </div>
+          <span class="badge bg-success">CRYPTO</span>
+        </div>
+        <div>
+          <div><strong>Bugünkü Hacim:</strong> {{ gateway_overview.CRYPTO.today_in|default:"0.00" }} USDT</div>
+          <div><strong>Bekleyen:</strong> {{ gateway_overview.CRYPTO.pending_count|default:"0" }}</div>
+          <div><strong>TRC20 Dinleyici:</strong> {{ gateway_overview.CRYPTO.listener_status|default:"Pasif" }}</div>
+        </div>
+        <div class="mt-2">
+          <a href="{% url 'admin_panel:crypto_overview' %}" class="btn btn-sm btn-outline-success">Kripto Genel Bakış</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="gateway-chip shadow-sm bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">Kredi Kartı</div>
+            <small>Aktif şube: {{ gateway_overview.CARD.enabled_branches|default:"0" }}</small>
+          </div>
+          <span class="badge bg-warning text-dark">CARD</span>
+        </div>
+        <div>
+          <div><strong>Bugünkü Hacim:</strong> ₺ {{ gateway_overview.CARD.today_in|default:"0.00" }}</div>
+          <div><strong>Bekleyen:</strong> {{ gateway_overview.CARD.pending_count|default:"0" }}</div>
+          <div><strong>PSP:</strong> {{ gateway_overview.CARD.psp_status|default:"Bilinmiyor" }}</div>
+        </div>
+        <div class="mt-2">
+          <a href="{% url 'admin_panel:gateways_matrix' %}?gateway=CARD" class="btn btn-sm btn-outline-warning">Site Bazlı Durum</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-7">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-0">Siteler & Gateway Durumu</h5>
+            <div class="text-muted small">Her şubenin üç gateway erişilebilirliği</div>
+          </div>
+          <a href="{% url 'admin_panel:siteler_list' %}" class="btn btn-sm btn-outline-primary">Site Yönetimi</a>
+        </div>
+          <div class="card-body p-0">
+          <div class="lp-table-wrapper">
+            <table class="lp-table table table-sm mb-0 align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Site</th>
+                  <th>Banka</th>
+                  <th>Kripto</th>
+                  <th>Kredi Kartı</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in sites_gateway_matrix %}
+                  <tr>
+                    <td>{{ row.branch.name }}</td>
+                    <td>{% if row.bank %}<span class="badge bg-success">Açık</span>{% else %}<span class="badge bg-secondary">Kapalı</span>{% endif %}</td>
+                    <td>{% if row.crypto %}<span class="badge bg-success">Açık</span>{% else %}<span class="badge bg-secondary">Kapalı</span>{% endif %}</td>
+                    <td>{% if row.card %}<span class="badge bg-success">Açık</span>{% else %}<span class="badge bg-secondary">Kapalı</span>{% endif %}</td>
+                    <td class="text-end">
+                      <a href="{% url 'admin_panel:gateway_branch_detail' row.branch.id %}" class="btn btn-sm btn-outline-primary">Yönet</a>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-3">Henüz tanımlı site bulunmuyor.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Bekleyen İşlemler</h5>
+          <div class="text-muted small">Gateway bazlı bekleyen yatırım / çekim listesi</div>
         </div>
         <div class="card-body p-0">
-            <table class="table table-sm table-hover table-striped m-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>Site</th>
-                        <th>Tutar</th>
-                        <th>Durum</th>
-                        <th>Tarih</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for deposit in recent_deposits %}
-                    <tr>
-                        <td>#{{ deposit.id }}</td>
-                        <td>{{ deposit.site.name }}</td>
-                        <td>{{ deposit.amount }} ₺</td>
-                        <td>
-                            {% if deposit.status == "pending" %}
-                                <span class="badge text-bg-warning">Bekliyor</span>
-                            {% elif deposit.status == "approved" %}
-                                <span class="badge text-bg-success">Onaylandı</span>
-                            {% else %}
-                                <span class="badge text-bg-danger">Reddedildi</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ deposit.created_at|date:"d.m.Y H:i" }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="5" class="text-center text-muted">Kayıt yok</td></tr>
-                    {% endfor %}
-                </tbody>
+          <div class="lp-table-wrapper">
+            <table class="lp-table table table-sm mb-0 align-middle pending-table">
+              <thead class="table-light">
+                <tr>
+                  <th>Site</th>
+                  <th>Tür</th>
+                  <th>Gateway</th>
+                  <th>Tutar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for tx in pending_transactions %}
+                  <tr>
+                    <td>{{ tx.branch.name }}</td>
+                    <td>{% if tx.direction == "IN" %}Yatırım{% else %}Çekim{% endif %}</td>
+                    <td>
+                      {% if tx.gateway == "BANK" %}Banka{% elif tx.gateway == "CRYPTO" %}Kripto{% else %}Kart{% endif %}
+                    </td>
+                    <td>{{ tx.amount }} {{ tx.currency|default:"TRY" }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center text-muted py-3">Bekleyen işlem yok.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
             </table>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+
 </div>
 {% endblock %}

@@ -1,0 +1,100 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Kripto Ödeme – {{ site.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <small class="text-uppercase text-muted fw-semibold">Kripto Ödeme</small>
+            <h1 class="h4 mb-0">{{ site.name }} – Kripto Ödeme</h1>
+        </div>
+        <a href="{% url 'admin_panel:kripto_genel_bakis' %}" class="btn btn-sm btn-outline-secondary">&larr; Kripto Genel Bakış</a>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">Kripto Cüzdanları</div>
+                <div class="card-body">
+                    <a href="{% url 'admin_panel:kripto_koin_list' %}?branch={{ site.id }}" class="btn btn-sm btn-primary mb-3">Bu site için Koinleri Gör</a>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Koin</th>
+                                    <th>Ağ</th>
+                                    <th>Adres</th>
+                                    <th>Yatırım</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for w in wallets %}
+                                <tr>
+                                    <td>{{ w.coin }}</td>
+                                    <td>{{ w.network }}</td>
+                                    <td><code class="text-truncate d-block" style="max-width:320px">{{ w.address|default:w.ledger_xpub }}</code></td>
+                                    <td>{% if w.is_deposit_enabled %}<span class="badge bg-success">Açık</span>{% else %}<span class="badge bg-secondary">Kapalı</span>{% endif %}</td>
+                                    <td>{% if w.is_active %}<span class="badge bg-success">Aktif</span>{% else %}<span class="badge bg-secondary">Pasif</span>{% endif %}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">Bu siteye bağlı kripto cüzdanı bulunmuyor.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">Kripto İşlemleri</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Tür</th>
+                                    <th>Tutar</th>
+                                    <th>Coin</th>
+                                    <th>Zaman</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tx in transactions %}
+                                <tr>
+                                    <td>{% if tx.direction == "IN" %}Yatırım{% else %}Çekim{% endif %}</td>
+                                    <td>{{ tx.amount }} {{ tx.currency }}</td>
+                                    <td>{{ tx.coin }}/{{ tx.network }}</td>
+                                    <td>{{ tx.created_at|date:"d.m.Y H:i" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3">Henüz kripto işlemi bulunmuyor.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if gateway_links %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">Gateway Linkleri</div>
+        <div class="card-body">
+            {% for key, url in gateway_links.items %}
+                <div class="mb-2">
+                    <strong>{{ key }}</strong>: <a href="{{ url }}" target="_blank">{{ url }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

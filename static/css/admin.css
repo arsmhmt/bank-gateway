@@ -177,7 +177,7 @@
         width: 100vw;
         height: 100vh;
         background: rgba(0, 0, 0, 0.4);
-        z-index: 1049;
+        z-index: 1030;
     }
 
     #layoutSidenav_content {
@@ -398,6 +398,61 @@ body {
 .card {
     background-color: var(--card-bg);
     border-color: var(--border-color);
+}
+
+/* Layout helpers for dashboard consistency */
+.lp-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.lp-card {
+    background: inherit;
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 1px solid rgba(31, 41, 55, 0.08);
+    box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+}
+
+.lp-table-wrapper {
+    margin-top: 16px;
+    overflow-x: auto;
+}
+
+.lp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.lp-table th,
+.lp-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(31, 41, 55, 0.06);
+}
+
+.lp-table th {
+    font-weight: 600;
+    background: rgba(2,6,23,0.02);
+    text-align: left;
+}
+
+.lp-table tr:hover td {
+    background: rgba(2,6,23,0.02);
+}
+
+.lp-code-block {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.82rem;
+    background: #020617;
+    color: #e5e7eb;
+    border-radius: 6px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    border: 1px solid rgba(31, 41, 55, 0.12);
+}
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 

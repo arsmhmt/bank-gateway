@@ -1,0 +1,26 @@
+{% extends "public/deposit_base.html" %}
+
+{% block gateway_content %}
+  <div class="info-grid">
+    <div class="info-chip">
+      <label>Minimum Yatırım</label>
+      <strong>₺ {{ branch.deposit_min_amount|floatformat:2 }}</strong>
+    </div>
+    <div class="info-chip">
+      <label>Maksimum Yatırım</label>
+      <strong>
+        {% if branch.deposit_max_amount %}
+          ₺ {{ branch.deposit_max_amount|floatformat:2 }}
+        {% else %}
+          Limitsiz
+        {% endif %}
+      </strong>
+    </div>
+    <div class="info-chip">
+      <label>Gateway</label>
+      <strong>Bank Transfer</strong>
+    </div>
+  </div>
+
+  {% include "public/partials/_bank_form.html" %}
+{% endblock %}

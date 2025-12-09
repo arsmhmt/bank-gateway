@@ -1,0 +1,26 @@
+{% extends "public/deposit_base.html" %}
+
+{% block gateway_content %}
+  <div class="info-grid">
+    <div class="info-chip">
+      <label>Gateway</label>
+      <strong>Kripto</strong>
+    </div>
+    <div class="info-chip">
+      <label>Coin / Ağ</label>
+      <strong>
+        {% if crypto_payment %}
+          {{ crypto_payment.coin }} · {{ crypto_payment.network }}
+        {% else %}
+          Seçime göre
+        {% endif %}
+      </strong>
+    </div>
+    <div class="info-chip">
+      <label>Adres Durumu</label>
+      <strong>{% if generated_address %}Üretildi{% else %}Bekleniyor{% endif %}</strong>
+    </div>
+  </div>
+
+  {% include "public/partials/_crypto_form.html" %}
+{% endblock %}

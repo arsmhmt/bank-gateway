@@ -1,0 +1,149 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<style>
+  .admin-table-wrapper .table {
+    font-size: 0.92rem;
+    white-space: nowrap;
+  }
+
+  .admin-table-wrapper .table td,
+  .admin-table-wrapper .table th {
+    padding: 0.65rem 0.9rem;
+  }
+
+  .admin-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-right: 0.35rem;
+  }
+
+  .admin-actions .btn,
+  .admin-actions form {
+    display: inline-flex;
+  }
+
+  .admin-actions form button {
+    min-width: 38px;
+  }
+
+  @media (max-width: 768px) {
+    .admin-table-wrapper .table {
+      font-size: 0.85rem;
+    }
+    .admin-actions {
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+  }
+</style>
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+  <div>
+    <small class="text-uppercase text-muted fw-semibold">Yönetim Paneli</small>
+    <h2 class="h4 mb-0">Admin Yönetimi</h2>
+    <p class="text-muted mb-0">Yeni admin ekleyin, hesapları düzenleyin, kilitleyin ya da şifrelerini yenileyin.</p>
+  </div>
+  <a href="{% url 'admin_panel:add_admin' %}" class="btn btn-primary">
+    <i class="bi bi-plus-circle me-1"></i> Yeni Admin Ekle
+  </a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted text-uppercase small">Toplam</div>
+        <div class="h4 mb-0">{{ admin_stats.total }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted text-uppercase small">Aktif</div>
+        <div class="h4 mb-0 text-success">{{ admin_stats.active }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted text-uppercase small">Pasif</div>
+        <div class="h4 mb-0 text-danger">{{ admin_stats.inactive }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm admin-table-wrapper">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light text-uppercase small text-muted">
+          <tr>
+            <th>Ad Soyad</th>
+            <th>E-posta</th>
+            <th>Rol</th>
+            <th>Durum</th>
+            <th>Son Giriş</th>
+            <th class="text-end">İşlemler</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for admin in admins %}
+          <tr>
+            <td class="fw-semibold text-truncate" style="max-width: 220px;">{{ admin.first_name|default:'-' }} {{ admin.last_name|default:'' }}</td>
+            <td class="text-truncate" style="max-width: 240px;">{{ admin.email|default:admin.username }}</td>
+            <td>
+              {% if admin.role == admin.ROLE_OWNER %}
+                <span class="badge text-bg-dark">Owner</span>
+              {% else %}
+                <span class="badge text-bg-secondary">Admin</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="admin-status-dot" style="background: {{ admin.is_active|yesno:'linear-gradient(120deg,#22c55e,#4ade80),linear-gradient(120deg,#f87171,#ef4444)' }};"></span>
+              {% if admin.is_active %}Aktif{% else %}Pasif{% endif %}
+            </td>
+            <td class="text-muted small">{{ admin.last_login|default:'-' }}</td>
+            <td>
+              <div class="d-flex justify-content-end gap-1 admin-actions">
+                <a href="{% url 'admin_panel:edit_admin' admin.id %}" class="btn btn-outline-primary btn-sm" title="Düzenle">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'admin_panel:reset_admin_password' admin.id %}" class="btn btn-outline-warning btn-sm" title="Şifre Sıfırla">
+                  <i class="bi bi-shield-lock"></i>
+                </a>
+                {% if admin.id != self_id %}
+                  <form method="post" action="{% url 'admin_panel:toggle_admin_status' admin.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-secondary btn-sm" title="Aktif/Pasif">
+                      {% if admin.is_active %}
+                      <i class="bi bi-slash-circle"></i>
+                      {% else %}
+                      <i class="bi bi-check-circle"></i>
+                      {% endif %}
+                    </button>
+                  </form>
+                  <a href="{% url 'admin_panel:delete_admin' admin.id %}" class="btn btn-outline-danger btn-sm" title="Sil">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">
+              <i class="bi bi-people me-2"></i>Henüz admin bulunmuyor.
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

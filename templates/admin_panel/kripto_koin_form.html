@@ -1,0 +1,85 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Kripto Koin Ekle{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">
+      {% if coin_cfg %}Kripto Koin Düzenle{% else %}Yeni Kripto Koin Ekle{% endif %}
+    </h1>
+    <a href="{% url 'admin_panel:kripto_koin_list' %}" class="btn btn-sm btn-outline-secondary">
+      &larr; Koin Listesine Dön
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      Koin Bilgileri
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            {{ form.branch.label_tag }}
+            {{ form.branch }}
+            {{ form.branch.errors }}
+          </div>
+          <div class="col-md-3 mb-3">
+            {{ form.coin.label_tag }}
+            {{ form.coin }}
+            {{ form.coin.errors }}
+          </div>
+          <div class="col-md-3 mb-3">
+            {{ form.network.label_tag }}
+            {{ form.network }}
+            {{ form.network.errors }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.address.label_tag }}
+          {{ form.address }}
+          {{ form.address.errors }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.label.label_tag }}
+          {{ form.label }}
+          {{ form.label.errors }}
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <div class="form-check mt-4">
+              {{ form.is_active }}
+              {{ form.is_active.label_tag }}
+              {{ form.is_active.errors }}
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="form-check mt-4">
+              {{ form.is_deposit_enabled }}
+              {{ form.is_deposit_enabled.label_tag }}
+              {{ form.is_deposit_enabled.errors }}
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            {{ form.min_deposit_amount.label_tag }}
+            {{ form.min_deposit_amount }}
+            {{ form.min_deposit_amount.errors }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Kaydet
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

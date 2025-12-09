@@ -1,0 +1,68 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}Gateway Kontrol Merkezi{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+      <h2 class="h4 mb-1">Gateway Kontrol Merkezi</h2>
+      <p class="text-muted mb-0">Şube bazlı Banka / Kredi Kartı / Kripto gateway durumlarını yönetin.</p>
+      <a href="{% url 'admin_panel:siteler_list' %}" class="btn btn-outline-secondary btn-sm">
+        Site Yönetimine Dön
+      </a>
+    </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr class="text-uppercase small text-muted">
+              <th>Şube</th>
+              <th class="text-center">Banka</th>
+              <th class="text-center">Kredi Kartı</th>
+              <th class="text-center">Kripto</th>
+              <th class="text-end">Aksiyon</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in branch_rows %}
+            <tr>
+              <td>
+                <strong>{{ row.branch.name }}</strong>
+                <div class="text-muted small">{{ row.branch.domain|default:"-" }}</div>
+              </td>
+              {% for gateway in row.gateways %}
+                <td class="text-center">
+                  <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="branch_id" value="{{ row.branch.id }}">
+                    <input type="hidden" name="gateway" value="{{ gateway.code }}">
+                    {% if gateway.config and gateway.config.is_enabled %}
+                      <button type="submit" class="badge bg-success border-0">AKTİF</button>
+                    {% else %}
+                      <button type="submit" class="badge bg-secondary border-0">PASİF</button>
+                    {% endif %}
+                  </form>
+                </td>
+              {% endfor %}
+              <td class="text-end">
+                <a href="#" class="btn btn-sm btn-outline-primary disabled">Detay (yakında)</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="{{ gateways|length|add:2 }}" class="text-center text-muted py-4">
+                Tanımlı şube bulunamadı.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

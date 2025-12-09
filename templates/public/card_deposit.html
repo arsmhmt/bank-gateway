@@ -1,0 +1,20 @@
+{% extends "public/deposit_base.html" %}
+
+{% block gateway_content %}
+  <div class="info-grid">
+    <div class="info-chip">
+      <label>Gateway</label>
+      <strong>Kredi Kartı</strong>
+    </div>
+    <div class="info-chip">
+      <label>İşlem Durumu</label>
+      <strong>{% if card_payment %}PSP Bekleniyor{% else %}Form Bekleniyor{% endif %}</strong>
+    </div>
+    <div class="info-chip">
+      <label>Limit</label>
+      <strong>₺ {{ branch.deposit_min_amount|floatformat:0 }} - {% if branch.deposit_max_amount %}₺ {{ branch.deposit_max_amount|floatformat:0 }}{% else %}Sınırsız{% endif %}</strong>
+    </div>
+  </div>
+
+  {% include "public/partials/_card_form.html" %}
+{% endblock %}

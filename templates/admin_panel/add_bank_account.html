@@ -1,8 +1,23 @@
+{% extends "admin_panel/base_admin.html" %}
 
 {% block content %}
-<h2>Yeni Banka Hesabı Ekle</h2>
-<form method="post">{% csrf_token %}
-{{ form.as_p }}
-<button type="submit">Kaydet</button>
-</form>
+<div class="row mt-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Yeni Banka Hesabı Ekle</h5>
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="d-flex justify-content-between mt-3">
+            <a href="{% url 'admin_panel:list_bank_accounts' %}" class="btn btn-outline-secondary">← Listeye Dön</a>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

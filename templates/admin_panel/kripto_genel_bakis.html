@@ -1,0 +1,146 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}Kripto Ödeme – Genel Bakış{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <small class="text-uppercase text-muted fw-semibold">Gateway Evi</small>
+            <h1 class="h4 mb-0">Kripto Ödeme – Genel Bakış</h1>
+        </div>
+        <div class="btn-group">
+            <a href="{% url 'admin_panel:kripto_koin_list' %}" class="btn btn-sm btn-primary">
+                Kripto Koinler
+            </a>
+            <a href="{% url 'admin_panel:panel' %}" class="btn btn-sm btn-outline-secondary">
+                Yönetim Paneline Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">Kripto Gateway Açık Site Sayısı</div>
+                <div class="card-body">
+                    <h3 class="mb-0">{{ active_crypto_sites }}</h3>
+                    <small class="text-muted">SiteGatewayConfig · CRYPTO</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">Aktif Kripto Cüzdanları</div>
+                <div class="card-body">
+                    <h3 class="mb-0">{{ active_wallets }}</h3>
+                    <small class="text-muted">CryptoWalletConfig (is_active=True)</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">Bugünkü Kripto Yatırım</div>
+                <div class="card-body">
+                    <h3 class="mb-0">{{ today_volume }}</h3>
+                    <small class="text-muted">PaymentTransaction · CRYPTO</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">TRC20 Dinleyici Durumu</div>
+                <div class="card-body">
+                    {% if listener_active %}
+                        <span class="badge bg-success mb-2">Aktif</span>
+                        <p class="mb-0 small text-muted">TRON explorer ayarları tanımlı görünüyor.</p>
+                    {% else %}
+                        <span class="badge bg-secondary mb-2">Pasif</span>
+                        <p class="mb-0 small text-muted">CRYPTO_TRON_EXPLORER_* ayarlarını kontrol edin.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">Siteler ve Kripto Durumu</div>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Site</th>
+                                <th>Durum</th>
+                                <th class="text-end"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in site_rows %}
+                            <tr>
+                                <td>{{ row.site.name }}</td>
+                                <td>
+                                    {% if row.enabled %}
+                                        <span class="badge bg-success">Açık</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Kapalı</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{% url 'admin_panel:kripto_site_detay' row.site.id %}" class="btn btn-sm btn-outline-success">
+                                        Site Kripto Evi
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-3">Henüz kripto gateway konfigüre edilmemiş.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">Son Kripto İşlemleri</div>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Site</th>
+                        <th>Tür</th>
+                        <th>Tutar</th>
+                        <th>Coin</th>
+                        <th>Zaman</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in recent_tx %}
+                    <tr>
+                        <td>{{ tx.branch.name }}</td>
+                        <td>{% if tx.direction == "IN" %}Yatırım{% else %}Çekim{% endif %}</td>
+                        <td>{{ tx.amount }} {{ tx.currency }}</td>
+                        <td>
+                            {% if tx.crypto_payment %}
+                                {{ tx.crypto_payment.coin }}/{{ tx.crypto_payment.network }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ tx.created_at|date:"d.m.Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">Henüz kripto işlemi bulunmuyor.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends "site_panel/base.html" %}
+{% load static %}
+
+{% block site_content %}
+<div class="site-page-stack">
+  <div class="card site-page-header-card text-white">
+    <div class="card-body">
+      <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+        <div>
+          <span class="page-eyebrow opacity-75">Canlı Destek İşlemleri</span>
+          <h1 class="h3 mb-1">Yatırım Linki Oluştur</h1>
+          <p class="mb-0 opacity-75">Kullanıcılarınıza saniyeler içinde paylaşabileceğiniz güvenli ödeme linkleri üretin.</p>
+        </div>
+        <a href="{% url 'site_panel:deposits' %}" class="btn btn-sm btn-light text-dark">
+          <i class="bi bi-arrow-repeat me-1"></i> Bekleyen Yatırımlar
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {% if payment_link %}
+    <div class="alert alert-success align-items-center d-flex flex-wrap gap-2" role="alert">
+      <div>
+        Yeni link hazır:
+        <strong>{{ payment_link }}</strong>
+      </div>
+      <button class="btn btn-light btn-sm" data-copy="{{ payment_link }}">
+        <i class="bi bi-clipboard"></i> Kopyala
+      </button>
+    </div>
+  {% endif %}
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-7">
+      <div class="card shadow-sm h-100">
+        <div class="card-header border-0 pb-0">
+          <h2 class="h5 mb-1">Link formu</h2>
+          <p class="text-muted small mb-0">Banka seçimi, kullanıcı bilgisi ve tutarı girerek anında link oluşturabilirsiniz.</p>
+        </div>
+        <div class="card-body">
+          <form method="post" novalidate class="row g-3">
+            {% csrf_token %}
+
+            <div class="col-12">
+              <label class="form-label">{{ form.bank_account.label }}</label>
+              {{ form.bank_account }}
+              {% if form.bank_account.help_text %}
+                <div class="form-text">{{ form.bank_account.help_text }}</div>
+              {% endif %}
+              {% if form.bank_account.errors %}
+                <div class="invalid-feedback d-block">{{ form.bank_account.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">{{ form.external_user_id.label }}</label>
+              {{ form.external_user_id }}
+              {% if form.external_user_id.errors %}
+                <div class="invalid-feedback d-block">{{ form.external_user_id.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">{{ form.amount.label }}</label>
+              {{ form.amount }}
+              {% if form.amount.errors %}
+                <div class="invalid-feedback d-block">{{ form.amount.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">{{ form.expires_in_minutes.label }}</label>
+              {{ form.expires_in_minutes }}
+              {% if form.expires_in_minutes.help_text %}
+                <div class="form-text">{{ form.expires_in_minutes.help_text }}</div>
+              {% endif %}
+              {% if form.expires_in_minutes.errors %}
+                <div class="invalid-feedback d-block">{{ form.expires_in_minutes.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+              <div class="col-12">
+                <div class="alert alert-warning mb-0">{{ form.non_field_errors|striptags }}</div>
+              </div>
+            {% endif %}
+
+            <div class="col-12 d-flex justify-content-end pt-2">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-link-45deg me-2"></i> Link Oluştur
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header border-0 pb-0">
+          <h2 class="h6 mb-1">Aktif banka hesapları</h2>
+          <p class="text-muted small mb-0">Güncel banka bilgileri ve IBAN detayları.</p>
+        </div>
+        <div class="card-body">
+          {% if bank_accounts %}
+            <div class="list-group list-group-flush">
+              {% for bank in bank_accounts %}
+                <div class="list-group-item px-0 d-flex justify-content-between align-items-start gap-3">
+                  <div>
+                    <div class="fw-semibold">{{ bank.bank_name }}</div>
+                    <div class="text-muted small">{{ bank.account_holder }}</div>
+                    <code class="d-block small">{{ bank.iban }}</code>
+                  </div>
+                  <button class="btn btn-sm btn-outline-secondary" type="button" data-copy="{{ bank.iban }}" data-copied-label="Kopyalandı">
+                    <i class="bi bi-clipboard"></i>
+                  </button>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted small mb-0">Aktif banka hesabı bulunamadı. Lütfen yönetici ile iletişime geçin.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-header border-0 pb-0">
+          <h2 class="h6 mb-1">Son oluşturulan linkler</h2>
+          <p class="text-muted small mb-0">En yeni 8 link listelenir.</p>
+        </div>
+        <div class="card-body">
+          <div class="list-group list-group-flush">
+            {% for item in recent_links %}
+              <div class="list-group-item px-0 border-0">
+                <div class="d-flex justify-content-between gap-3">
+                  <div class="flex-grow-1">
+                    <div class="fw-semibold">{{ item.deposit.external_user_id }} · ₺ {{ item.deposit.amount|floatformat:2 }}</div>
+                    <div class="text-muted small">
+                      {{ item.deposit.created_at|date:"d.m.Y H:i" }} · {{ item.deposit.provider.get_full_name|default:item.deposit.provider.username }}
+                    </div>
+                    {% if item.link %}
+                      <div class="text-truncate small text-muted">{{ item.link }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="d-flex flex-column align-items-end gap-1">
+                    <span class="status-pill status-pill-{{ item.deposit.status }}">{{ item.deposit.get_status_display }}</span>
+                    {% if item.link %}
+                      <button class="btn btn-sm btn-outline-secondary" data-copy="{{ item.link }}" data-copied-label="Kopyalandı">
+                        <i class="bi bi-clipboard me-1"></i>Kopyala
+                      </button>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <p class="text-muted small mb-0">Henüz oluşturulmuş link yok.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function copyToClipboard(text) {
+    if (!text) {
+      return;
+    }
+
+    navigator.clipboard?.writeText(text)
+      .then(() => showToast('Bilgi panoya kopyalandı'))
+      .catch(() => {
+        const temp = document.createElement('input');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showToast('Bilgi panoya kopyalandı');
+      });
+  }
+
+  function showToast(message) {
+    if (window.showToast) {
+      window.showToast(message, 'success');
+    }
+  }
+
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', () => copyToClipboard(btn.dataset.copy));
+  });
+</script>
+{% endblock %}

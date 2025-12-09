@@ -19,6 +19,15 @@
         <label>Çekim Komisyonu (%)</label>
         <input type="number" step="0.01" name="withdraw_commission" class="form-control" value="{{ provider.withdraw_commission }}">
     </div>
+    <div class="mb-3">
+        <label>Limitor (TL)</label>
+        <input type="number" step="0.01" name="limitor" class="form-control" value="{{ provider.limitor|default:'' }}" placeholder="Limitsiz için boş bırakın">
+        <small class="form-text text-muted">Toplam onaylı+bekleyen yatırımlar bu tutarı aşarsa hesaplar otomatik pasif olur.</small>
+    </div>
+    <div class="mb-3">
+        <label>Yeni Şifre (opsiyonel)</label>
+        <input type="password" name="new_password" class="form-control" placeholder="Boş bırakırsanız şifre değişmez">
+    </div>
     <button type="submit" class="btn btn-primary">Kaydet</button>
 </form>
 {% endblock %}

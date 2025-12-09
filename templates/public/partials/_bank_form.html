@@ -1,0 +1,92 @@
+{% if created_deposit %}
+  <div class="success-card">
+    <p class="text-uppercase text-secondary mb-1">Başarılı</p>
+    <h2 class="h4 fw-semibold mb-2">Talebiniz operatöre iletildi</h2>
+    <p class="text-light">Transferi aşağıdaki bilgilerle tamamlayıp dekontu operatörünüze iletin.</p>
+
+    <div class="success-grid">
+      <div class="success-tile">
+        <label>Referans Kodu</label>
+        <button type="button" onclick="copyValue('{{ created_deposit.id }}')">Kopyala</button>
+        <p>#{{ created_deposit.id }}</p>
+      </div>
+      <div class="success-tile">
+        <label>Banka</label>
+        <p>{{ selected_bank.bank_name }}</p>
+      </div>
+      <div class="success-tile">
+        <label>Hesap Sahibi</label>
+        <button type="button" onclick="copyValue('{{ selected_bank.account_holder }}')">Kopyala</button>
+        <p>{{ selected_bank.account_holder }}</p>
+      </div>
+      <div class="success-tile">
+        <label>IBAN</label>
+        <button type="button" onclick="copyValue('{{ selected_bank.iban }}')">Kopyala</button>
+        <p>{{ selected_bank.iban }}</p>
+      </div>
+      <div class="success-tile">
+        <label>Tutar</label>
+        <button type="button" onclick="copyValue('{{ created_deposit.amount }}')">Kopyala</button>
+        <p>₺ {{ created_deposit.amount|floatformat:2 }}</p>
+      </div>
+    </div>
+
+    <div class="lp-steps mt-4">
+      <ol>
+        <li>Havaleyi belirtilen IBAN'a gönderin.</li>
+        <li>Gönderim sonrası dekontu BetConstruct operatörüne iletin.</li>
+        <li>Operatör onayı sonrası bakiye güncellenir.</li>
+      </ol>
+    </div>
+
+    <div class="success-actions">
+      <a href="https://t.me/liderpay_support" target="_blank" rel="noopener">Telegram Destek</a>
+      <a href="#" onclick="window.location.reload(); return false;">Yeni Talep Oluştur</a>
+    </div>
+  </div>
+{% else %}
+  <div class="lp-section-title">Bank Havale Talebi</div>
+  <p class="lp-section-subtitle">Skin operatörünüz gerçek oyuncular için bu formu kullanır, bilgileri eksiksiz girin.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="row g-4">
+      <div class="col-md-6 lp-field">
+        <label>Ad Soyad</label>
+        {{ form.player_name }}
+        {{ form.player_name.errors }}
+      </div>
+      <div class="col-md-6 lp-field">
+        <label>Kullanıcı ID</label>
+        {{ form.player_id }}
+        {{ form.player_id.errors }}
+      </div>
+      <div class="col-md-6 lp-field">
+        <label>Yatırım Tutarı</label>
+        {{ form.amount }}
+        <small>
+          Minimum ₺{{ branch.deposit_min_amount|floatformat:0 }}
+          {% if branch.deposit_max_amount %}· Maksimum ₺{{ branch.deposit_max_amount|floatformat:0 }}{% endif %}
+        </small>
+        {{ form.amount.errors }}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn-lp">Operatöre Gönder</button>
+    </div>
+  </form>
+
+  <div class="lp-steps mt-4">
+    <strong class="d-block mb-2 text-uppercase text-secondary">İşleyiş</strong>
+    <ol>
+      <li>Formu gönderin → Lider Pay aktif bankayı atar.</li>
+      <li>Banka bilgileri ekranda görünür ve e-posta ile iletilir.</li>
+      <li>Transferi tamamlayıp dekontu gönderdiğinizde operatör onaylar.</li>
+    </ol>
+  </div>
+{% endif %}

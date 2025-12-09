@@ -1,0 +1,82 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Kripto Koinler{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Kripto Koinler</h1>
+    <a href="{% url 'admin_panel:kripto_koin_create' %}" class="btn btn-sm btn-primary">
+      + Yeni Koin Ekle
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      Aktif / Pasif Koin Adresleri
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>Site</th>
+              <th>Koin</th>
+              <th>Ağ</th>
+              <th>Adres</th>
+              <th>Yatırım</th>
+              <th>Durum</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in coins %}
+              <tr>
+                <td>{{ c.branch.name }}</td>
+                <td>{{ c.coin }}</td>
+                <td>{{ c.network }}</td>
+                <td>
+                  <span title="{{ c.address }}">
+                    {{ c.address|slice:":10" }}…{{ c.address|slice:"-6:" }}
+                  </span>
+                </td>
+                <td>
+                  {% if c.is_deposit_enabled %}
+                    <span class="badge bg-success">Açık</span>
+                  {% else %}
+                    <span class="badge bg-secondary">Kapalı</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if c.is_active %}
+                    <span class="badge bg-success">Aktif</span>
+                  {% else %}
+                    <span class="badge bg-secondary">Pasif</span>
+                  {% endif %}
+                </td>
+                <td class="text-end">
+                  <a href="{% url 'admin_panel:kripto_koin_edit' c.id %}"
+                     class="btn btn-sm btn-outline-primary">
+                    Düzenle
+                  </a>
+                  <a href="{% url 'admin_panel:kripto_koin_delete' c.id %}"
+                     class="btn btn-sm btn-outline-danger">
+                    Sil
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="7" class="text-center text-muted py-3">
+                  Henüz tanımlı kripto koin adresi bulunmuyor.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

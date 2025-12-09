@@ -1,0 +1,150 @@
+{% extends "admin_panel/base.html" %}
+
+{% block styles %}{{ block.super }}
+<style>
+  .deposit-link-page .page-title {
+    font-size: 2rem;
+    color: #2d2d2dff;
+    font-weight: 600;
+  }
+
+  .deposit-link-page .card-header h5,
+  .deposit-link-page .card-header h6 {
+    font-size: 1.15rem;
+    color: #000000ff;
+    font-weight: 600;
+  }
+
+  .deposit-link-page .text-muted,
+  .deposit-link-page .form-text {
+    color: #424242ff !important;
+  }
+
+  .deposit-link-page .form-label {
+    font-size: 0.95rem;
+    color: #444444ff;
+    font-weight: 500;
+  }
+
+  .deposit-link-page select,
+  .deposit-link-page input,
+  .deposit-link-page textarea {
+    font-size: 0.95rem;
+  }
+
+  .deposit-link-page .card {
+    border-radius: 14px;
+  }
+
+  .deposit-link-page .input-group .btn {
+    border-radius: 0 0.375rem 0.375rem 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="deposit-link-page">
+  <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+    <h1 class="h3 mb-0 page-title">Yatırım Linki Oluştur</h1>
+    <a href="{% url 'admin_panel:admin_pending_deposits' %}" class="btn btn-outline-light btn-sm">
+      <i class="bi bi-arrow-left"></i> Bekleyen Yatırımlar
+    </a>
+  </div>
+
+  <div class="row">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1">Yatırım Linki Oluştur</h5>
+          <p class="text-muted small mb-0">Canlı destek operatörü için kullanıcıya gönderilecek özel yatırım linki.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Site / Bayi</label>
+            {{ form.branch }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Teminci</label>
+            {{ form.provider }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Banka Hesabı (Opsiyonel)</label>
+            <div class="form-text mb-1">Boş bırakılırsa kullanıcı ödeme sayfasında temincinin aktif bankalarından seçim yapar.</div>
+            {{ form.bank_account }}
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Kullanıcı ID / Username</label>
+              {{ form.external_user_id }}
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Tutar</label>
+              {{ form.amount }}
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Link Süresi (dakika)</label>
+            {{ form.expires_in_minutes }}
+            <div class="form-text">Varsayılan 30 dk. Süre dolunca link otomatik olarak geçersiz olur.</div>
+          </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-link-45deg me-1"></i> Link Oluştur
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5 mt-4 mt-lg-0">
+    <div class="card shadow-sm h-100">
+      <div class="card-header border-0 pb-0">
+        <h6 class="mb-1">Oluşturulan Link</h6>
+        <p class="text-muted small mb-0">Linki kopyalayıp canlı destek üzerinden kullanıcıya gönderebilirsiniz.</p>
+      </div>
+      <div class="card-body d-flex flex-column">
+        {% if payment_link %}
+          <div class="mb-3">
+            <label class="form-label">Yatırım Linki</label>
+            <div class="input-group">
+              <input id="paymentLinkInput" type="text" class="form-control" value="{{ payment_link }}" readonly>
+              <button class="btn btn-outline-secondary" type="button" onclick="copyPaymentLink()">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mb-3 small text-muted">
+            <strong>Durum:</strong> {{ deposit.get_status_display }}<br>
+            <strong>Kullanıcı:</strong> {{ deposit.external_user_id }}<br>
+            <strong>Tutar:</strong> {{ deposit.amount }} TL
+          </div>
+        {% else %}
+          <p class="text-muted small mb-0">Henüz bir link oluşturulmadı. Sol taraftaki formu doldurup kaydedin.</p>
+        {% endif %}
+        <div class="mt-auto small text-muted">
+          Linkler, seçtiğiniz süre sonunda otomatik olarak geçersiz olur.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyPaymentLink() {
+    const input = document.getElementById('paymentLinkInput');
+    if (!input) return;
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    if (window.showToast) {
+      window.showToast('Link panoya kopyalandı', 'success');
+    }
+  }
+</script>
+{% endblock %}

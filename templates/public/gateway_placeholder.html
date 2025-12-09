@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ branch.name }} · {{ gateway_label }} Gateway</title>
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: #020617;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      max-width: 540px;
+      width: 100%;
+      padding: 2rem;
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(2, 6, 23, 0.65);
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+    }
+    p {
+      line-height: 1.6;
+      color: rgba(226, 232, 240, 0.9);
+    }
+    .tag {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-size: 0.8rem;
+      color: rgba(226, 232, 240, 0.75);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>{{ gateway_label }} Gateway</h1>
+    <p>
+      Bu kanal {{ branch.name }} sitesi için aktif. Entegre ödeme deneyimi kısa süre içinde yayında
+      olacak. Şimdilik bank transferi kanalını kullanabilirsiniz.
+    </p>
+    {% if prefill.player_id or prefill.amount %}
+      <div class="tag">
+        Ön doldurma •
+        {% if prefill.player_id %}ID: {{ prefill.player_id }}{% endif %}
+        {% if prefill.amount %}&nbsp;·&nbsp;₺ {{ prefill.amount }}{% endif %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,20 +1,60 @@
-
+{% extends "admin_panel/base.html" %}
 {% block content %}
-<h2>Site API Anahtarları</h2>
-<table>
-<tr><th>Site Adı</th><th>Aktif API Key</th><th>İşlem</th></tr>
-{% for site in clients %}
-<tr>
-<td>{{ site.name }}</td>
-<td>
-  {% if site.apikey.key %}
-    {{ site.apikey.key }}
-  {% else %}
-    -
-  {% endif %}
-</td>
-<td><a href="{% url 'admin_panel:generate_api_key' site.id %}">Yenile / Oluştur</a></td>
-</tr>
-{% endfor %}
-</table>
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+  <div>
+    <h2 class="h4 mb-1">Site API Anahtarları</h2>
+    <p class="text-muted mb-0">Her site için geçerli API anahtarlarını görüntüleyin veya yeniden oluşturun.</p>
+  </div>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr class="small text-uppercase text-muted">
+            <th>Site Adı</th>
+            <th>Aktif API Key</th>
+            <th>Durum</th>
+            <th class="text-end">İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for site in clients %}
+          <tr>
+            <td>{{ site.name }}</td>
+            <td>
+              {% if site.api_key %}
+                <code class="small text-truncate d-inline-block" style="max-width: 260px;">
+                  {{ site.api_key.key }}
+                </code>
+              {% else %}
+                <span class="text-muted">-</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if site.api_key %}
+                <span class="badge bg-success-subtle text-success">Aktif</span>
+              {% else %}
+                <span class="badge bg-secondary-subtle text-secondary">Tanımlı Değil</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <a href="{% url 'admin_panel:generate_api_key' site.id %}" class="btn btn-sm btn-outline-primary">
+                {% if site.api_key %}Yenile{% else %}Oluştur{% endif %}
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center text-muted py-4">Henüz kayıtlı site bulunmuyor.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

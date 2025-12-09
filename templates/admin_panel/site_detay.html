@@ -1,0 +1,130 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}Site Detay – {{ site.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <small class="text-uppercase text-muted fw-semibold">Site Yönetimi</small>
+            <h1 class="h4 mb-0">{{ site.name }}</h1>
+        </div>
+        <a href="{% url 'admin_panel:siteler_list' %}" class="btn btn-sm btn-outline-secondary">
+            &larr; Site Listesine Dön
+        </a>
+    </div>
+
+    <div class="row g-3">
+        <!-- Site Bilgileri -->
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Site Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Site Adı</dt>
+                        <dd class="col-sm-8">{{ site.name }}</dd>
+
+                        <dt class="col-sm-4">Domain</dt>
+                        <dd class="col-sm-8">{{ site.domain|default:"Tanımlı değil" }}</dd>
+
+                        <dt class="col-sm-4">Site Kodu</dt>
+                        <dd class="col-sm-8"><code>{{ site.site_code }}</code></dd>
+
+                        <dt class="col-sm-4">Public Kod</dt>
+                        <dd class="col-sm-8"><code>{{ site.public_code }}</code></dd>
+
+                        <dt class="col-sm-4">Callback URL</dt>
+                        <dd class="col-sm-8 text-truncate">{{ site.callback_url|default:"Tanımlı değil" }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gateway Durumu -->
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Gateway Durumu</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="gateway_bank" name="gateway_bank"
+                                   {% if gateway_bank_enabled %}checked{% endif %}>
+                            <label class="form-check-label" for="gateway_bank">
+                                Banka Havale Gateway
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="gateway_crypto" name="gateway_crypto"
+                                   {% if gateway_crypto_enabled %}checked{% endif %}>
+                            <label class="form-check-label" for="gateway_crypto">
+                                Kripto Ödeme Gateway
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="gateway_card" name="gateway_card"
+                                   {% if gateway_card_enabled %}checked{% endif %}>
+                            <label class="form-check-label" for="gateway_card">
+                                Kredi Kartı Gateway
+                            </label>
+                        </div>
+
+                        <p class="text-muted small mb-3">
+                            Bu anahtarlar gateway'in bu site için aktif/pasif olmasını belirler. Detay ayarlar ilgili gateway evinden yapılır.
+                        </p>
+
+                        <button type="submit" class="btn btn-primary">
+                            Kaydet
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gateway Evleri -->
+    <div class="card shadow-sm mt-3">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Gateway Evleri</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <h6>Banka Havale Evi</h6>
+                    <p class="small text-muted mb-2">
+                        Teminci, banka hesapları ve banka yatırımlarının yönetimi.
+                    </p>
+                    <a href="{% url 'admin_panel:banka_genel_bakis' %}" class="btn btn-outline-primary btn-sm w-100">
+                        Banka Havale Paneline Git
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <h6>Kripto Ödeme Evi</h6>
+                    <p class="small text-muted mb-2">
+                        Bu siteye bağlı kripto cüzdanları, coin/network ayarları ve kripto hacmi.
+                    </p>
+                    <a href="{% url 'admin_panel:kripto_site_detay' site.id %}" class="btn btn-outline-success btn-sm w-100">
+                        Kripto Ödeme Paneline Git
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <h6>Kredi Kartı Evi</h6>
+                    <p class="small text-muted mb-2">
+                        Bu site için bağlı sanal POS / PSP ayarları ve kart hacmi.
+                    </p>
+                    <a href="{% url 'admin_panel:kredi_karti_site_detay' site.id %}" class="btn btn-outline-warning btn-sm w-100">
+                        Kredi Kartı Paneline Git
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "public/deposit_base.html" %}
+
+{% block gateway_content %}
+  <div class="info-grid">
+    <div class="info-chip">
+      <label>Gateway</label>
+      <strong>Kredi Kartı</strong>
+    </div>
+    <div class="info-chip">
+      <label>Durum</label>
+      <strong>{{ card_payment.get_status_display }}</strong>
+    </div>
+  </div>
+
+  {% if psp_redirect_url %}
+    <div class="success-card">
+      <h2 class="h5">3D Secure doğrulamasına yönlendiriliyorsunuz</h2>
+      <p class="text-light">Eğer otomatik yönlendirme başlamadıysa, aşağıdaki bağlantıya tıklayın.</p>
+      <div class="success-actions">
+        <a class="btn btn-primary" href="{{ psp_redirect_url }}" target="_blank" rel="noopener">Kart Ödeme Sayfasına Git</a>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-info">PSP yönlendirme bağlantısı henüz hazır değil.</div>
+  {% endif %}
+{% endblock %}

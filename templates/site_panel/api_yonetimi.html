@@ -1,0 +1,163 @@
+{% extends 'site_panel/base.html' %}
+{% block title %}API Yönetimi - {{ site_name }}{% endblock %}
+
+{% block site_content %}
+<div class="site-page-stack">
+  <div class="card site-page-header-card">
+    <div class="card-body">
+      <h3 class="mb-1">API Yönetimi</h3>
+      <div class="text-white-50">Bu sayfada LiderPay BANKA HAVALE ve KRİPTO ÖDEME entegrasyonu için API anahtarınızı ve örnek istekleri bulabilirsiniz.</div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h6>Kimlik Doğrulama</h6>
+          <p class="small text-muted">API Anahtarınız (kısmen maskelenmiş):</p>
+          <div class="mb-2"><code>{{ masked_api_key }}</code></div>
+          <p class="small text-muted">Tam anahtar (gizlenmiş). Göster veya kopyala:</p>
+          <div class="d-flex align-items-center">
+            <input id="site-api-key" type="text" class="form-control me-2" value="{{ api_key }}" readonly
+                   style="max-width:420px; font-family: monospace;" />
+            <button id="toggle-api-key" class="btn btn-outline-secondary me-2" type="button">Göster</button>
+            <button id="copy-api-key" class="btn btn-primary" type="button">Kopyala</button>
+          </div>
+          <script>
+            (function(){
+              const input = document.getElementById('site-api-key');
+              const toggle = document.getElementById('toggle-api-key');
+              const copyBtn = document.getElementById('copy-api-key');
+
+              // Mask the value by default
+              const full = input.value || '';
+              function maskValue(v){
+                if(!v) return '';
+                if(v.length <= 12) return v.replace(/.(?=.{4})/g, '*');
+                return v.slice(0,6) + '...' + v.slice(-6);
+              }
+              input.value = maskValue(full);
+
+              let shown = false;
+              toggle.addEventListener('click', function(){
+                if(!shown){
+                  input.value = full;
+                  toggle.textContent = 'Gizle';
+                  shown = true;
+                } else {
+                  input.value = maskValue(full);
+                  toggle.textContent = 'Göster';
+                  shown = false;
+                }
+              });
+
+              copyBtn.addEventListener('click', function(){
+                // Temporarily place full value into a hidden textarea for copy
+                const ta = document.createElement('textarea');
+                ta.style.position = 'fixed'; ta.style.opacity = '0';
+                ta.value = full;
+                document.body.appendChild(ta);
+                ta.select();
+                try{
+                  document.execCommand('copy');
+                  copyBtn.textContent = 'Kopyalandı';
+                  setTimeout(()=> copyBtn.textContent = 'Kopyala', 2000);
+                }catch(e){
+                  copyBtn.textContent = 'Kopyalanamadı';
+                  setTimeout(()=> copyBtn.textContent = 'Kopyala', 2000);
+                }
+                document.body.removeChild(ta);
+              });
+            })();
+          </script>
+          <p class="small mt-2">İstemciler `api_key` değerini header veya query parametre ile gönderebilir:</p>
+          <ul>
+            <li><code>X-API-KEY: {{ api_key }}</code></li>
+            <li><code>?api_key={{ api_key }}</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h6>Kullanılabilir Gateway'ler</h6>
+          <ul class="list-unstyled">
+            <li>
+              <strong>Banka Havale:</strong>
+              {% if enabled_gateways.BANK %}
+                <span class="badge bg-success ms-2">Açık</span>
+              {% else %}
+                <span class="badge bg-secondary ms-2">Kapalı</span>
+                <div class="small text-muted mt-1">Bu site için Banka Havale şu anda kapalı. Lütfen yönetim paneli ile iletişime geçin.</div>
+              {% endif %}
+            </li>
+            <li class="mt-2">
+              <strong>Kripto Ödeme:</strong>
+              {% if enabled_gateways.CRYPTO %}
+                <span class="badge bg-success ms-2">Açık</span>
+              {% else %}
+                <span class="badge bg-secondary ms-2">Kapalı</span>
+                <div class="small text-muted mt-1">Bu site için Kripto Ödeme şu anda kapalı. Lütfen yönetim paneli ile iletişime geçin.</div>
+              {% endif %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-body">
+      <h6>Endpoint Özeti</h6>
+      <p class="small text-muted">Base URL: <code>{{ base_url }}</code></p>
+      <ul class="list-unstyled">
+        <li><code>POST {{ base_url }}{{ endpoints.deposit_create_url }}</code> — Yatırım isteği oluştur (BANK veya KRIPTO).</li>
+        <li class="mt-1"><code>POST {{ base_url }}{{ endpoints.withdraw_create_url }}</code> — Çekim isteği oluştur.</li>
+        <li class="mt-1"><code>GET {{ base_url }}{{ endpoints.txn_status_url }}?payment_token=...</code> — İşlem durumunu sorgula.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-body">
+      <h6>Örnek İstekler</h6>
+      <p class="small text-muted">Aşağıdaki örnekler yalnızca ilgili gateway site için etkinse görüntülenir.</p>
+
+      {% if enabled_gateways.BANK %}
+      <div class="mb-3">
+        <div class="fw-semibold">Banka Havale — Yatırım (BANK)</div>
+        <pre><code>curl -X POST "{{ base_url }}{{ endpoints.deposit_create_url }}" \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: {{ api_key }}" \
+  -d '{{ examples.bank_deposit|escape }}'
+        </code></pre>
+      </div>
+      {% endif %}
+
+      {% if enabled_gateways.CRYPTO %}
+      <div class="mb-3">
+        <div class="fw-semibold">Kripto Ödeme — Yatırım (CRYPTO)</div>
+        <pre><code>curl -X POST "{{ base_url }}{{ endpoints.deposit_create_url }}" \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: {{ api_key }}" \
+  -d '{{ examples.crypto_deposit|escape }}'
+        </code></pre>
+      </div>
+      {% endif %}
+
+      <div>
+        <div class="fw-semibold">İşlem Durumu</div>
+        <pre><code>curl "{{ base_url }}{{ endpoints.txn_status_url }}{{ examples.txn_status }}" \
+  -H "X-API-KEY: {{ api_key }}"
+        </code></pre>
+      </div>
+
+      <div class="small text-muted mt-3">Detaylı teknik dokümantasyon için yönetim paneli veya destek ekibi ile iletişime geçebilirsiniz.</div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

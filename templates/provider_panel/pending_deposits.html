@@ -2,48 +2,113 @@
 {% block title %}Bekleyen Yatırımlar{% endblock %}
 {% block content %}
 
+<style>
+  .pending-table th,
+  .pending-table td {
+    vertical-align: middle;
+  }
+
+  .pending-table .action-cell {
+    white-space: nowrap;
+  }
+
+  .pending-table .action-cell form {
+    display: inline-block;
+  }
+
+  @media (max-width: 767.98px) {
+    .pending-table {
+      border: none;
+    }
+
+    .pending-table thead {
+      display: none;
+    }
+
+    .pending-table tbody tr {
+      display: block;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .pending-table tbody tr td {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.3rem 0;
+      font-size: 0.95rem;
+    }
+
+    .pending-table tbody tr td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .pending-table .action-cell {
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .pending-table .action-cell form,
+    .pending-table .action-cell button {
+      width: 100%;
+    }
+  }
+</style>
+
 <div class="card shadow">
-    <div class="card-header bg-dark text-white">
-        Bekleyen Yatırımlar
+    <div class="card-header bg-dark text-white d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+        <h5 class="mb-0">Bekleyen Yatırımlar</h5>
+        <small class="text-white-50">Toplam: {{ deposits|length }}</small>
     </div>
-    <div class="card-body table-responsive">
-        <table class="table table-hover table-striped align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Kullanıcı</th>
-                    <th>Tutar</th>
-                    <th>Banka</th>
-                    <th>IBAN</th>
-                    <th>Tarih</th>
-                    <th>İşlem</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for deposit in deposits %}
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle pending-table mb-0">
+                <thead class="table-light">
                     <tr>
-                        <td>{{ deposit.id }}</td>
-                        <td>{{ deposit.user_name }}</td>
-                        <td>{{ deposit.amount }} ₺</td>
-                        <td>{{ deposit.bank_name }}</td>
-                        <td>{{ deposit.iban }}</td>
-                        <td>{{ deposit.created_at|date:"d M Y H:i" }}</td>
-                        <td>
-                            <form action="{% url 'provider_panel:approve_deposit' deposit.id %}" method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-success">Onayla</button>
-                            </form>
-                            <form action="{% url 'provider_panel:reject_deposit' deposit.id %}" method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-danger">Reddet</button>
-                            </form>
-                        </td>
+                        <th>ID</th>
+                        <th>Kullanıcı</th>
+                        <th>Tutar</th>
+                        <th>Banka</th>
+                        <th>IBAN</th>
+                        <th>Tarih</th>
+                        <th>İşlem</th>
                     </tr>
-                {% empty %}
-                    <tr><td colspan="7" class="text-center text-muted">Bekleyen yatırım bulunmamaktadır.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for deposit in deposits %}
+                        <tr>
+                            <td data-label="ID">{{ deposit.id }}</td>
+                            <td data-label="Kullanıcı">{{ deposit.user_name }}</td>
+                            <td data-label="Tutar" class="fw-semibold">₺ {{ deposit.amount|floatformat:2 }}</td>
+                            <td data-label="Banka">{{ deposit.bank_name }}</td>
+                            <td data-label="IBAN">
+                                <code class="small">{{ deposit.iban }}</code>
+                            </td>
+                            <td data-label="Tarih">{{ deposit.created_at|date:"d.m.Y H:i" }}</td>
+                            <td data-label="İşlem" class="action-cell">
+                                <form action="{% url 'provider_panel:approve_deposit' deposit.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm w-100">Onayla</button>
+                                </form>
+                                <form action="{% url 'provider_panel:reject_deposit' deposit.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm w-100">Reddet</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">Bekleyen yatırım bulunmamaktadır.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

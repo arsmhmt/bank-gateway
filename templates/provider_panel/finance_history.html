@@ -1,27 +1,73 @@
 
 {% extends 'provider_panel/base.html' %}
+{% block title %}Finans Geçmişi{% endblock %}
 {% block content %}
-<h2>Finansal İşlem Geçmişi</h2>
-<form method="get" style="margin-bottom: 20px;">
-  Başlangıç Tarihi: <input type="date" name="start_date" value="{{ filters.start }}">
-  Bitiş Tarihi: <input type="date" name="end_date" value="{{ filters.end }}">
-  Banka: <input type="text" name="bank_name" value="{{ filters.bank }}">
-  <button type="submit">Filtrele</button>
-</form>
 
-<table border="1">
-  <tr><th>Tarih</th><th>Tür</th><th>Kullanıcı</th><th>Tutar</th><th>Banka</th><th>Durum</th></tr>
-  {% for txn in transactions %}
-    <tr>
-      <td>{{ txn.created_at|date:"d.m.Y H:i" }}</td>
-      <td>{% if txn.type == "deposit" %}Yatırım{% else %}Çekim{% endif %}</td>
-      <td>{{ txn.full_name }}</td>
-      <td>{{ txn.amount }} TL</td>
-      <td>{{ txn.bank_name }}</td>
-      <td>{{ txn.status }}</td>
-    </tr>
-  {% empty %}
-    <tr><td colspan="6">İşlem bulunamadı.</td></tr>
-  {% endfor %}
-</table>
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-dark text-white">
+    Filtrele
+  </div>
+  <div class="card-body">
+    <form method="get" class="row g-3">
+      <div class="col-md-4">
+        <label for="start_date" class="form-label">Başlangıç Tarihi</label>
+        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.start }}">
+      </div>
+      <div class="col-md-4">
+        <label for="end_date" class="form-label">Bitiş Tarihi</label>
+        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ filters.end }}">
+      </div>
+      <div class="col-md-4">
+        <label for="bank_name" class="form-label">Banka</label>
+        <div class="input-group">
+          <input type="text" id="bank_name" name="bank_name" class="form-control" value="{{ filters.bank }}" placeholder="Banka adı">
+          <button type="submit" class="btn btn-primary">Filtrele</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-secondary text-white">
+    Finansal İşlem Geçmişi
+  </div>
+  <div class="card-body table-responsive">
+    <table class="table table-sm table-bordered table-striped align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Tarih</th>
+          <th>Tür</th>
+          <th>Kullanıcı</th>
+          <th class="text-end">Tutar</th>
+          <th>Banka / IBAN</th>
+          <th>Durum</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for txn in transactions %}
+        <tr>
+          <td>{{ txn.created_at|date:"d.m.Y H:i" }}</td>
+          <td>
+            {% if txn.type == "deposit" %}
+              <span class="badge bg-success">Yatırım</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">Çekim</span>
+            {% endif %}
+          </td>
+          <td>{{ txn.full_name }}</td>
+          <td class="text-end">₺ {{ txn.amount }}</td>
+          <td>{{ txn.bank_name }}</td>
+          <td>{{ txn.status }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted py-3">İşlem bulunamadı.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 {% endblock %}

@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ branch.name }} · Lider Pay Çoklu Gateway</title>
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #01030a;
+      --accent: #2563eb;
+      --accent-2: #f97316;
+      --panel: rgba(10, 12, 24, 0.85);
+      --border: rgba(148, 163, 184, 0.3);
+      --text: #f8fafc;
+      --muted: rgba(148, 163, 184, 0.75);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(37,99,235,0.35), transparent 45%),
+                  radial-gradient(circle at 80% 15%, rgba(249,115,22,0.4), transparent 50%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .hero {
+      text-align: center;
+      padding: 3.5rem 1rem 1.5rem;
+    }
+    .hero img {
+      height: 62px;
+      filter: drop-shadow(0 20px 45px rgba(0,0,0,0.55));
+    }
+    .hero h1 {
+      margin-top: 1rem;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      letter-spacing: 0.05em;
+    }
+    .hero .meta {
+      margin-top: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .hero .meta span {
+      border-radius: 999px;
+      padding: 0.35rem 1rem;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .lp-shell {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+    .lp-card {
+      background: var(--panel);
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      padding: clamp(1.25rem, 3vw, 2.75rem);
+      box-shadow: 0 30px 80px rgba(1, 6, 21, 0.75);
+      backdrop-filter: blur(20px);
+    }
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .tabs a {
+      text-decoration: none;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 0.5rem 1.2rem;
+      border: 1px solid transparent;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+    .tabs a.active {
+      color: var(--text);
+      border-color: rgba(37, 99, 235, 0.6);
+      background: rgba(37, 99, 235, 0.12);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+    }
+    .tabs a:hover {
+      color: var(--text);
+      border-color: rgba(37, 99, 235, 0.4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .info-chip {
+      border-radius: 18px;
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .info-chip label {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .info-chip strong {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 1.05rem;
+    }
+    .prefill-pill {
+      margin-bottom: 1.25rem;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.35);
+      border-radius: 16px;
+      padding: 0.75rem 1rem;
+      display: inline-flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+    }
+    .prefill-pill span {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 0.25rem 0.8rem;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem 0 3rem;
+      font-size: 0.9rem;
+    }
+    .lp-section-title {
+      margin-bottom: 0.5rem;
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+    .lp-section-subtitle {
+      margin-bottom: 1.25rem;
+      color: var(--muted);
+    }
+    .success-card {
+      border-radius: 26px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: linear-gradient(135deg, #0b1228, #040714);
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      color: #f8fafc;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+    }
+    .success-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1.2rem;
+    }
+    .success-tile {
+      border-radius: 18px;
+      padding: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      position: relative;
+    }
+    .success-tile button {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-radius: 10px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.8rem;
+    }
+    .success-tile label {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(248, 250, 252, 0.7);
+    }
+    .success-tile p {
+      margin: 0.55rem 0 0;
+      font-size: 1.05rem;
+      word-break: break-all;
+    }
+    .success-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .success-actions a {
+      flex: 1;
+      text-align: center;
+      border-radius: 16px;
+      padding: 0.85rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: #f1f5f9;
+      text-decoration: none;
+    }
+    .lp-steps {
+      margin-top: 2rem;
+      padding: 1.25rem 1.5rem;
+      border-radius: 20px;
+      border: 1px dashed rgba(148, 163, 184, 0.4);
+      background: rgba(8, 13, 31, 0.45);
+    }
+    .lp-steps ol {
+      margin: 0;
+      padding-left: 1.25rem;
+      color: var(--muted);
+    }
+    .btn-lp {
+      width: 100%;
+      border-radius: 18px;
+      padding: 1rem 1.5rem;
+      border: 0;
+      background: linear-gradient(120deg, #2563eb, #f97316);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: #fff;
+      box-shadow: 0 25px 45px rgba(14, 17, 43, 0.55);
+    }
+    .lp-field label {
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+    .lp-field small {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <img src="{% static 'img/lider-logo.png' %}" alt="Lider Pay">
+    <h1>{{ branch.name }} · Multi-Gateway Katmanı</h1>
+    <div class="meta">
+      <span>Kod · {{ branch.public_code }}</span>
+      {% if branch.domain %}<span>{{ branch.domain }}</span>{% endif %}
+      <span>{{ branch.get_deposit_url }}</span>
+    </div>
+  </section>
+
+  <div class="lp-shell">
+    <div class="lp-card">
+      <nav class="tabs" aria-label="Gateway tabs">
+        {% for tab in gateway_tabs %}
+          <a href="{{ tab.url }}" class="{% if tab.is_active %}active{% endif %}">{{ tab.label }}</a>
+        {% empty %}
+          <span class="text-warning">Hiçbir gateway aktif değil.</span>
+        {% endfor %}
+      </nav>
+
+      {% if prefill.player_id or prefill.amount %}
+        <div class="prefill-pill">
+          <strong>Ön Doldurma</strong>
+          {% if prefill.player_id %}<span>ID: {{ prefill.player_id }}</span>{% endif %}
+          {% if prefill.amount %}<span>Tutar: ₺ {{ prefill.amount|floatformat:2 }}</span>{% endif %}
+        </div>
+      {% endif %}
+
+      {% block gateway_content %}{% endblock %}
+    </div>
+  </div>
+
+  <footer>
+    Lider Pay · Çoklu ödeme katmanı
+  </footer>
+  <script>
+    function copyValue(value) {
+      if (!value) return;
+      navigator.clipboard?.writeText(value.toString());
+    }
+  </script>
+</body>
+</html>

@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Admin Panel - Paycrypt{% endblock %}</title>
+        <title>{% block title %}Lider Pay Admin Panel{% endblock %}</title>
 
         <!-- Favicon -->
         <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
@@ -41,31 +41,42 @@
         <style>
             /* Import unified brand variables */
             :root {
-                /* Brand Colors - Exact logo colors as primary */
-                --brand-primary: #4e73df;
-                /* Logo blue */
-                --brand-secondary: #FF6B35;
-                /* Logo orange */
-                --brand-primary-dark: #3d5bc7;
-                /* Darker blue */
-                --brand-secondary-dark: #e05d2e;
-                /* Darker orange */
+                /* Lider Pay brand palette: blue / red / white */
+                --brand-primary: #0d2f81; /* royal blue */
+                --brand-secondary: #e0263c; /* vivid red */
+                --brand-primary-dark: #081f57;
+                --brand-secondary-dark: #b11c31;
 
-                /* Logo-based gradients for admin */
-                --brand-gradient: linear-gradient(135deg, #4e73df 0%, #FF6B35 100%);
-                --brand-gradient-dark: linear-gradient(135deg, #3d5bc7 0%, #e05d2e 100%);
-                --brand-gradient-reverse: linear-gradient(135deg, #FF6B35 0%, #4e73df 100%);
+                /* Brand gradients */
+                --brand-gradient: linear-gradient(135deg, #0d2f81 0%, #e0263c 100%);
+                --brand-gradient-dark: linear-gradient(135deg, #081f57 0%, #b11c31 100%);
+                --brand-gradient-reverse: linear-gradient(135deg, #e0263c 0%, #0d2f81 100%);
 
                 /* Admin specific variants */
-                --admin-primary: var(--brand-primary);
                 --admin-secondary: var(--brand-secondary);
                 --admin-surface: #f8fafc;
                 --admin-surface-dark: #0f172a;
+
+                /* Cyber / neon accents */
+                --cyber-primary: #38bdf8;
+                --cyber-accent: #a855f7;
+                --cyber-glow-soft: rgba(56, 189, 248, 0.35);
+                --cyber-glow-strong: rgba(59, 130, 246, 0.75);
+                --cyber-surface-dark: #020617;
             }
 
             /* Global font */
             body {
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-size: 1.2rem; /* ~20% larger base font size */
+            }
+
+            body[data-theme="dark"] {
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08), transparent 55%),
+                    radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.16), transparent 55%),
+                    var(--cyber-surface-dark);
+                color: #e5e7eb;
             }
 
             /* Sidebar logo styling */
@@ -73,6 +84,10 @@
                 max-height: 50px !important;
                 transition: all 0.3s ease;
                 filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+                background: #ffffff;
+                border-radius: 999px;
+                padding: 4px 10px;
+                box-shadow: 0 4px 12px rgba(15, 23, 42, 0.35);
             }
 
             .sidebar-logo:hover {
@@ -92,96 +107,75 @@
                 max-height: 60px !important;
             }
 
-
-            /* Sidebar Enhancements - Updated with brand colors */
-            .sb-sidenav {
-                background: var(--brand-gradient);
-                color: #fff;
-                width: 240px;
-                min-width: 240px;
-                max-width: 240px;
-                transition: width 0.3s cubic-bezier(.4,0,.2,1);
-                overflow-x: hidden;
-            }
-            body.sb-sidenav-toggled .sb-sidenav {
-                width: 60px;
-                min-width: 60px;
-                max-width: 60px;
-            }
-            #layoutSidenav_nav {
-                transition: width 0.3s cubic-bezier(.4,0,.2,1);
-            }
-            body.sb-sidenav-toggled #layoutSidenav_nav {
-                width: 60px !important;
-            }
-            .sb-sidenav .nav-link {
-                color: rgba(255, 255, 255, 0.9);
-                transition: all 0.3s ease;
-                font-weight: 500;
-                white-space: nowrap;
-            }
-            .sb-sidenav .nav-link:hover {
-                color: #fff;
-                background-color: rgba(255, 255, 255, 0.1);
-                border-radius: 6px;
-                transform: translateX(4px);
-            }
-            .sb-sidenav .nav-link.active {
-                background: var(--brand-gradient-dark);
-                color: #fff;
-                border-radius: 6px;
-                font-weight: 600;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-            .sb-sidenav-menu-heading {
-                font-size: 0.75rem;
-                color: rgba(255, 255, 255, 0.6);
-                text-transform: uppercase;
-                margin-top: 1rem;
-                font-weight: 600;
-                letter-spacing: 0.05em;
-                transition: opacity 0.3s;
-            }
-            body.sb-sidenav-toggled .sb-sidenav-menu-heading {
-                opacity: 0;
-            }
-            .sb-sidenav-menu-nested .nav-link {
-                font-size: 0.85rem;
-                padding-left: 2rem;
-            }
-            .sb-sidenav-collapse-arrow {
-                color: rgba(255, 255, 255, 0.8);
-            }
-            /* Hide text, show only icons when collapsed */
-            body.sb-sidenav-toggled .sb-nav-link-icon {
-                margin-right: 0;
-            }
-            body.sb-sidenav-toggled .nav-link {
-                text-align: center;
-                padding-left: 0;
-                padding-right: 0;
-            }
-            body.sb-sidenav-toggled .nav-link > span,
-            body.sb-sidenav-toggled .nav-link > div:not(.sb-nav-link-icon) {
-                display: none !important;
-            }
-
             /* Admin content area styling */
             #layoutSidenav_content {
-                background: var(--admin-surface);
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(148, 163, 184, 0.13), transparent 55%),
+                    radial-gradient(circle at 100% 100%, rgba(148, 163, 184, 0.08), transparent 55%),
+                    var(--admin-surface);
+            }
+
+            body[data-theme="dark"] #layoutSidenav_content {
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.09), transparent 55%),
+                    radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.18), transparent 55%),
+                    var(--cyber-surface-dark);
             }
 
             /* Update cards for admin */
             .card {
-                border: none;
-                border-radius: 12px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-                transition: all 0.2s ease;
+                border-radius: 14px;
+                border: 1px solid rgba(148, 163, 184, 0.4);
+                background-color: rgba(255, 255, 255, 0.98);
+                box-shadow:
+                    0 14px 30px rgba(15, 23, 42, 0.10),
+                    0 0 0 1px rgba(148, 163, 184, 0.20);
+                transition: all 0.18s ease-out;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                opacity: 0;
+                background:
+                    linear-gradient(120deg,
+                        rgba(56, 189, 248, 0.18),
+                        rgba(168, 85, 247, 0.12),
+                        transparent 55%);
+                mix-blend-mode: screen;
+                transition: opacity 0.2s ease-out;
             }
 
             .card:hover {
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-                transform: translateY(-1px);
+                box-shadow:
+                    0 18px 40px rgba(15, 23, 42, 0.16),
+                    0 0 0 1px rgba(59, 130, 246, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .card:hover::before {
+                opacity: 1;
+            }
+
+            body[data-theme="dark"] .card {
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95)),
+                    radial-gradient(circle at 100% 100%, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.98));
+                border-color: rgba(56, 189, 248, 0.42);
+                box-shadow:
+                    0 0 0 1px rgba(15, 23, 42, 0.9),
+                    0 0 26px var(--cyber-glow-soft);
+            }
+
+            body[data-theme="dark"] .card:hover {
+                box-shadow:
+                    0 0 0 1px rgba(15, 23, 42, 0.9),
+                    0 0 38px var(--cyber-glow-strong);
+                transform: translateY(-2px);
             }
 
             /* Update buttons for admin */
@@ -189,11 +183,62 @@
                 background: var(--brand-gradient);
                 border: none;
                 font-weight: 500;
+                box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08);
             }
 
             .btn-primary:hover {
                 background: var(--brand-gradient-dark);
                 transform: translateY(-1px);
+                box-shadow:
+                    0 10px 24px rgba(15, 23, 42, 0.35),
+                    0 0 14px var(--cyber-glow-soft);
+            }
+
+            .btn-outline-primary {
+                border-color: var(--cyber-primary);
+                color: var(--cyber-primary);
+            }
+
+            .btn-outline-primary:hover {
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.25), transparent 60%),
+                    rgba(15, 23, 42, 0.98);
+                color: #e5e7eb;
+                box-shadow: 0 0 16px var(--cyber-glow-soft);
+            }
+
+            /* Form controls with light cyber focus ring */
+            .form-control,
+            .form-select {
+                border-radius: 10px;
+                border-color: rgba(148, 163, 184, 0.6);
+                background-color: rgba(255, 255, 255, 0.96);
+                transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+            }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cyber-primary);
+                box-shadow:
+                    0 0 0 1px var(--cyber-primary),
+                    0 0 18px var(--cyber-glow-soft);
+                background-color: #ffffff;
+            }
+
+            body[data-theme="dark"] .form-control,
+            body[data-theme="dark"] .form-select {
+                background-color: rgba(15, 23, 42, 0.9);
+                border-color: rgba(148, 163, 184, 0.55);
+                color: #e5e7eb;
+            }
+
+            body[data-theme="dark"] .form-control:focus,
+            body[data-theme="dark"] .form-select:focus {
+                background-color: rgba(15, 23, 42, 0.98);
+                border-color: var(--cyber-primary);
+                box-shadow:
+                    0 0 0 1px rgba(15, 23, 42, 1),
+                    0 0 24px var(--cyber-glow-strong);
             }
 
             /* Sidebar badge overflow/visibility fix */
@@ -221,6 +266,22 @@
             /* Tooltip for badges in collapsed mode */
             body.sb-sidenav-toggled .nav-link .badge[title] {
                 cursor: pointer;
+            }
+
+            /* Unified content wrapper so dashboard layouts align with base */
+            .admin-page-shell {
+                padding-top: 1.5rem;
+                padding-bottom: 2rem;
+            }
+
+            .admin-content-wrap {
+                padding: 0 1.25rem;
+            }
+
+            @media (min-width: 992px) {
+                .admin-content-wrap {
+                    padding: 0 2.5rem;
+                }
             }
         </style>
         {% block styles %}{% endblock %}
@@ -252,8 +313,139 @@
                                     <div class="collapse" id="siteMenu">
                                         <ul class="nav flex-column ms-3">
                                             <li class="nav-item mb-1"><a href="{% url 'admin_panel:add_client_site' %}" class="nav-link text-white"><i class="bi bi-plus-square me-2"></i>Site Ekle</a></li>
-                                            <li class="nav-item mb-1"><a href="{% url 'admin_panel:list_client_sites' %}" class="nav-link text-white"><i class="bi bi-gear me-2"></i>Site Yönetimi</a></li>
+                                            <li class="nav-item mb-1"><a href="{% url 'admin_panel:siteler_list' %}" class="nav-link text-white"><i class="bi bi-gear me-2"></i>Site Yönetimi</a></li>
+                                            <li class="nav-item mb-1"><a href="{% url 'admin_panel:create_deposit_link' %}" class="nav-link text-white"><i class="bi bi-link-45deg me-2"></i>Yatırım Linki Oluştur</a></li>
                                             <li class="nav-item mb-1"><a href="{% url 'admin_panel:manage_api_keys' %}" class="nav-link text-white"><i class="bi bi-key me-2"></i>API Anahtarları</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item mt-3 mb-1">
+                                    <a href="{% url 'admin_panel:banka_genel_bakis' %}" class="nav-link text-white">
+                                        <i class="bi bi-bank me-2"></i>Banka Havale Evi
+                                    </a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a href="{% url 'admin_panel:kripto_genel_bakis' %}" class="nav-link text-white">
+                                        <i class="bi bi-currency-bitcoin me-2"></i>Kripto Ödeme Evi
+                                    </a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a href="{% url 'admin_panel:kredi_karti_genel_bakis' %}" class="nav-link text-white">
+                                        <i class="bi bi-credit-card me-2"></i>Kredi Kartı Evi
+                                    </a>
+                                </li>
+
+                                <!-- Banka Havale Toggle -->
+                                <li class="nav-item mt-3 mb-1">
+                                    <a class="sb-sidenav-menu-heading menu-orange" data-bs-toggle="collapse" href="#bankMenu" role="button" aria-expanded="false" aria-controls="bankMenu">
+                                        Banka Havale <i class="bi bi-chevron-down ms-1"></i>
+                                    </a>
+                                    <div class="collapse" id="bankMenu">
+                                        <ul class="nav flex-column ms-3">
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:admin_pending_deposits' %}" class="nav-link text-white">
+                                                    <i class="bi bi-arrow-down-circle me-2"></i>Bekleyen Banka Yatırımları
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:admin_pending_withdrawals' %}" class="nav-link text-white">
+                                                    <i class="bi bi-arrow-up-circle me-2"></i>Bekleyen Banka Çekimleri
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:list_bank_accounts' %}" class="nav-link text-white">
+                                                    <i class="bi bi-bank me-2"></i>Banka Hesapları
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:gateways_matrix' %}" class="nav-link text-white">
+                                                    <i class="bi bi-grid-3x3 me-2"></i>Şube Banka Durumu
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <!-- Kripto Ödeme Toggle -->
+                                <li class="nav-item mt-3 mb-1">
+                                    <a class="sb-sidenav-menu-heading menu-orange" data-bs-toggle="collapse" href="#cryptoMenu" role="button" aria-expanded="false" aria-controls="cryptoMenu">
+                                        Kripto Ödeme <i class="bi bi-chevron-down ms-1"></i>
+                                    </a>
+                                    <div class="collapse" id="cryptoMenu">
+                                        <ul class="nav flex-column ms-3">
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:crypto_overview' %}" class="nav-link text-white">
+                                                    <i class="bi bi-graph-up-arrow me-2"></i>Kripto Genel Bakış
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:crypto_wallets' %}" class="nav-link text-white">
+                                                    <i class="bi bi-wallet2 me-2"></i>Kripto Cüzdanları
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:kripto_koin_list' %}" class="nav-link text-white">
+                                                    <i class="bi bi-coin me-2"></i>Kripto Koinler
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:transactions_list' %}?gateway=CRYPTO" class="nav-link text-white">
+                                                    <i class="bi bi-receipt me-2"></i>Kripto İşlemleri
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <!-- Kredi Kartı Toggle -->
+                                <li class="nav-item mt-3 mb-1">
+                                    <a class="sb-sidenav-menu-heading menu-orange" data-bs-toggle="collapse" href="#cardMenu" role="button" aria-expanded="false" aria-controls="cardMenu">
+                                        Kredi Kartı <i class="bi bi-chevron-down ms-1"></i>
+                                    </a>
+                                    <div class="collapse" id="cardMenu">
+                                        <ul class="nav flex-column ms-3">
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:gateways_matrix' %}?gateway=CARD" class="nav-link text-white">
+                                                    <i class="bi bi-layers-half me-2"></i>Kart Gateway Durumu
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:transactions_list' %}?gateway=CARD" class="nav-link text-white">
+                                                    <i class="bi bi-credit-card me-2"></i>Kart İşlemleri
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:siteler_list' %}" class="nav-link text-white">
+                                                    <i class="bi bi-gear me-2"></i>PSP Ayarları
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <!-- Gateway Yönetimi Toggle -->
+                                <li class="nav-item mt-3 mb-1">
+                                    <a class="sb-sidenav-menu-heading menu-orange" data-bs-toggle="collapse" href="#gatewayMenu" role="button" aria-expanded="false" aria-controls="gatewayMenu">
+                                        Gateway Yönetimi <i class="bi bi-chevron-down ms-1"></i>
+                                    </a>
+                                    <div class="collapse" id="gatewayMenu">
+                                        <ul class="nav flex-column ms-3">
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:gateways_matrix' %}" class="nav-link text-white">
+                                                    <i class="bi bi-grid-3x3 me-2"></i>Şube × Gateway Matrisi
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:crypto_overview' %}" class="nav-link text-white">
+                                                    <i class="bi bi-graph-up-arrow me-2"></i>Kripto Genel Bakış
+                                                </a>
+                                            </li>
+                                            <li class="nav-item mb-1">
+                                                <a href="{% url 'admin_panel:crypto_wallets' %}" class="nav-link text-white">
+                                                    <i class="bi bi-wallet2 me-2"></i>Kripto Cüzdanları
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>
@@ -261,7 +453,7 @@
                                 <!-- Teminci Yönetimi Toggle -->
                                 <li class="nav-item mt-3 mb-1">
                                     <a class="sb-sidenav-menu-heading menu-orange" data-bs-toggle="collapse" href="#providerMenu" role="button" aria-expanded="false" aria-controls="providerMenu">
-                                        Teminci Yönetimi <i class="bi bi-chevron-down ms-1"></i>
+                                        Temel Yönetimi <i class="bi bi-chevron-down ms-1"></i>
                                     </a>
                                     <div class="collapse" id="providerMenu">
                                         <ul class="nav flex-column ms-3">
@@ -323,7 +515,7 @@
                     <div class="sidebar-brand d-flex align-items-center justify-content-center py-3">
                         <a class="sb-sidenav-menu-heading text-center m-0 p-0"
                             href="{% url 'provider_panel:provider_dashboard' %}">
-                            <img src="{% static 'img/paycrypt_logo_d.png' %}" alt="PayCrypt Logo"
+                            <img src="{% static 'img/lider-logo.png' %}" alt="Lider Pay Logo"
                                 class="img-fluid sidebar-logo" style="max-height: 50px; width: auto;">
                         </a>
                     </div>
@@ -411,8 +603,8 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <main>
-                    <div class="container-fluid px-4">
+                <main class="admin-page-shell">
+                    <div class="admin-content-wrap">
                         {% if messages %}
                             {% for message in messages %}
                                 <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
@@ -432,7 +624,7 @@
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; PayCrypt 2025</span>
+                            <span>Copyright &copy; Lider Pay {% now "Y" %}</span>
                         </div>
                     </div>
                 </footer>

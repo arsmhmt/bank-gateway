@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+
+{% block title %}Yatırım Ödeme - {{ branch.name }} | LiderPay {% endblock %}
+
+{% block extra_css %}
+<style>
+  body {
+    background:
+      radial-gradient(circle at 0% 0%, rgba(78, 115, 223, 0.12), transparent 55%),
+      radial-gradient(circle at 100% 0%, rgba(255, 107, 53, 0.12), transparent 55%),
+      #f3f6fb;
+  }
+
+  .payment-wrapper {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 3.5rem;
+  }
+
+  .payment-hero {
+    background: linear-gradient(135deg, #4e73df, #1f51ff);
+    color: #fff;
+    border-radius: 22px;
+    padding: 2rem;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
+  }
+
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    padding: 0.35rem 1rem;
+  }
+
+  .payment-amount {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 700;
+  }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .status-chip.pending { background: rgba(255,193,7,0.2); color: #2f1f00; }
+  .status-chip.approved { background: rgba(25,135,84,0.2); color: #0f5132; }
+  .status-chip.rejected { background: rgba(220,53,69,0.2); color: #58151c; }
+  .status-chip.expired { background: rgba(220,53,69,0.2); color: #58151c; }
+
+  .info-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    margin-top: -1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .info-item {
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+  }
+
+  .info-item span {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    margin-bottom: 0.35rem;
+  }
+
+  .info-item strong {
+    font-size: 1.05rem;
+    color: #0f172a;
+  }
+
+  .payment-card {
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .bank-option {
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    padding: 1rem 1.25rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background: #fff;
+  }
+
+  .bank-option:hover,
+  .bank-option:has(input:checked) {
+    border-color: #4e73df;
+    box-shadow: 0 8px 24px rgba(78, 115, 223, 0.18);
+  }
+
+  .bank-option .iban-field {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .bank-option .iban-field input {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.85rem;
+  }
+
+  .step-hint {
+    background: rgba(78, 115, 223, 0.08);
+    border: 1px solid rgba(78, 115, 223, 0.2);
+    border-radius: 14px;
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 575.98px) {
+    .payment-hero {
+      padding: 1.5rem;
+    }
+
+    .info-item {
+      padding: 0.9rem;
+    }
+
+    .bank-option .iban-field {
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payment-wrapper">
+  <section class="payment-hero mb-4">
+    <div class="hero-pill">LiderPay  Güvenli Yatırım Linki</div>
+    <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between mt-3 gap-3">
+      <div>
+        <p class="mb-1 text-uppercase letter-spacing-sm opacity-75">Site</p>
+        <h1 class="mb-0">{{ branch.name }}</h1>
+      </div>
+      <div class="text-md-end">
+        <p class="mb-1 text-uppercase letter-spacing-sm opacity-75">Yatırım Tutarı</p>
+        <div class="payment-amount">₺ {{ deposit.amount|floatformat:2 }}</div>
+        <div class="mt-2">
+          {% if is_expired %}
+            <span class="status-chip expired"><i class="bi bi-exclamation-triangle"></i> Süresi Doldu</span>
+          {% elif deposit.status == "approved" %}
+            <span class="status-chip approved"><i class="bi bi-check-circle"></i> Onaylandı</span>
+          {% elif deposit.status == "rejected" %}
+            <span class="status-chip rejected"><i class="bi bi-x-circle"></i> Reddedildi</span>
+          {% elif is_pending and deposit.submitted_at %}
+            <span class="status-chip pending"><i class="bi bi-hourglass-split"></i> Kontrol Ediliyor</span>
+          {% else %}
+            <span class="status-chip pending"><i class="bi bi-hourglass"></i> Beklemede</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-card">
+    <div class="info-grid">
+      <div class="info-item">
+        <span>Kullanıcı ID</span>
+        <strong>{{ deposit.external_user_id }}</strong>
+      </div>
+      <div class="info-item">
+        <span>İşlem Durumu</span>
+        <strong>{{ deposit.get_status_display }}</strong>
+      </div>
+      <div class="info-item">
+        <span>Gönderen</span>
+        <strong>{{ deposit.user_name|default:"Belirtilmedi" }}</strong>
+      </div>
+      {% if deposit.bank_account %}
+      <div class="info-item">
+        <span>Alıcı</span>
+        <strong>{{ deposit.bank_account.account_holder }}</strong>
+      </div>
+      {% endif %}
+      {% if deposit.expires_at %}
+      <div class="info-item">
+        <span>Son Geçerlilik</span>
+        <strong>{{ deposit.expires_at|date:"d.m.Y H:i" }}</strong>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if deposit.status == "approved" %}
+      <div class="alert alert-success mt-3 mb-0">
+        Yatırımınız onaylandı. Teşekkür ederiz.
+      </div>
+    {% elif deposit.status == "rejected" %}
+      <div class="alert alert-danger mt-3 mb-0">
+        Yatırımınız reddedildi. Lütfen destek ekibi ile iletişime geçin.
+      </div>
+    {% elif is_pending and deposit.submitted_at %}
+      <div class="alert alert-info mt-3 mb-0">
+        Yatırımınız kontrol ediliyor. Onaylandığında bildirim alacaksınız.
+      </div>
+    {% endif %}
+  </section>
+
+  {% if is_pending and not is_expired and not deposit.submitted_at %}
+    <section class="card payment-card mt-4">
+      <div class="card-body">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+          <div>
+            <h5 class="mb-1">Yatırımı Tamamla</h5>
+            <p class="text-muted mb-0">Aşağıdaki adımları izleyerek bankaya transferinizi yapın.</p>
+          </div>
+          <div class="step-hint">
+            <strong>Adımlar:</strong>
+            <ol class="mb-0 ps-3">
+              <li>Banka hesabını seç ve IBAN'ı kopyala</li>
+              <li>Havale/EFT'yi gerçekleştir</li>
+              <li>"Yatırımı Yaptım" butonuna bas</li>
+            </ol>
+          </div>
+        </div>
+
+        <form method="post" class="needs-validation" novalidate>
+          {% csrf_token %}
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="sender_first_name" class="form-label">Gönderen Adı</label>
+              <input type="text" id="sender_first_name" name="sender_first_name" class="form-control form-control-lg" placeholder="Ad" value="{{ sender_first_name }}" required>
+              <div class="invalid-feedback">Gönderen adını giriniz.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="sender_last_name" class="form-label">Gönderen Soyadı</label>
+              <input type="text" id="sender_last_name" name="sender_last_name" class="form-control form-control-lg" placeholder="Soyad" value="{{ sender_last_name }}" required>
+              <div class="invalid-feedback">Gönderen soyadını giriniz.</div>
+            </div>
+          </div>
+
+          {% if banks %}
+            <div class="mb-4">
+              <label class="form-label">Banka Seç</label>
+              <div class="d-grid gap-3">
+                {% for bank in banks %}
+                  <label class="bank-option">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <div class="d-flex align-items-center gap-2">
+                        <input class="form-check-input mt-0" type="radio" name="bank_id" id="bank_{{ bank.id }}" value="{{ bank.id }}" {% if forloop.first %}checked{% endif %}>
+                        <span class="fw-semibold">{{ bank.bank_name }}</span>
+                      </div>
+                      <span class="badge rounded-pill text-bg-light text-muted">IBAN</span>
+                    </div>
+                    <div class="iban-field">
+                      <input type="text" class="form-control" value="{{ bank.iban }}" readonly id="iban_{{ bank.id }}">
+                      <button type="button" class="btn btn-outline-secondary copy-btn" data-copy-target="iban_{{ bank.id }}" data-copied-label="Kopyalandı">
+                        <i class="bi bi-clipboard"></i>
+                      </button>
+                    </div>
+                    <div class="mt-2 text-muted fw-semibold small">ALICI: {{ bank.account_holder }}</div>
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+          {% else %}
+            <div class="alert alert-warning">
+              Bu yatırım için aktif banka hesabı bulunamadı. Lütfen canlı destek ile iletişime geçin.
+            </div>
+          {% endif %}
+
+          <button type="submit" class="btn btn-primary btn-lg w-100" {% if not banks %}disabled{% endif %}>
+            Yatırımı Yaptım
+          </button>
+        </form>
+      </div>
+    </section>
+  {% elif is_pending and not is_expired and deposit.submitted_at %}
+    <div class="alert alert-info mt-4">
+      Yatırımınız kontrol ediliyor. Bu sayfayı daha sonra ziyaret ederek güncel durumu görebilirsiniz.
+    </div>
+  {% else %}
+    <div class="alert alert-info mt-4">
+      Bu yatırım linki artık kullanılamaz. (Durum: {{ deposit.get_status_display }})
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var targetId = btn.getAttribute('data-copy-target');
+        var el = document.getElementById(targetId);
+        if (!el) return;
+        var value = el.value || el.innerText || '';
+        var originalHtml = btn.innerHTML;
+        if (!navigator.clipboard) {
+          el.select();
+          document.execCommand('copy');
+          btn.innerHTML = '<i class="bi bi-check-lg"></i> ' + (btn.dataset.copiedLabel || 'Kopyalandı');
+          setTimeout(function () { btn.innerHTML = originalHtml; }, 1500);
+          return;
+        }
+        navigator.clipboard.writeText(value).then(function () {
+          btn.innerHTML = '<i class="bi bi-check-lg"></i> ' + (btn.dataset.copiedLabel || 'Kopyalandı');
+          setTimeout(function () { btn.innerHTML = originalHtml; }, 1500);
+        }).catch(function () {
+          btn.innerHTML = '<i class="bi bi-check-lg"></i> ' + (btn.dataset.copiedLabel || 'Kopyalandı');
+          setTimeout(function () { btn.innerHTML = originalHtml; }, 1500);
+        });
+      });
+    });
+
+    const shouldPollStatus = {{ is_pending|yesno:"true,false" }};
+    const statusUrl = "{% if deposit.payment_token %}{% url 'public_payment_status' branch.site_code deposit.payment_token %}{% endif %}";
+
+    if (shouldPollStatus && statusUrl) {
+      const pollIntervalMs = 8000;
+      const pollStatus = () => {
+        fetch(statusUrl, { cache: 'no-store' })
+          .then(response => response.ok ? response.json() : null)
+          .then(data => {
+            if (!data) return;
+            if (data.status !== 'pending') {
+              window.location.reload();
+            }
+          })
+          .catch(() => {});
+      };
+      setInterval(pollStatus, pollIntervalMs);
+    }
+  });
+</script>
+{% endblock %}

@@ -1,9 +1,9 @@
 {% extends "provider_panel/base.html" %}
 {% block title %}Teminci Paneli{% endblock %}
 {% block content %}
-<div class="row mb-4">
+<div class="row mb-4 lp-dashboard-grid">
     <div class="col-md-3">
-        <div class="card text-center shadow-sm">
+        <div class="card text-center shadow-sm lp-card">
             <div class="card-body">
                 <h6 class="card-title text-muted">Bugünkü Yatırımlar</h6>
                 <h4 class="card-text text-primary">{{ stats.today_deposits }}</h4>
@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-center shadow-sm">
+        <div class="card text-center shadow-sm lp-card">
             <div class="card-body">
                 <h6 class="card-title text-muted">Bu Ay</h6>
                 <h4 class="card-text text-primary">{{ stats.month_deposits }}</h4>
@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-center shadow-sm">
+        <div class="card text-center shadow-sm lp-card">
             <div class="card-body">
                 <h6 class="card-title text-muted">Toplam Yatırımlar</h6>
                 <h4 class="card-text text-primary">{{ stats.total_deposits }}</h4>
@@ -27,10 +27,78 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-center shadow-sm">
+        <div class="card text-center shadow-sm lp-card">
             <div class="card-body">
                 <h6 class="card-title text-muted">Bekleyen Yatırımlar</h6>
                 <h4 class="card-text text-warning">{{ stats.pending_deposits }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm lp-card">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0">TESLİMAT DURUMU</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="small text-muted">Toplam Onaylı Yatırım</div>
+                        <div>₺ {{ teslimat.total_deposits|floatformat:2 }}</div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="small text-muted">Toplam Onaylı Çekim</div>
+                        <div>₺ {{ teslimat.total_withdrawals|floatformat:2 }}</div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="small text-muted">Toplam Komisyon</div>
+                        <div>₺ {{ teslimat.total_commission|floatformat:2 }}</div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="small text-muted">Yapılan Teslimat Ödemeleri</div>
+                        <div>₺ {{ teslimat.total_settlements|floatformat:2 }}</div>
+                    </div>
+                </div>
+                <hr/>
+                <div>
+                    <div class="small text-muted">Kalan Teslimat Bakiyesi</div>
+                    <div class="h4">₺ {{ teslimat.balance|floatformat:2 }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm lp-card">
+            <div class="card-body">
+                <h6 class="card-title text-muted mb-1">Onaylı Yatırım Hacmi</h6>
+                <h4 class="card-text text-primary">₺ {{ stats.deposit_volume|floatformat:2 }}</h4>
+                <div class="small text-muted">Komisyon oranı: {{ stats.deposit_rate|floatformat:2 }}%</div>
+                <div class="small text-success">Kazanç: ₺ {{ stats.deposit_commission_total|floatformat:2 }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm lp-card">
+            <div class="card-body">
+                <h6 class="card-title text-muted mb-1">Onaylı Çekim Hacmi</h6>
+                <h4 class="card-text text-primary">₺ {{ stats.withdraw_volume|floatformat:2 }}</h4>
+                <div class="small text-muted">Komisyon oranı: {{ stats.withdraw_rate|floatformat:2 }}%</div>
+                <div class="small text-success">Kazanç: ₺ {{ stats.withdraw_commission_total|floatformat:2 }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm lp-card">
+            <div class="card-body">
+                <h6 class="card-title text-muted mb-1">Toplam Komisyonum</h6>
+                <h4 class="card-text text-success">₺ {{ stats.total_commission|floatformat:2 }}</h4>
+                <div class="small text-muted">Yatırım + Çekim komisyonlarının toplamı</div>
+                <div class="small text-dark">Cüzdan: ₺ {% if provider_profile %}{{ provider_profile.wallet_balance|floatformat:2 }}{% else %}0.00{% endif %}</div>
             </div>
         </div>
     </div>
@@ -43,8 +111,8 @@
                 <h5 class="mb-3">Son Yatırımlar</h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm">
+                <div class="lp-table-wrapper">
+                    <table class="lp-table table table-bordered table-hover table-sm">
                         <thead class="table-light">
                             <tr>
                                 <th>ID</th>
@@ -78,8 +146,9 @@
             <div class="card-header bg-dark text-white">
                 Son Çekimler
             </div>
-            <div class="card-body table-responsive">
-                <table class="table table-sm table-striped">
+            <div class="card-body">
+                <div class="lp-table-wrapper">
+                <table class="lp-table table table-sm table-striped">
                     <thead>
                         <tr><th>ID</th><th>Kullanıcı</th><th>Tutar</th><th>Durum</th><th>Tarih</th></tr>
                     </thead>
@@ -103,12 +172,13 @@
 </div>
 
 <div class="mt-4">
-    <div class="card shadow">
+        <div class="card shadow lp-card">
         <div class="card-header bg-dark text-white">
             Aktif Banka Hesapları
         </div>
-        <div class="card-body table-responsive">
-            <table class="table table-sm">
+        <div class="card-body">
+            <div class="lp-table-wrapper">
+            <table class="lp-table table table-sm">
                 <thead>
                     <tr><th>Banka</th><th>Hesap Sahibi</th><th>IBAN</th><th>Limit</th></tr>
                 </thead>

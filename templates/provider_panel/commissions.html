@@ -1,0 +1,99 @@
+{% extends "provider_panel/base.html" %}
+{% block title %}Komisyonlarım{% endblock %}
+{% block content %}
+
+<div class="row mb-4">
+  <div class="col-md-4 mb-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+        <h6 class="card-title text-muted">Toplam Kazanılan Komisyon</h6>
+        <h4 class="card-text text-success">₺ {{ total_earned|floatformat:2 }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+        <h6 class="card-title text-muted">Ödenen Komisyon</h6>
+        <h4 class="card-text text-primary">₺ {{ total_paid|floatformat:2 }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+        <h6 class="card-title text-muted">Bekleyen Komisyon</h6>
+        <h4 class="card-text text-warning">₺ {{ total_unpaid|floatformat:2 }}</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-dark text-white">
+    Komisyon Filtreleri
+  </div>
+  <div class="card-body">
+    <form method="get" class="row g-3">
+      <div class="col-md-3">
+        <label for="start_date" class="form-label">Başlangıç Tarihi</label>
+        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.start }}">
+      </div>
+      <div class="col-md-3">
+        <label for="end_date" class="form-label">Bitiş Tarihi</label>
+        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ filters.end }}">
+      </div>
+      <div class="col-md-3">
+        <label for="status" class="form-label">Durum</label>
+        <select id="status" name="status" class="form-select">
+          <option value="all" {% if filters.status == "all" %}selected{% endif %}>Tümü</option>
+          <option value="paid" {% if filters.status == "paid" %}selected{% endif %}>Ödenen</option>
+          <option value="unpaid" {% if filters.status == "unpaid" %}selected{% endif %}>Bekleyen</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Uygula</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-secondary text-white">
+    Komisyon Hareketleri
+  </div>
+  <div class="card-body table-responsive">
+    <table class="table table-sm table-bordered table-striped align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Tarih</th>
+          <th>Tür</th>
+          <th class="text-end">Tutar</th>
+          <th>Durum</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in commissions %}
+        <tr>
+          <td>{{ c.created_at|date:"d.m.Y H:i" }}</td>
+          <td>{% if c.transaction_type == "deposit" %}Yatırım{% else %}Çekim{% endif %}</td>
+          <td class="text-end">₺ {{ c.amount|floatformat:2 }}</td>
+          <td>
+            {% if c.is_paid %}
+              <span class="badge bg-success">Ödendi</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">Bekliyor</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center text-muted py-3">Bu filtreler için komisyon kaydı bulunamadı.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

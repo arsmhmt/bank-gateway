@@ -1,0 +1,88 @@
+{% extends "site_panel/base.html" %}
+
+{% block site_content %}
+<div class="container-fluid px-0">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <small class="text-uppercase text-muted fw-semibold">Site Paneli</small>
+      <h2 class="h4 mb-1">Kart PSP Ayarları</h2>
+      <p class="text-muted mb-0">Bu bayi için tanımlı kredi kartı sağlayıcı (PSP) bilgileri</p>
+    </div>
+    <a href="{% url 'site_panel:dashboard' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-arrow-left"></i> Dashboard'a Dön
+    </a>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-0">Gateway Durumu</h5>
+            <small class="text-muted">Admin panelinden kontrol edilen aktif/pasif bilgisi</small>
+          </div>
+          <span class="badge {% if card_enabled %}bg-success{% else %}bg-secondary{% endif %}">
+            {% if card_enabled %}AKTİF{% else %}PASİF{% endif %}
+          </span>
+        </div>
+        <div class="card-body">
+          {% if card_psp %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="text-muted small">PSP Sağlayıcı</div>
+                <div class="fw-semibold">{{ card_psp.provider_name|default:"—" }}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="text-muted small">Merchant ID</div>
+                <code class="d-block">{{ card_psp.merchant_id|default:"—" }}</code>
+              </div>
+              <div class="col-md-6">
+                <div class="text-muted small">Terminal ID</div>
+                <code class="d-block">{{ card_psp.terminal_id|default:"—" }}</code>
+              </div>
+              <div class="col-md-6">
+                <div class="text-muted small mb-1">Mod</div>
+                <span class="badge {% if card_psp.mode == "LIVE" %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                  {% if card_psp.mode == "LIVE" %}LIVE MODE{% else %}TEST MODE{% endif %}
+                </span>
+              </div>
+              <div class="col-12">
+                <div class="alert alert-info small mb-0">
+                  Kart PSP bilgileri yalnızca görüntülenebilir. Güncelleme için sistem yöneticinizle iletişime geçiniz.
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="alert alert-warning mb-0">
+              Bu bayi için PSP bilgisi tanımlanmamış. Admin panelinden kart sağlayıcısı eklenmesini talep edin.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Hızlı Bilgiler</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0 small">
+            <li class="mb-3">
+              <span class="fw-semibold">Gateway yönetimi</span>
+              <div class="text-muted">Kart gateway durumu admin panelinden kontrol edilir.</div>
+            </li>
+            <li class="mb-3">
+              <span class="fw-semibold">PSP erişimi</span>
+              <div class="text-muted">API anahtarları yalnızca admin ekibince güncellenir.</div>
+            </li>
+            <li>
+              <span class="fw-semibold">Test vs Live</span>
+              <div class="text-muted">Mod değişikliği için admin paneline başvurun.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

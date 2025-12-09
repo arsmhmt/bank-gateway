@@ -6,7 +6,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button class="btn btn-primary">Ekle</button>
-    <a href="{% url 'provider_panel:bank_accounts' %}" class="btn btn-secondary">İptal</a>
+    <a href="{% url 'provider_panel:bank_list' %}" class="btn btn-secondary">İptal</a>
   </form>
 </div>
 {% endblock %}

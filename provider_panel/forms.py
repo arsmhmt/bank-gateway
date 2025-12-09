@@ -6,6 +6,12 @@ class BankAccountForm(forms.ModelForm):
     class Meta:
         model = BankAccount
         fields = ["bank_name", "account_holder", "iban", "account_limit"]
+        labels = {
+            "bank_name": "Banka Adı",
+            "account_holder": "Hesap Sahibi",
+            "iban": "IBAN",
+            "account_limit": "Hesap Limiti",
+        }
         widgets = {
             "bank_name": forms.TextInput(attrs={"class": "form-control"}),
             "account_holder": forms.TextInput(attrs={"class": "form-control"}),

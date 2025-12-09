@@ -1,20 +1,38 @@
-
+{% extends "admin_panel/base.html" %}
 {% block content %}
-<h2>Komisyon Raporları</h2>
 
-<h3>Site Komisyonları</h3>
-<table>
-<tr><th>Site</th><th>Toplam Komisyon</th></tr>
-{% for s in site_commission %}
-<tr><td>{{ s.client_site__name }}</td><td>{{ s.total_site_commission }}</td></tr>
-{% endfor %}
-</table>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+  <div>
+    <h2 class="h4 mb-1">Komisyon Raporları</h2>
+    <p class="text-muted mb-0">Seçilen tarih aralığında site bazlı komisyon dağılımı.</p>
+  </div>
+</div>
 
-<h3>Teminci Komisyonları</h3>
-<table>
-<tr><th>Teminci</th><th>Toplam Komisyon</th></tr>
-{% for p in provider_commission %}
-<tr><td>{{ p.bank_account__provider__name }}</td><td>{{ p.total_provider_commission }}</td></tr>
-{% endfor %}
-</table>
+<form method="get" class="mb-3">
+  <div class="d-flex flex-wrap align-items-end gap-2 mb-2">
+    <div>
+      <label class="form-label small mb-1">Site</label>
+      <select name="site_id" class="form-select form-select-sm" style="min-width: 200px;">
+        <option value="">Tüm Siteler</option>
+        {% for s in sites %}
+        <option value="{{ s.id }}" {% if selected_site_id|default:'' == s.id|stringformat:'s' %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="form-label small mb-1">Teminci</label>
+      <select name="provider_id" class="form-select form-select-sm" style="min-width: 220px;">
+        <option value="">Tüm Teminciler</option>
+        {% for p in providers %}
+        <option value="{{ p.user.id }}" {% if selected_provider_id|default:'' == p.user.id|stringformat:'s' %}selected{% endif %}>{{ p.user.email }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  {% include "admin_panel/partials/date_filter_bar.html" %}
+</form>
+
+{% include "admin_panel/partials/site_commission_block.html" %}
+
 {% endblock %}

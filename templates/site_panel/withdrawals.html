@@ -1,175 +1,112 @@
 {% extends "site_panel/base.html" %}
 
 {% block site_content %}
-<div class="container-fluid px-0 px-md-1">
-  <div class="panel-header">
-    <h1>{{ branch.name }} - Çekimler</h1>
-    <p>Tüm çekim işlemlerinizi buradan görüntüleyebilirsiniz.</p>
-  </div>
-
-  <div class="card table-card mb-3">
-    <form method="get" class="row g-3 mb-3">
-      <div class="col-md-3">
-        <label class="form-label" for="start_date">Başlangıç Tarihi</label>
-        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.start_date }}">
+<div class="site-page-stack">
+  <div class="card site-page-header-card text-white">
+    <div class="card-body">
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+        <div>
+          <span class="page-eyebrow opacity-75">İşlem Takibi</span>
+          <h1 class="h3 mb-1">{{ branch.name }} · Çekim Talepleri</h1>
+          <p class="mb-0 opacity-75">Onay süreçlerini hızlandırmak için çekim hareketlerini buradan izleyin.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'site_panel:deposits' %}" class="btn btn-sm btn-light text-dark">
+            <i class="bi bi-arrow-down-circle me-1"></i> Yatırımlar
+          </a>
+          <a href="{% url 'site_panel:create_link' %}" class="btn btn-sm btn-outline-light text-white">
+            <i class="bi bi-link-45deg me-1"></i> Link Oluştur
+          </a>
+        </div>
       </div>
-      <div class="col-md-3">
-        <label class="form-label" for="end_date">Bitiş Tarihi</label>
-        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ filters.end_date }}">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label" for="status">Durum</label>
-        <select id="status" name="status" class="form-select">
-          <option value="">Tümü</option>
-          {% for value,label in status_choices %}
-          <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-3 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">Filtrele</button>
-      </div>
-    </form>
-
-    <div class="card table-card">
-    <div class="table-responsive">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Zaman</th>
-            <th>Kullanıcı</th>
-            <th>Tutar</th>
-            <th>IBAN</th>
-            <th>Durum</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for w in withdrawals %}
-          <tr>
-            <td>#{{ w.id }}</td>
-            <td>{{ w.created_at|date:"d.m.Y H:i:s" }}</td>
-            <td>{{ w.user_name }}</td>
-            <td><strong>{{ w.amount|floatformat:2 }} TRY</strong></td>
-            <td><code>{{ w.iban }}</code></td>
-            <td>
-              <span class="status-badge status-{{ w.status }}">
-                {{ w.get_status_display }}
-              </span>
-            </td>
-          </tr>
-        {% empty %}
-          <tr><td colspan="7" class="text-center">Henüz çekim kaydı yok.</td></tr>
-        {% endfor %}
-        </tbody>
-      </table>
     </div>
   </div>
 
-  <div class="navigation-links">
-    <a href="{% url 'site_panel:dashboard' %}" class="btn btn-secondary">← Panele Dön</a>
+  <div class="card">
+    <div class="card-body">
+      <form method="get" class="row g-3 align-items-end">
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="q">Arama</label>
+          <input type="text" id="q" name="q" class="form-control" placeholder="Kullanıcı, ID veya IBAN" value="{{ filters.query }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="start_date">Başlangıç Tarihi</label>
+          <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.start_date }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="end_date">Bitiş Tarihi</label>
+          <input type="date" id="end_date" name="end_date" class="form-control" value="{{ filters.end_date }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="status">Durum</label>
+          <select id="status" name="status" class="form-select">
+            <option value="">Tümü</option>
+            {% for value,label in status_choices %}
+              <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary flex-fill">Filtrele</button>
+            <a href="{% url 'site_panel:withdrawals' %}" class="btn btn-outline-secondary flex-fill">Temizle</a>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 
-<style>
-.panel-header {
-  margin-bottom: 2rem;
-}
-
-.panel-header h1 {
-  font-size: 2rem;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
-}
-
-.panel-header p {
-  color: #666;
-}
-
-.table-card {
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.data-table th,
-.data-table td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-.data-table th {
-  background: #f8f9fa;
-  font-weight: 600;
-  color: #495057;
-  white-space: nowrap;
-}
-
-.data-table tbody tr:hover {
-  background: #f8f9fa;
-}
-
-.data-table code {
-  background: #f8f9fa;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.875rem;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.status-pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.status-approved {
-  background: #d4edda;
-  color: #155724;
-}
-
-.status-rejected {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.navigation-links {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn-secondary {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background: #6c757d;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: background 0.3s;
-}
-
-.btn-secondary:hover {
-  background: #5a6268;
-}
-</style>
+  <div class="card">
+    <div class="card-header border-0 pb-0">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h5 mb-0">Çekim İşlemleri</h2>
+        <span class="text-muted small">{{ withdrawals|length }} kayıt</span>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      {% if withdrawals %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Oluşturulma</th>
+                <th scope="col">Kullanıcı</th>
+                <th scope="col">Tutar</th>
+                <th scope="col">IBAN</th>
+                <th scope="col">Durum</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for w in withdrawals %}
+                <tr>
+                  <td class="text-muted">#{{ w.id }}</td>
+                  <td>{{ w.created_at|date:"d.m.Y H:i" }}</td>
+                  <td>{{ w.user_name }}</td>
+                  <td class="fw-semibold">{{ w.amount|floatformat:2 }} TRY</td>
+                  <td><code class="text-nowrap">{{ w.iban }}</code></td>
+                  <td>
+                    {% if w.status == "pending" %}
+                      <span class="status-pill bg-warning-subtle text-warning">{{ w.get_status_display }}</span>
+                    {% elif w.status == "approved" %}
+                      <span class="status-pill bg-success-subtle text-success">{{ w.get_status_display }}</span>
+                    {% elif w.status == "rejected" %}
+                      <span class="status-pill bg-danger-subtle text-danger">{{ w.get_status_display }}</span>
+                    {% else %}
+                      <span class="status-pill bg-secondary-subtle text-secondary">{{ w.get_status_display }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="table-empty-state text-center text-muted">
+          Henüz çekim kaydı yok. Filtreleri değiştirerek tekrar deneyin.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

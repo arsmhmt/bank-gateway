@@ -1,6 +1,40 @@
 
+{% extends "admin_panel/base.html" %}
 {% block content %}
-<h2>Site Düzenle</h2>
-<form method="post">{% csrf_token %}{{ form.as_p }}
-<button type="submit">Güncelle</button></form>
+<div class="page-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <p class="text-muted mb-1">Site ID: {{ site.id }}</p>
+            <h2 class="page-title mb-0">Site Bilgilerini Düzenle</h2>
+        </div>
+        <a href="{% url 'admin_panel:siteler_list' %}" class="btn btn-outline-secondary btn-sm">← Listeye Dön</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="row g-4">
+                    {% for field in form %}
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% if field.errors %}
+                        <div class="text-danger small mt-1">{{ field.errors|join:', ' }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{% url 'admin_panel:siteler_list' %}" class="btn btn-light">İptal</a>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

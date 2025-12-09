@@ -1,0 +1,83 @@
+{% if card_payment %}
+  <div class="success-card">
+    <p class="text-uppercase text-secondary mb-1">Talep kaydedildi</p>
+    <h2 class="h4 fw-semibold mb-2">PSP yönlendirmesi bekleniyor</h2>
+    <p class="text-light">Kart ödeme sağlayıcısı {# TODO: PSP 3D entegrasyonu #} ile bağlantı hazırlandığında aşağıdaki bağlantıyı takip edin.</p>
+
+    <div class="success-grid">
+      <div class="success-tile">
+        <label>Referans</label>
+        <button type="button" onclick="copyValue('{{ card_payment.id }}')">Kopyala</button>
+        <p>#{{ card_payment.id }}</p>
+      </div>
+      <div class="success-tile">
+        <label>Tutar</label>
+        <button type="button" onclick="copyValue('{{ card_payment.amount }}')">Kopyala</button>
+        <p>₺ {{ card_payment.amount|floatformat:2 }}</p>
+      </div>
+      <div class="success-tile">
+        <label>Oyuncu</label>
+        <button type="button" onclick="copyValue('{{ card_payment.user_name }}')">Kopyala</button>
+        <p>{{ card_payment.user_name }}</p>
+      </div>
+    </div>
+
+    {% if psp_redirect_url %}
+      <div class="success-actions">
+        <a href="{{ psp_redirect_url }}" target="_blank" rel="noopener">Kart Ödeme Sayfasına Git</a>
+        <a href="#" onclick="window.location.reload(); return false;">Yeni Kart Talebi</a>
+      </div>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="lp-section-title">Kredi Kartı Yatırımı</div>
+  <p class="lp-section-subtitle">3D Secure kart tahsilatı için oyuncu bilgilerini girin. Ödeme sağlayıcısına yönlendirme yapılandırılacaktır.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="row g-4">
+      <div class="col-md-6 lp-field">
+        <label>Ad Soyad</label>
+        {{ form.player_name }}
+        {{ form.player_name.errors }}
+      </div>
+      <div class="col-md-6 lp-field">
+        <label>Kullanıcı ID</label>
+        {{ form.player_id }}
+        {{ form.player_id.errors }}
+      </div>
+      <div class="col-md-6 lp-field">
+        <label>Tutar</label>
+        {{ form.amount }}
+        {{ form.amount.errors }}
+      </div>
+      <div class="col-md-6 lp-field">
+        <label>Kart Üzerindeki İsim</label>
+        {{ form.card_holder }}
+        {{ form.card_holder.errors }}
+      </div>
+      <div class="col-md-6 lp-field">
+        <label>Kart Tipi</label>
+        {{ form.card_brand }}
+        {{ form.card_brand.errors }}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn-lp">Kart Ödeme Linki Oluştur</button>
+    </div>
+  </form>
+
+  <div class="lp-steps mt-4">
+    <strong class="d-block mb-2 text-uppercase text-secondary">Akış</strong>
+    <ol>
+      <li>Formu gönder → Lider Pay kart ödeme kaydı açar.</li>
+      <li>Oyuncu PSP linkine yönlendirilir (TODO: PSP 3D integration).</li>
+      <li>PSP onayı sonrası bakiye otomatik güncellenir.</li>
+    </ol>
+  </div>
+{% endif %}

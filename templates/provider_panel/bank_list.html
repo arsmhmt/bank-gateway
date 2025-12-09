@@ -1,22 +1,62 @@
 
 {% extends 'provider_panel/base.html' %}
+
 {% block content %}
-<h2>Banka Hesaplarım</h2>
-<a href="{% url 'provider_panel:add_bank_account' %}">+ Yeni Hesap Ekle</a>
-<table border="1">
-<tr><th>Banka</th><th>Hesap Sahibi</th><th>IBAN</th><th>Limitor</th><th>Durum</th><th>İşlem</th></tr>
-{% for b in accounts %}
-<tr>
-  <td>{{ b.bank_name }}</td>
-  <td>{{ b.account_owner }}</td>
-  <td>{{ b.iban }}</td>
-  <td>{{ b.limit_amount }} TL</td>
-  <td>{{ b.is_active|yesno:"Aktif,Pasif" }}</td>
-  <td>
-    <a href="{% url 'provider_panel:edit_bank_account' pk=b.pk %}">Düzenle</a> |
-    <a href="{% url 'provider_panel:bank_delete_confirm' pk=b.pk %}">Sil</a>
-  </td>
-</tr>
-{% endfor %}
-</table>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h4 mb-0">Banka Hesaplarım</h2>
+  <a href="{% url 'provider_panel:add_bank_account' %}" class="btn btn-primary">
+    <i class="bi bi-plus-circle me-1"></i> Yeni Hesap Ekle
+  </a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body table-responsive">
+    <table class="table table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Banka</th>
+          <th>Hesap Sahibi</th>
+          <th>IBAN</th>
+          <th>Limit</th>
+          <th>Durum</th>
+          <th class="text-end">İşlem</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for b in accounts %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ b.bank_name }}</td>
+          <td>{{ b.account_holder|default:b.account_owner }}</td>
+          <td><code>{{ b.iban }}</code></td>
+          <td>
+            {% if b.account_limit or b.limit_amount %}
+              {{ b.account_limit|default:b.limit_amount }} TL
+            {% else %}
+              <span class="text-muted">Sınırsız</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if b.is_active %}
+              <span class="badge bg-success">Aktif</span>
+            {% else %}
+              <span class="badge bg-secondary">Pasif</span>
+            {% endif %}
+          </td>
+          <td class="text-end">
+            <a href="{% url 'provider_panel:edit_bank_account' pk=b.pk %}" class="btn btn-sm btn-outline-warning me-1">Düzenle</a>
+            <a href="{% url 'provider_panel:bank_delete_confirm' pk=b.pk %}" class="btn btn-sm btn-outline-danger"
+               onclick="return confirm('Bu hesabı silmek istediğinize emin misiniz?');">Sil</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" class="text-center text-muted">Henüz banka hesabı eklenmemiş.</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

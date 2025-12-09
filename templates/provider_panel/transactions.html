@@ -1,45 +1,170 @@
 
 {% extends 'provider_panel/base.html' %}
 {% block content %}
-<h2>İşlem Geçmişi</h2>
+<style>
+  .provider-transactions-table th,
+  .provider-transactions-table td {
+    font-size: 0.92rem;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
 
-<form method="get" class="filters">
-  <label>Tarih Başlangıç: <input type="date" name="date_from" value="{{ filters.date_from }}"></label>
-  <label>Bitiş: <input type="date" name="date_to" value="{{ filters.date_to }}"></label>
-  <label>Tür:
-    <select name="tx_type">
-      <option value="">Tümü</option>
-      <option value="deposit" {% if filters.tx_type == 'deposit' %}selected{% endif %}>Yatırım</option>
-      <option value="withdraw" {% if filters.tx_type == 'withdraw' %}selected{% endif %}>Çekim</option>
-    </select>
-  </label>
-  <label>Durum:
-    <select name="status">
-      <option value="">Tümü</option>
-      <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>Bekliyor</option>
-      <option value="approved" {% if filters.status == 'approved' %}selected{% endif %}>Onaylandı</option>
-      <option value="rejected" {% if filters.status == 'rejected' %}selected{% endif %}>Reddedildi</option>
-    </select>
-  </label>
-  <label>Banka: <input type="text" name="bank" value="{{ filters.bank }}"></label>
-  <button type="submit">Filtrele</button>
-</form>
+  .provider-transactions-table td .text-truncate {
+    max-width: 180px;
+  }
 
-<table border="1">
-<tr>
-  <th>ID</th><th>Tür</th><th>Kullanıcı</th><th>Tutar</th><th>Banka</th><th>Site</th><th>Durum</th><th>Tarih</th>
-</tr>
-{% for t in txs %}
-<tr>
-  <td>{{ t.id }}</td>
-  <td>{% if t.iban %}Çekim{% else %}Yatırım{% endif %}</td>
-  <td>{{ t.user_name }}</td>
-  <td>{{ t.amount }} TL</td>
-  <td>{{ t.bank_name }}</td>
-  <td>{{ t.site.name }}</td>
-  <td>{{ t.status }}</td>
-  <td>{{ t.created_at|date:"d.m.Y H:i" }}</td>
-</tr>
-{% endfor %}
-</table>
+  .provider-transactions-table .tx-type-badge {
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.25rem 0.8rem;
+  }
+
+  .provider-transactions-table .status-badge {
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.3rem 0.9rem;
+  }
+
+  .provider-transactions-table .status-approved {
+    background: rgba(25, 135, 84, 0.18);
+    color: #0f5132;
+  }
+
+  .provider-transactions-table .status-pending {
+    background: rgba(255, 193, 7, 0.25);
+    color: #8a6d00;
+  }
+
+  .provider-transactions-table .status-rejected {
+    background: rgba(220, 53, 69, 0.18);
+    color: #842029;
+  }
+
+  .provider-transactions-table .status-processing {
+    background: rgba(13, 110, 253, 0.18);
+    color: #0a58ca;
+  }
+
+  .provider-transactions-table .site-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+  }
+</style>
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+  <div>
+    <small class="text-uppercase text-muted fw-semibold">Teminci Paneli</small>
+    <h2 class="h4 mb-0">İşlem Geçmişi</h2>
+    <p class="text-muted mb-0">Tüm yatırım ve çekim hareketleri tek ekranda.</p>
+  </div>
+  <span class="badge rounded-pill text-bg-primary px-3 py-2">{{ txs|length }} işlem</span>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-12 col-md-3">
+        <label class="form-label small text-uppercase text-muted" for="date_from">Başlangıç</label>
+        <input type="date" id="date_from" name="date_from" class="form-control" value="{{ filters.date_from }}">
+      </div>
+      <div class="col-12 col-md-3">
+        <label class="form-label small text-uppercase text-muted" for="date_to">Bitiş</label>
+        <input type="date" id="date_to" name="date_to" class="form-control" value="{{ filters.date_to }}">
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label small text-uppercase text-muted" for="tx_type">Tür</label>
+        <select id="tx_type" name="tx_type" class="form-select">
+          <option value="" {% if not filters.tx_type %}selected{% endif %}>Tümü</option>
+          <option value="deposit" {% if filters.tx_type == 'deposit' %}selected{% endif %}>Yatırım</option>
+          <option value="withdraw" {% if filters.tx_type == 'withdraw' %}selected{% endif %}>Çekim</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label small text-uppercase text-muted" for="status">Durum</label>
+        <select id="status" name="status" class="form-select">
+          <option value="" {% if not filters.status %}selected{% endif %}>Tümü</option>
+          <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>Bekliyor</option>
+          <option value="approved" {% if filters.status == 'approved' %}selected{% endif %}>Onaylandı</option>
+          <option value="rejected" {% if filters.status == 'rejected' %}selected{% endif %}>Reddedildi</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-2">
+        <label class="form-label small text-uppercase text-muted" for="bank">Banka / IBAN</label>
+        <input type="text" id="bank" name="bank" class="form-control" placeholder="Banka" value="{{ filters.bank }}">
+      </div>
+      <div class="col-12 col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="bi bi-funnel me-1"></i> Filtrele
+        </button>
+        <a href="?" class="btn btn-outline-secondary" title="Filtreleri Sıfırla">
+          <i class="bi bi-arrow-counterclockwise"></i>
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover table-nowrap align-middle mb-0 provider-transactions-table">
+        <thead class="table-light small text-uppercase text-muted">
+          <tr>
+            <th>#</th>
+            <th>Tür</th>
+            <th>Kullanıcı</th>
+            <th>Tutar</th>
+            <th>Banka / IBAN</th>
+            <th>Site</th>
+            <th>Durum</th>
+            <th>Tarih</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for t in txs %}
+          <tr>
+            <td class="fw-semibold">{{ t.id }}</td>
+            <td>
+              <span class="tx-type-badge {% if t.type == 'deposit' %}text-bg-success{% else %}text-bg-warning text-dark{% endif %}">
+                <i class="bi {% if t.type == 'deposit' %}bi-arrow-down-circle{% else %}bi-arrow-up-circle{% endif %} me-1"></i>
+                {{ t.label }}
+              </span>
+            </td>
+            <td>
+              <div class="fw-semibold">{{ t.user_name }}</div>
+            </td>
+            <td class="fw-semibold">₺ {{ t.amount|floatformat:2 }}</td>
+            <td>
+              <div class="text-truncate" style="max-width: 180px;">
+                {{ t.bank_name|default:"-" }}
+              </div>
+            </td>
+            <td>
+              <div class="fw-semibold">{{ t.site_name|default:"-" }}</div>
+              {% if t.site_code and t.site_code != '-' %}
+                <div class="site-meta">ID: {{ t.site_code }}</div>
+              {% endif %}
+            </td>
+            <td>
+              <span class="status-badge
+                {% if t.status_code == 'approved' %}status-approved
+                {% elif t.status_code == 'pending' %}status-pending
+                {% elif t.status_code == 'rejected' %}status-rejected
+                {% else %}status-processing{% endif %}">
+                {{ t.status }}
+              </span>
+            </td>
+            <td class="text-muted small">{{ t.created_at|date:"d.m.Y H:i" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8" class="text-center py-4 text-muted">
+              <i class="bi bi-inboxes me-2"></i> Filtrelere uygun işlem bulunamadı.
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 {% endblock %}

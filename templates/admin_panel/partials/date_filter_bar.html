@@ -1,0 +1,51 @@
+{% comment %}Shared date range filter bar: Bugün, Bu Hafta, Bu Ay, Özel{% endcomment %}
+<div class="date-filter-bar d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2 mb-3">
+  <div class="btn-group" role="group" aria-label="Tarih Aralığı">
+    <input type="radio" class="btn-check" name="date_range" id="range_today" value="today" {% if date_range == 'today' or not date_range %}checked{% endif %}>
+    <label class="btn btn-sm btn-outline-primary" for="range_today">Bugün</label>
+
+    <input type="radio" class="btn-check" name="date_range" id="range_week" value="week" {% if date_range == 'week' %}checked{% endif %}>
+    <label class="btn btn-sm btn-outline-primary" for="range_week">Bu Hafta</label>
+
+    <input type="radio" class="btn-check" name="date_range" id="range_month" value="month" {% if date_range == 'month' %}checked{% endif %}>
+    <label class="btn btn-sm btn-outline-primary" for="range_month">Bu Ay</label>
+
+    <input type="radio" class="btn-check" name="date_range" id="range_custom" value="custom" {% if date_range == 'custom' %}checked{% endif %}>
+    <label class="btn btn-sm btn-outline-secondary" for="range_custom">Özel</label>
+  </div>
+
+  <div class="d-flex flex-wrap align-items-center gap-2 ms-0 ms-md-3" data-date-range-custom>
+    <div class="input-group input-group-sm">
+      <span class="input-group-text">Başlangıç</span>
+      <input type="date" name="start_date" class="form-control" value="{{ start_date|date:'Y-m-d' }}">
+    </div>
+    <div class="input-group input-group-sm">
+      <span class="input-group-text">Bitiş</span>
+      <input type="date" name="end_date" class="form-control" value="{{ end_date|date:'Y-m-d' }}">
+    </div>
+    <button type="submit" class="btn btn-sm btn-primary">Filtrele</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  function updateDateFilterVisibility() {
+    var customWrapper = document.querySelector('[data-date-range-custom]');
+    if (!customWrapper) return;
+    var checked = document.querySelector('input[name="date_range"]:checked');
+    if (checked && checked.value === 'custom') {
+      customWrapper.classList.remove('d-none');
+    } else {
+      customWrapper.classList.add('d-none');
+    }
+  }
+
+  document.addEventListener('change', function(e) {
+    if (e.target && e.target.name === 'date_range') {
+      updateDateFilterVisibility();
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', updateDateFilterVisibility);
+})();
+</script>

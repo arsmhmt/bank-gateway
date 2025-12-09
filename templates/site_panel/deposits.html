@@ -1,114 +1,123 @@
 {% extends "site_panel/base.html" %}
 
 {% block site_content %}
-<div class="container-fluid px-0 px-md-1">
-  <div class="panel-header">
-    <h1>{{ branch.name }} - Yatırımlar</h1>
-    <p>Tüm yatırım işlemlerinizi buradan görüntüleyebilirsiniz.</p>
-  </div>
-
-  <div class="card table-card mb-3">
-    <form method="get" class="row g-3 mb-3">
-      <div class="col-md-3">
-        <label class="form-label" for="start_date">Başlangıç Tarihi</label>
-        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.start_date }}">
+<div class="site-page-stack">
+  <div class="card site-page-header-card text-white">
+    <div class="card-body">
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+        <div>
+          <span class="page-eyebrow opacity-75">İşlem Takibi</span>
+          <h1 class="h3 mb-1">{{ branch.name }} · Yatırım Talepleri</h1>
+          <p class="mb-0 opacity-75">Tüm yatırım işlemlerinizi filtreleyerek takip edin.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'site_panel:create_link' %}" class="btn btn-sm btn-light text-dark">
+            <i class="bi bi-link-45deg me-1"></i> Link Oluştur
+          </a>
+          <a href="{% url 'site_panel:dashboard' %}" class="btn btn-sm btn-outline-light text-white">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+          </a>
+        </div>
       </div>
-      <div class="col-md-3">
-        <label class="form-label" for="end_date">Bitiş Tarihi</label>
-        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ filters.end_date }}">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label" for="status">Durum</label>
-        <select id="status" name="status" class="form-select">
-          <option value="">Tümü</option>
-          {% for value,label in status_choices %}
-          <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-3 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">Filtrele</button>
-      </div>
-    </form>
-
-    <div class="card table-card">
-    <div class="table-responsive">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Zaman</th>
-            <th>Kullanıcı</th>
-            <th>Tutar</th>
-            <th>Banka Hesabı</th>
-            <th>Durum</th>
-            <th>İşlem Zamanı</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for d in deposits %}
-          <tr>
-            <td>#{{ d.id }}</td>
-            <td>{{ d.created_at|date:"d.m.Y H:i:s" }}</td>
-            <td>{{ d.user_name }}</td>
-            <td><strong>{{ d.amount|floatformat:2 }} TRY</strong></td>
-            <td>{{ d.bank_account.bank_name }}<br><small>{{ d.bank_account.iban }}</small></td>
-            <td>
-              <span class="status-badge status-{{ d.status }}">
-                {{ d.get_status_display }}
-              </span>
-            </td>
-            <td>
-              {% if d.processed_at %}
-                {{ d.processed_at|date:"d.m.Y H:i:s" }}
-              {% else %}
-                <span class="text-muted">-</span>
-              {% endif %}
-            </td>
-          </tr>
-        {% empty %}
-          <tr><td colspan="8" class="text-center">Henüz yatırım kaydı yok.</td></tr>
-        {% endfor %}
-        </tbody>
-      </table>
     </div>
   </div>
 
-  <div class="navigation-links">
-    <a href="{% url 'site_panel:dashboard' %}" class="btn btn-secondary">← Panele Dön</a>
+  <div class="card">
+    <div class="card-body">
+      <form method="get" class="row g-3 align-items-end">
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="q">Arama</label>
+          <input type="text" id="q" name="q" class="form-control" placeholder="Kullanıcı, ID veya referans" value="{{ filters.query }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="start_date">Başlangıç Tarihi</label>
+          <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.start_date }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="end_date">Bitiş Tarihi</label>
+          <input type="date" id="end_date" name="end_date" class="form-control" value="{{ filters.end_date }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="status">Durum</label>
+          <select id="status" name="status" class="form-select">
+            <option value="">Tümü</option>
+            {% for value,label in status_choices %}
+              <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary flex-fill">Filtrele</button>
+            <a href="{% url 'site_panel:deposits' %}" class="btn btn-outline-secondary flex-fill">Temizle</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header border-0 pb-0">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h5 mb-0">Yatırım İşlemleri</h2>
+        <span class="text-muted small">{{ deposits|length }} kayıt</span>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      {% if deposits %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Oluşturulma</th>
+                <th scope="col">Kullanıcı</th>
+                <th scope="col">Tutar</th>
+                <th scope="col">Banka Hesabı</th>
+                <th scope="col">Durum</th>
+                <th scope="col">İşlem Zamanı</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for d in deposits %}
+                <tr>
+                  <td class="text-muted">#{{ d.id }}</td>
+                  <td>{{ d.created_at|date:"d.m.Y H:i" }}</td>
+                  <td>{{ d.user_name }}</td>
+                  <td class="fw-semibold">{{ d.amount|floatformat:2 }} TRY</td>
+                  <td>
+                    <div class="fw-semibold">{{ d.bank_account.bank_name }}</div>
+                    <small class="text-muted">{{ d.bank_account.iban }}</small>
+                  </td>
+                  <td>
+                    {% if d.status == "pending" %}
+                      <span class="status-pill bg-warning-subtle text-warning">{{ d.get_status_display }}</span>
+                    {% elif d.status == "approved" %}
+                      <span class="status-pill bg-success-subtle text-success">{{ d.get_status_display }}</span>
+                    {% elif d.status == "rejected" %}
+                      <span class="status-pill bg-danger-subtle text-danger">{{ d.get_status_display }}</span>
+                    {% else %}
+                      <span class="status-pill bg-secondary-subtle text-secondary">{{ d.get_status_display }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if d.processed_at %}
+                      {{ d.processed_at|date:"d.m.Y H:i" }}
+                    {% else %}
+                      <span class="text-muted">Bekliyor</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="table-empty-state text-center text-muted">
+          Henüz yatırım kaydı yok. Filtre seçeneklerini değiştirerek tekrar deneyin.
+        </div>
+      {% endif %}
+    </div>
   </div>
 </div>
-
-<style>
-.panel-header {
-  margin-bottom: 2rem;
-}
-
-.panel-header h1 {
-  font-size: 2rem;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
-}
-.panel-header p {
-  color: #666;
-}
-
-.table-card {
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-.navigation-links {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn-secondary {
-  border-radius: 8px;
-}
-</style>
 {% endblock %}

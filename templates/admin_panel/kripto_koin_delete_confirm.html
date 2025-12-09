@@ -1,0 +1,31 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Kripto Koin Sil{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <h1 class="h4 mb-3">Kripto Koin Sil</h1>
+
+  <div class="alert alert-warning">
+    <p class="mb-2">
+      <strong>{{ coin_cfg.coin }} / {{ coin_cfg.network }}</strong> için
+      aşağıdaki adresi silmek üzeresiniz:
+    </p>
+    <code>{{ coin_cfg.address }}</code>
+    <p class="mb-0 mt-2">
+      Bu işlem geri alınamaz. Emin misiniz?
+    </p>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <a href="{% url 'admin_panel:kripto_koin_list' %}" class="btn btn-secondary">
+      Vazgeç
+    </a>
+    <button type="submit" class="btn btn-danger">
+      Evet, Sil
+    </button>
+  </form>
+
+</div>
+{% endblock %}

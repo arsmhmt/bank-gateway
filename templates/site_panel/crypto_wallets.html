@@ -1,0 +1,85 @@
+{% extends "site_panel/base.html" %}
+
+{% block site_content %}
+<div class="container-fluid px-0">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <small class="text-uppercase text-muted fw-semibold">Site Paneli</small>
+      <h2 class="h4 mb-1">Kripto Cüzdanları</h2>
+      <p class="text-muted mb-0">Manuel statik adresler ve Ledger soğuk cüzdanlarınızı buradan takip edin.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'site_panel:dashboard' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Dashboard'a Dön
+      </a>
+      <span class="badge bg-light text-dark align-self-center">
+        {{ wallets|length }} kayıt
+      </span>
+    </div>
+  </div>
+
+  <div class="alert alert-info d-flex align-items-start gap-2">
+    <div class="fw-semibold">Mod Etiketleri</div>
+    <div class="small">
+      <span class="badge bg-dark text-white me-2">LEDGER COLD WALLET</span>
+      Ledger xPub'dan adres türetilir, sistem otomatik adres üretir.<br>
+      <span class="badge bg-primary me-2 text-white">MANUAL STATIC ADDRESS</span>
+      Sabit adresleri değiştirdiğinizde yeni kullanıcılar yeni adresi görür.
+    </div>
+  </div>
+
+  {% if wallets %}
+    <div class="row g-3">
+      {% for wallet in wallets %}
+        <div class="col-12 col-md-6 col-xl-4">
+          <div class="border rounded-4 p-3 h-100 bg-white shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <div class="fw-semibold">{{ wallet.coin }} · {{ wallet.network }}</div>
+                <div class="text-muted small">{{ wallet.get_mode_display }}</div>
+              </div>
+              {% if wallet.mode == "LEDGER" %}
+                <span class="badge bg-dark text-white">LEDGER COLD WALLET</span>
+              {% else %}
+                <span class="badge bg-primary text-white">MANUAL STATIC ADDRESS</span>
+              {% endif %}
+            </div>
+
+            {% if wallet.mode == "MANUAL" %}
+              <div class="small text-muted mb-1">Adres</div>
+              <code class="d-block text-break mb-2">{{ wallet.address|default:"—" }}</code>
+              {% if wallet.memo_tag %}
+                <div class="small text-muted mb-1">Memo / Tag</div>
+                <code class="d-block text-break mb-2">{{ wallet.memo_tag }}</code>
+              {% endif %}
+              <div class="alert alert-warning py-2 small mb-0">
+                <strong>Uyarı:</strong> Bu adres manuel olarak yönetilir. Yeni adres paylaşmadan önce tüm operatörleri bilgilendirin.
+              </div>
+            {% else %}
+              <div class="small text-muted mb-1">Ledger xPub</div>
+              <code class="d-block text-break mb-2">{{ wallet.ledger_xpub|default:"—" }}</code>
+              <div class="small text-muted mb-2">Son kullanılan derivasyon index: {{ wallet.derivation_index }}</div>
+              <div class="alert alert-secondary py-2 small mb-0">
+                <strong>Ledger modu:</strong> Adresler xPub üzerinden otomatik türetilir. Ledger cihazını değiştirmeden önce sistemi güncelleyin.
+              </div>
+            {% endif %}
+
+            <div class="mt-3 d-flex flex-column small text-muted">
+              <span>Oluşturma: {{ wallet.created_at|date:"d.m.Y H:i" }}</span>
+              <span>Güncelleme: {{ wallet.updated_at|date:"d.m.Y H:i" }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <div class="display-6 text-muted mb-3">
+        <i class="bi bi-wallet"></i>
+      </div>
+      <p class="text-muted">Henüz etkinleştirilmiş kripto cüzdanı bulunmuyor.</p>
+      <p class="text-muted small">Sistem yöneticinizden manual adres veya Ledger kurulumu için destek isteyin.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

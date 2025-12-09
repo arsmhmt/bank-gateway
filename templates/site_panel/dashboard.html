@@ -1,0 +1,490 @@
+{% extends "site_panel/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+  .site-dashboard .card {
+    border-radius: 1rem;
+  }
+
+  .site-dashboard-hero {
+    background: linear-gradient(135deg, rgba(13, 47, 129, 0.16), rgba(224, 38, 60, 0.12));
+    border: 1px solid rgba(13, 47, 129, 0.2);
+    border-radius: 1.25rem;
+  }
+
+  .site-gateway-pill {
+    border-radius: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .site-gateway-pill .meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+
+  .site-payment-link .input-group {
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .site-stat-card .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: rgba(13, 47, 129, 0.12);
+    color: #0d2f81;
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".copy-link-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const url = this.getAttribute("data-url");
+        if (!url) { return; }
+        navigator.clipboard.writeText(url).then(() => {
+          const original = this.textContent;
+          this.textContent = "Kopyalandı!";
+          setTimeout(() => (this.textContent = original), 1500);
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}
+
+{% block site_content %}
+<div class="site-dashboard">
+  <div class="card site-dashboard-hero shadow-sm border-0 mb-4 lp-card">
+    <div class="card-body">
+      <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
+        <div>
+          <small class="text-uppercase text-muted fw-semibold">Site Paneli</small>
+          <h2 class="h4 mb-1">{{ branch.name }} · Ödeme Özeti</h2>
+          <p class="text-muted mb-0">
+            Banka Havale · Kripto Ödeme · Kredi Kartı kanallarınızın bugünkü performansını takip edin.
+          </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge rounded-pill text-bg-primary px-3 py-2">SITE DASHBOARD</span>
+          <a href="{% url 'site_panel:reports' %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-graph-up"></i> Finansal Raporlar
+          </a>
+        </div>
+      </div>
+      <div class="row g-3 mt-3 text-muted small">
+        <div class="col-md-auto d-flex align-items-center gap-2">
+          <i class="bi bi-globe"></i>
+          <span>{{ branch.domain|default:"Domain tanımlı değil" }}</span>
+        </div>
+        <div class="col-md-auto d-flex align-items-center gap-2">
+          <i class="bi bi-qr-code"></i>
+          <span>Site Kodu: {{ branch.site_code }}</span>
+        </div>
+        <div class="col-md-auto d-flex align-items-center gap-2">
+          <i class="bi bi-person-check"></i>
+          <span>Panel Kullanıcısı: {{ request.user.username }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4 lp-dashboard-grid">
+    <div class="col-12 col-md-4">
+      <div class="card site-stat-card shadow-sm border-0 h-100 lp-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small text-uppercase text-muted">Banka Yatırımı (Bugün)</span>
+            <span class="stat-icon"><i class="bi bi-arrow-down-right"></i></span>
+          </div>
+          <h4 class="fw-bold mb-0">₺ {{ today_stats.bank_in|floatformat:2 }}</h4>
+          <small class="text-muted">Banka Havale Gateway</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card site-stat-card shadow-sm border-0 h-100 lp-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small text-uppercase text-muted">Kripto Yatırımı (Bugün)</span>
+            <span class="stat-icon"><i class="bi bi-currency-bitcoin"></i></span>
+          </div>
+          <h4 class="fw-bold mb-0">{{ today_stats.crypto_in|floatformat:2 }} USDT</h4>
+          <small class="text-muted">Kripto Ödeme Gateway</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card site-stat-card shadow-sm border-0 h-100 lp-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small text-uppercase text-muted">Kart Yatırımı (Bugün)</span>
+            <span class="stat-icon"><i class="bi bi-credit-card"></i></span>
+          </div>
+          <h4 class="fw-bold mb-0">₺ {{ today_stats.card_in|floatformat:2 }}</h4>
+          <small class="text-muted">Kredi Kartı Gateway</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-7">
+      <div class="card shadow-sm border-0 h-100 lp-card">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Gateway Durumu</h5>
+          <div class="text-muted small">Bank · Kripto · Kart kanallarınızın bugünkü performansı</div>
+        </div>
+        <div class="card-body">
+          {% with bank=gateway_status.BANK crypto=gateway_status.CRYPTO card=gateway_status.CARD %}
+          <div class="list-group list-group-flush">
+            <div class="list-group-item px-0">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div>
+                  <div class="fw-semibold d-flex align-items-center gap-2">
+                    <span class="fs-4">{{ bank.icon }}</span> Banka Havale
+                  </div>
+                  <div class="text-muted small">
+                    Bugünkü yatırım: ₺ {{ bank.today_in|floatformat:2 }} · İşlem: {{ bank.today_in_count }}
+                  </div>
+                </div>
+                <div class="text-end">
+                  <span class="badge {% if bank.enabled %}bg-success{% else %}bg-secondary{% endif %} me-2">
+                    {% if bank.enabled %}Açık{% else %}Kapalı{% endif %}
+                  </span>
+                  <div class="small text-muted mb-2">Çekim: ₺ {{ bank.today_out_total|floatformat:2 }}</div>
+                  {% if bank.detail_url %}
+                    <a class="btn btn-sm btn-outline-primary" href="{{ bank.detail_url }}">Banka Paneli</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="list-group-item px-0">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div>
+                  <div class="fw-semibold d-flex align-items-center gap-2">
+                    <span class="fs-4">{{ crypto.icon }}</span> Kripto Ödeme
+                  </div>
+                  <div class="text-muted small">
+                    Mod: {{ crypto.mode|default:"Tanımsız" }} · {{ crypto.coin|default:"USDT" }}/{{ crypto.network|default:"TRC20" }}
+                  </div>
+                  <div class="text-muted small">
+                    Bugünkü yatırım: {{ crypto.today_in|floatformat:2 }} {{ crypto.coin|default:"USDT" }}
+                    {% if crypto.last_deposit_at %} · Son yatırım: {{ crypto.last_deposit_at|date:"d.m.Y H:i" }}{% endif %}
+                  </div>
+                </div>
+                <div class="text-end">
+                  <span class="badge {% if crypto.enabled %}bg-success{% else %}bg-secondary{% endif %} me-2">
+                    {% if crypto.enabled %}Açık{% else %}Kapalı{% endif %}
+                  </span>
+                  <div class="small text-muted mb-2">Aktif coinler: {{ crypto.coin|default:"USDT" }}</div>
+                  {% if crypto.detail_url %}
+                    <a class="btn btn-sm btn-outline-success" href="{{ crypto.detail_url }}">Kripto Evi</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="list-group-item px-0">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div>
+                  <div class="fw-semibold d-flex align-items-center gap-2">
+                    <span class="fs-4">{{ card.icon }}</span> Kredi Kartı
+                  </div>
+                  <div class="text-muted small">Mod: {{ card.mode|default:"TEST" }}</div>
+                  <div class="text-muted small">
+                    Bugünkü yatırım: ₺ {{ card.today_in|floatformat:2 }} · İşlem: {{ card.today_in_count }}
+                  </div>
+                </div>
+                <div class="text-end">
+                  <span class="badge {% if card.enabled %}bg-success{% else %}bg-secondary{% endif %} me-2">
+                    {% if card.enabled %}Açık{% else %}Kapalı{% endif %}
+                  </span>
+                  <div class="small text-muted mb-2">Gateway modunu admin paneli yönetir</div>
+                  {% if card.detail_url %}
+                    <a class="btn btn-sm btn-outline-warning" href="{{ card.detail_url }}">Kart Ayarları</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endwith %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card shadow-sm border-0 h-100 lp-card">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Ödeme Linkleri</h5>
+          <div class="text-muted small">Cashier / public entegrasyonlarınız için hazır linkler</div>
+        </div>
+        <div class="card-body">
+          {% with bank=gateway_status.BANK crypto=gateway_status.CRYPTO card=gateway_status.CARD %}
+            {% if bank.enabled and public_urls.BANK_DEPOSIT %}
+              <div class="mb-3 site-payment-link">
+                <label class="form-label small text-uppercase text-muted">Banka Yatırım Linki</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" value="{{ public_urls.BANK_DEPOSIT }}" readonly>
+                  <button type="button" class="btn btn-outline-secondary copy-link-btn" data-url="{{ public_urls.BANK_DEPOSIT }}">Kopyala</button>
+                </div>
+              </div>
+            {% endif %}
+
+            {% if crypto.enabled and public_urls.CRYPTO_DEPOSIT %}
+              <div class="mb-3 site-payment-link">
+                <label class="form-label small text-uppercase text-muted">Kripto Yatırım Linki</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" value="{{ public_urls.CRYPTO_DEPOSIT }}" readonly>
+                  <button type="button" class="btn btn-outline-secondary copy-link-btn" data-url="{{ public_urls.CRYPTO_DEPOSIT }}">Kopyala</button>
+                </div>
+              </div>
+            {% endif %}
+
+            {% if card.enabled and public_urls.CARD_DEPOSIT %}
+              <div class="mb-0 site-payment-link">
+                <label class="form-label small text-uppercase text-muted">Kredi Kartı Yatırım Linki</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" value="{{ public_urls.CARD_DEPOSIT }}" readonly>
+                  <button type="button" class="btn btn-outline-secondary copy-link-btn" data-url="{{ public_urls.CARD_DEPOSIT }}">Kopyala</button>
+                </div>
+              </div>
+            {% endif %}
+          {% endwith %}
+
+          {% if not public_urls %}
+            <p class="text-muted mb-0">Bu site için aktif public ödeme linki bulunmuyor.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form method="get" class="card shadow-sm border-0 mb-4 lp-card">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-7">
+          <label class="form-label small text-uppercase text-muted mb-1 d-block">Tarih Aralığı</label>
+          <div class="btn-group" role="group">
+            {% for key,label in range_options %}
+            <button type="submit"
+                    name="range"
+                    value="{{ key }}"
+                    class="btn btn-sm {% if stats.range_key == key %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+              {{ label }}
+            </button>
+            {% endfor %}
+          </div>
+          <div class="text-muted small mt-1">Seçili aralık: {{ stats.range_label }}</div>
+        </div>
+        <div class="col-md-5">
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label small text-uppercase text-muted" for="start_date">Başlangıç</label>
+              <input type="date" class="form-control form-control-sm" id="start_date" name="start_date" value="{{ stats.filter_start }}">
+            </div>
+            <div class="col-6">
+              <label class="form-label small text-uppercase text-muted" for="end_date">Bitiş</label>
+              <input type="date" class="form-control form-control-sm" id="end_date" name="end_date" value="{{ stats.filter_end }}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="row g-3 mb-4 lp-dashboard-grid">
+    <div class="col-12 col-md-3">
+      <div class="card site-stat-card shadow-sm border-0 h-100 text-white lp-card" style="background: linear-gradient(135deg, #0d2f81 0%, #384ecf 100%);">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="small text-uppercase stat-label opacity-75">Toplam Yatırım</span>
+            <span class="stat-icon bg-white bg-opacity-25 text-white"><i class="bi bi-arrow-down-right"></i></span>
+          </div>
+          <h4 class="fw-bold mb-1">₺ {{ stats.total_deposits_amount|floatformat:2 }}</h4>
+          <div class="small">İşlem adedi: {{ stats.total_deposits_count }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-3">
+      <div class="card site-stat-card shadow-sm border-0 h-100 lp-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="small text-uppercase text-muted stat-label">Toplam Çekim</span>
+            <span class="stat-icon"><i class="bi bi-arrow-up-right"></i></span>
+          </div>
+          <h4 class="fw-bold mb-1">₺ {{ stats.total_withdrawals_amount|floatformat:2 }}</h4>
+          <div class="text-muted small">İşlem adedi: {{ stats.total_withdrawals_count }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-3">
+      <div class="card site-stat-card shadow-sm border-0 h-100 lp-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="small text-uppercase text-muted stat-label">Toplam Komisyon</span>
+            <span class="stat-icon"><i class="bi bi-cash-coin"></i></span>
+          </div>
+          <h4 class="fw-bold mb-1">₺ {{ stats.commission_total|floatformat:2 }}</h4>
+          <div class="text-muted small">Yatırım: {{ stats.deposit_rate|floatformat:2 }}% · Çekim: {{ stats.withdraw_rate|floatformat:2 }}%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-3">
+      <div class="card site-stat-card shadow-sm border-0 h-100 lp-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="small text-uppercase text-muted stat-label">Bakiye</span>
+            <span class="stat-icon"><i class="bi bi-wallet2"></i></span>
+          </div>
+          <h4 class="fw-bold mb-1">₺ {{ stats.balance_amount|floatformat:2 }}</h4>
+          <div class="text-muted small">Toplam yatırım - çekim - komisyon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-0">Bekleyen Yatırım Talepleri</h5>
+            <div class="text-muted small">Onay bekleyen son işlemler</div>
+          </div>
+          <a href="{% url 'site_panel:deposits' %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-arrow-right"></i> Tümünü Gör
+          </a>
+        </div>
+        <div class="card-body p-0">
+          <div class="lp-table-wrapper">
+            <table class="lp-table table table-hover table-nowrap align-middle mb-0 pending-table">
+              <thead class="table-light text-muted small text-uppercase">
+                <tr>
+                  <th>Zaman</th>
+                  <th>Kullanıcı</th>
+                  <th class="text-end">Tutar</th>
+                  <th>Banka</th>
+                  <th class="text-center">Durum</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for d in pending_deposits %}
+                <tr>
+                  <td>{{ d.created_at|date:"d.m.Y H:i" }}</td>
+                  <td>{{ d.user_name }}</td>
+                  <td class="text-end">₺ {{ d.amount|floatformat:2 }}</td>
+                  <td>{{ d.bank_account.bank_name }}</td>
+                  <td class="text-center">
+                    <span class="badge rounded-pill site-status-badge {{ d.status }}">
+                      {{ d.get_status_display }}
+                    </span>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="p-0">
+                    <div class="empty-state">Bekleyen yatırım talebi yok.</div>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-0">Bekleyen Çekim Talepleri</h5>
+            <div class="text-muted small">Onay bekleyen son işlemler</div>
+          </div>
+          <a href="{% url 'site_panel:withdrawals' %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-arrow-right"></i> Tümünü Gör
+          </a>
+        </div>
+        <div class="card-body p-0">
+          <div class="lp-table-wrapper">
+            <table class="lp-table table table-hover table-nowrap align-middle mb-0 pending-table">
+              <thead class="table-light text-muted small text-uppercase">
+                <tr>
+                  <th>Zaman</th>
+                  <th>Kullanıcı</th>
+                  <th class="text-end">Tutar</th>
+                  <th>IBAN</th>
+                  <th class="text-center">Durum</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for w in pending_withdrawals %}
+                <tr>
+                  <td>{{ w.created_at|date:"d.m.Y H:i" }}</td>
+                  <td>{{ w.user_name }}</td>
+                  <td class="text-end">₺ {{ w.amount|floatformat:2 }}</td>
+                  <td>{{ w.iban|slice:":4" }}...{{ w.iban|slice:"-4:" }}</td>
+                  <td class="text-center">
+                    <span class="badge rounded-pill site-status-badge {{ w.status }}">
+                      {{ w.get_status_display }}
+                    </span>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="p-0">
+                    <div class="empty-state">Bekleyen çekim talebi yok.</div>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Bildirim Ayarları</h5>
+          <div class="text-muted small">Sesli uyarı ve kontrol aralığını belirleyin</div>
+        </div>
+        <div class="card-body">
+          <form method="post" action="{% url 'site_panel:update_notification_settings' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <div class="form-check form-switch mb-3">
+              {{ notification_form.notification_sound_enabled }}
+              <label class="form-check-label" for="id_notification_sound_enabled">Sesli uyarı aktif</label>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="id_notification_poll_interval">Kontrol sıklığı</label>
+              {{ notification_form.notification_poll_interval }}
+              <div class="form-text">5-60 saniye arası</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-bell"></i> Ayarları Kaydet
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
