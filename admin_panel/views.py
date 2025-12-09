@@ -871,7 +871,11 @@ def banka_genel_bakis(request):
     pending_deposits = DepositRequest.objects.filter(status="pending").count()
     pending_withdrawals = WithdrawalRequest.objects.filter(status="pending").count()
     active_accounts = BankAccount.objects.filter(is_active=True).count()
-    active_providers = Provider.objects.filter(is_active=True).count()
+    # Provider model doesn't have `is_active`; use related user flag and provider block flag
+    active_providers = Provider.objects.filter(
+        user__is_provider_active_for_deposits=True,
+        is_blocked=False,
+    ).count()
 
     today_in = (
         PaymentTransaction.objects.filter(

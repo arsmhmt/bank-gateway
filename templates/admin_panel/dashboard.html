@@ -33,6 +33,16 @@
   .pending-table th {
     vertical-align: middle;
   }
+  /* Stat card improvements */
+  .lp-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .lp-stat-card { padding: 1.25rem; border-radius: 0.85rem; display: flex; gap: 1rem; align-items: center; }
+  .lp-stat-card .icon { width:54px; height:54px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.25rem; }
+  .lp-stat-card .value { font-weight:700; font-size:1.45rem; }
+  .lp-stat-card .meta { color: #6b7280; font-size:0.85rem; }
+  .lp-stat-card.light { background: linear-gradient(180deg, #ffffff, #fbfdff); }
+  .lp-stat-card.primary { background: linear-gradient(90deg, rgba(13,47,129,0.08), rgba(13,47,129,0.02)); color: #02143a; }
+  .lp-stat-card.positive .icon { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+  .lp-stat-card.negative .icon { background: rgba(239, 68, 68, 0.08); color: #ef4444; }
 </style>
 {% endblock %}
 
@@ -60,31 +70,40 @@
     </div>
   </div>
 
-  <div class="row g-3 mb-4 lp-dashboard-grid">
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0 text-white lp-card" style="background: var(--brand-gradient);">
-        <div class="card-body">
-          <p class="text-uppercase small fw-semibold opacity-75 mb-1">Bugünkü Toplam Yatırım</p>
-          <h3 class="mb-0">₺ {{ today_stats.total_in|default:"0.00" }}</h3>
-          <small class="opacity-75">Banka + Kripto + Kart</small>
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="lp-stat-grid">
+        <div class="card shadow-sm lp-stat-card primary positive">
+          <div class="icon">
+            <i class="bi bi-currency-exchange"></i>
+          </div>
+          <div>
+            <div class="meta text-uppercase small fw-semibold">Bugünkü Toplam Yatırım</div>
+            <div class="value">₺ {{ today_stats.total_in|default:"0.00" }}</div>
+            <div class="meta">Banka + Kripto + Kart · Bugün</div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0 lp-card">
-        <div class="card-body">
-          <p class="text-uppercase small fw-semibold text-muted mb-1">Bugünkü Toplam Çekim</p>
-          <h3 class="mb-0">₺ {{ today_stats.total_out|default:"0.00" }}</h3>
-          <small class="text-muted">Tüm gatewayler</small>
+
+        <div class="card shadow-sm lp-stat-card light negative">
+          <div class="icon">
+            <i class="bi bi-arrow-up-left-circle"></i>
+          </div>
+          <div>
+            <div class="meta text-uppercase small fw-semibold">Bugünkü Toplam Çekim</div>
+            <div class="value">₺ {{ today_stats.total_out|default:"0.00" }}</div>
+            <div class="meta">Tüm gatewayler · Bugün</div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0 lp-card">
-        <div class="card-body">
-          <p class="text-uppercase small fw-semibold text-muted mb-1">Bugünkü Komisyon</p>
-          <h3 class="mb-0">₺ {{ today_stats.total_commission|default:"0.00" }}</h3>
-          <small class="text-muted">Site + teminci toplamı</small>
+
+        <div class="card shadow-sm lp-stat-card light">
+          <div class="icon">
+            <i class="bi bi-percent"></i>
+          </div>
+          <div>
+            <div class="meta text-uppercase small fw-semibold">Bugünkü Komisyon</div>
+            <div class="value">₺ {{ today_stats.total_commission|default:"0.00" }}</div>
+            <div class="meta">Site + teminci toplamı</div>
+          </div>
         </div>
       </div>
     </div>

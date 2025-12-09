@@ -89,10 +89,16 @@ CSRF_TRUSTED_ORIGINS = [
     'https://lider-pay.com',
 ]
 
-if DEBUG:
+# Allow a safe fallback for environments where manifest static collection failed
+# Set env var `SKIP_MANIFEST_STATIC=true` to use the compressed storage instead
+_skip_manifest = os.environ.get("SKIP_MANIFEST_STATIC", "false").lower() == "true"
+if _skip_manifest:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 else:
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    if DEBUG:
+        STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+    else:
+        STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
